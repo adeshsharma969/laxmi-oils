@@ -29,7 +29,9 @@ function ScrollToTop() {
 }
 
 function FloatingCart() {
-  const { count, setDrawerOpen } = useCart();
+  const cart = useCart();
+  if (!cart) return null;
+  const { count, setDrawerOpen } = cart;
 
   if (count === 0) return null;
 
