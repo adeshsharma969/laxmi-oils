@@ -6,7 +6,7 @@ Production-oriented e-commerce refactor with:
 - Preserved existing React UI components in `frontend/src`
 - Express REST API in `backend/src`
 - MongoDB via Prisma in `backend/prisma`
-- JWT auth, role-based admin access, products, cart, orders, payments, shipping hooks, B2B leads, and admin APIs
+- JWT auth, role-based admin access, products, cart, orders, payments, shipping hooks, B2B leads, and admin APIs.
 
 ## Local Setup
 
