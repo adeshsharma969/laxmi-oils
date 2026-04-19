@@ -1,0 +1,33 @@
+import { Router } from "express";
+import { authRoutes, referralRoutes, userAdminRoutes } from "./auth.routes.js";
+import { b2bRoutes, leadAdminRoutes } from "./b2b.routes.js";
+import { cartRoutes } from "./cart.routes.js";
+import { categoryRoutes } from "./category.routes.js";
+import { couponRoutes } from "./coupon.routes.js";
+import { orderAdminRoutes, orderRoutes, statsRoutes } from "./order.routes.js";
+import { csv as ordersCsv } from "../controllers/order.controller.js";
+import { paymentRoutes } from "./payment.routes.js";
+import { productRoutes } from "./product.routes.js";
+import { shippingRoutes } from "./shipping.routes.js";
+import { requireAdmin, requireAuth } from "../middlewares/auth.js";
+import { bulkImport } from "../controllers/product.controller.js";
+
+export const apiRoutes = Router();
+
+apiRoutes.get("/", (_req, res) => res.json({ message: "Laxmi Oils API", status: "ok" }));
+apiRoutes.use("/auth", authRoutes);
+apiRoutes.use("/products", productRoutes);
+apiRoutes.use("/categories", categoryRoutes);
+apiRoutes.use("/cart", cartRoutes);
+apiRoutes.use("/orders", orderRoutes);
+apiRoutes.use("/payments", paymentRoutes);
+apiRoutes.use("/shipping", shippingRoutes);
+apiRoutes.use("/coupons", couponRoutes);
+apiRoutes.use("/referrals", referralRoutes);
+apiRoutes.use("/b2b", b2bRoutes);
+apiRoutes.get("/admin/orders.csv", requireAuth, requireAdmin, ordersCsv);
+apiRoutes.use("/admin/orders", orderAdminRoutes);
+apiRoutes.use("/admin/stats", statsRoutes);
+apiRoutes.use("/admin/leads", leadAdminRoutes);
+apiRoutes.use("/admin/users", userAdminRoutes);
+apiRoutes.post("/admin/products/import", requireAuth, requireAdmin, bulkImport);

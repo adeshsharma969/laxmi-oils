@@ -1,0 +1,62 @@
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@900,800,700,500,400&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --mustard: #D98F00;
+  --deep-green: #1F3D2B;
+  --warm-orange: #B8431A;
+  --electric-blue: #2B2A28;
+  --off-white: #F5F1E8;
+  --ink: #1A1814;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--off-white);
+  color: var(--ink);
+  font-family: 'Satoshi', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display { font-family: 'Cabinet Grotesk', sans-serif; letter-spacing: -0.02em; }
+.font-body { font-family: 'Satoshi', sans-serif; }
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.brutal-shadow { box-shadow: 5px 5px 0px 0px var(--deep-green); }
+.brutal-shadow-sm { box-shadow: 3px 3px 0px 0px var(--deep-green); }
+.brutal-shadow-lg { box-shadow: 8px 8px 0px 0px var(--deep-green); }
+.brutal-shadow-black { box-shadow: 8px 8px 0px 0px var(--ink); }
+
+.brutal-card {
+  background: var(--off-white);
+  border: 3px solid var(--deep-green);
+  box-shadow: 8px 8px 0px 0px var(--deep-green);
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s;
+}
+.brutal-card:hover { transform: translate(-4px,-4px); box-shadow: 12px 12px 0px 0px var(--deep-green); }
+
+.marquee { display: flex; overflow: hidden; white-space: nowrap; }
+.marquee-track { display: flex; animation: marquee 28s linear infinite; }
+@keyframes marquee { from { transform: translateX(0);} to { transform: translateX(-50%);} }
+
+::selection { background: var(--mustard); color: var(--deep-green); }
+
+body::-webkit-scrollbar { width: 10px; }
+body::-webkit-scrollbar-track { background: var(--off-white); }
+body::-webkit-scrollbar-thumb { background: var(--deep-green); border: 2px solid var(--off-white); }

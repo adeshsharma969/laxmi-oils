@@ -1,0 +1,142 @@
+{
+  "theme": "LIGHT",
+  "archetype": "Neo-Brutalist FMCG (High Contrast, Solid Colors, Tactile)",
+  "design_philosophy": "CRED/Instamart quality applied to a traditional FMCG product. Emphasizes bold typography, high-contrast color-blocking, solid borders, and hard shadows. Zero glassmorphism, zero soft blurs. The site must feel energetic, trustworthy, and premium, using Framer Motion to give physical weight and snap to interactions.",
+  "colors": {
+    "primary": "#F9A825",
+    "primary_description": "Mustard Yellow. Use for hero sections, main CTAs, and highlight blocks.",
+    "secondary": "#1B5E20",
+    "secondary_description": "Deep Green. Use for hard shadows, thick borders, dark-mode sections, and authoritative text.",
+    "accent_1": "#E65100",
+    "accent_1_description": "Warm Orange. Use for urgency, sale badges, or secondary CTAs.",
+    "accent_2": "#0033CC",
+    "accent_2_description": "Electric Blue. Use sparingly for unexpected, high-contrast stickers, tags, or marquee text backgrounds.",
+    "background_light": "#FDFBF7",
+    "background_light_description": "Off-white warm paper. Default background for the site.",
+    "text_dark": "#0A0A0A",
+    "text_light": "#FDFBF7",
+    "border_color": "#1B5E20"
+  },
+  "typography": {
+    "heading_font": "Cabinet Grotesk",
+    "heading_import": "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@900,800,700,500,400&display=swap",
+    "body_font": "Satoshi",
+    "body_import": "https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400,300&display=swap",
+    "hierarchy": {
+      "h1": "text-5xl md:text-7xl font-black tracking-tighter uppercase",
+      "h2": "text-4xl md:text-5xl font-extrabold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-bold tracking-tight",
+      "body": "text-base md:text-lg font-medium tracking-normal leading-relaxed",
+      "label": "text-xs md:text-sm font-bold uppercase tracking-widest"
+    }
+  },
+  "layout_and_spacing": {
+    "philosophy": "Bento grids, asymmetrical column overlaps, and strict structural boundaries. Every interactive element must feel like a tangible block.",
+    "container_padding": "px-6 py-12 md:px-12 md:py-24",
+    "border_radius": "rounded-none",
+    "border_width": "border-2 lg:border-[3px]",
+    "shadows": {
+      "brutal_sm": "4px 4px 0px 0px #1B5E20",
+      "brutal_md": "8px 8px 0px 0px #1B5E20",
+      "brutal_lg": "12px 12px 0px 0px #1B5E20",
+      "brutal_hover": "0px 0px 0px 0px #1B5E20"
+    }
+  },
+  "components": {
+    "button": {
+      "base": "inline-flex items-center justify-center border-2 border-[#1B5E20] px-8 py-4 font-bold uppercase tracking-wide transition-all duration-200",
+      "primary": "bg-[#F9A825] text-[#1B5E20] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1B5E20] active:translate-y-0 active:shadow-none",
+      "secondary": "bg-[#FDFBF7] text-[#1B5E20] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1B5E20] active:translate-y-0 active:shadow-none",
+      "dark": "bg-[#1B5E20] text-[#FDFBF7] border-black hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0A0A0A] active:translate-y-0 active:shadow-none"
+    },
+    "card": {
+      "base": "bg-[#FDFBF7] border-2 border-[#1B5E20] p-6 shadow-[8px_8px_0px_0px_#1B5E20] flex flex-col relative overflow-hidden transition-transform duration-300",
+      "hover": "hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_#1B5E20]"
+    },
+    "navigation": {
+      "style": "sticky top-0 z-50 bg-[#FDFBF7] border-b-2 border-[#1B5E20] py-4 px-6 md:px-12 flex justify-between items-center transition-transform",
+      "links": "hidden md:flex gap-8 font-bold uppercase tracking-wide text-[#1B5E20]"
+    },
+    "badge": {
+      "style": "absolute top-4 right-4 bg-[#E65100] text-white px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-[#1B5E20] shadow-[4px_4px_0px_0px_#1B5E20] rotate-3"
+    },
+    "textures": {
+      "noise": "add a fixed background div with a faint SVG grain/noise pattern using mix-blend-multiply at 5% opacity to give the solid colors a tactile printed feel."
+    }
+  },
+  "motion_choreography": {
+    "page_load": "Staggered slide-up for headings and hero images (y: 40, opacity: 0 -> y: 0, opacity: 1, duration: 0.6, ease: [0.22, 1, 0.36, 1])",
+    "scroll_parallax": "Images inside cards scale down slightly on scroll, giving a zoom-out effect. Use framer-motion useScroll.",
+    "product_cards": "Hover scales image by 1.05x, card body translates Y by -8px, shadow expands.",
+    "marquee": "Continuous CSS or framer-motion loop for promotional text (e.g., '100% PURE • COLD PRESSED') with duration 20s, linear ease.",
+    "cart_drawer": "Slide in from right (x: '100%' -> x: 0), solid #FDFBF7 background with #1B5E20 left border, heavy spring physics (stiffness: 300, damping: 30)"
+  },
+  "media_assets": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwyfHxpbmRpYW4lMjBjb29raW5nJTIwZnJlc2glMjBmb29kJTIwc3BsYXNoaW5nJTIwb2lsfGVufDB8fHx8MTc3NjQ4Mzc3NHww&ixlib=rb-4.1.0&q=85",
+      "description": "Dynamic top-down deep frying shot. Use inside a bento box grid item in the hero section, not as a full screen faded background."
+    },
+    "product_mustard": {
+      "url": "https://images.unsplash.com/photo-1720468750623-39e9a09f5067?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHx5ZWxsb3clMjBjb29raW5nJTIwb2lsJTIwYm90dGxlJTIwZ2xhc3N8ZW58MHx8fHwxNzc2NDgzNzg3fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Mustard oil bottle presentation."
+    },
+    "product_groundnut": {
+      "url": "https://images.unsplash.com/photo-1596522869169-95231d2b6864?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBjb29raW5nJTIwZnJlc2glMjBmb29kJTIwc3BsYXNoaW5nJTIwb2lsfGVufDB8fHx8MTc3NjQ4Mzc3NHww&ixlib=rb-4.1.0&q=85",
+      "description": "Rich fried food shot, can be used to represent groundnut oil use case."
+    },
+    "product_soyabean": {
+      "url": "https://images.unsplash.com/photo-1703218039342-779a2487f176?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwxfHxwcmVtaXVtJTIwcGFja2FnaW5nJTIwYm90dGxlJTIwbW9ja3VwfGVufDB8fHx8MTc3NjQ4Mzc4N3ww&ixlib=rb-4.1.0&q=85",
+      "description": "Premium packaging mockup representing refined soyabean oil."
+    },
+    "trust_farmer": {
+      "url": "https://images.unsplash.com/photo-1561911298-389ebc538835?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwxfHxwZWFudXRzJTIwaGFydmVzdCUyMGZhcm1lcnxlbnwwfHx8fDE3NzY0ODM3ODd8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Farmer with peanuts harvest. Used in the 'Why Laxmi Trust / Sourcing' section."
+    },
+    "trust_mustard_field": {
+      "url": "https://images.unsplash.com/photo-1646476110859-f1d73d8436b6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwxfHxtdXN0YXJkJTIwZmllbGQlMjB5ZWxsb3clMjBhZ3JpY3VsdHVyZXxlbnwwfHx8fDE3NzY0ODM3ODd8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Lush yellow mustard field for storytelling."
+    },
+    "family_dining": {
+      "url": "https://images.unsplash.com/photo-1671116810287-f2081bb6597a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBmYW1pbHklMjBkaW5pbmclMjBlYXRpbmclMjBmb29kfGVufDB8fHx8MTc3NjQ4Mzc5Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "Indian family dining. Used in testimonials or brand story section."
+    },
+    "vintage_pan": {
+      "url": "https://images.unsplash.com/photo-1768572781055-e5cc64015255?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwxfHx2aW50YWdlJTIwdHJhZGl0aW9uYWwlMjBjb29raW5nJTIwcGFufGVufDB8fHx8MTc3NjQ4Mzc5Mnww&ixlib=rb-4.1.0&q=85",
+      "description": "Vintage copper molds. Accent imagery for tradition."
+    }
+  },
+  "pages": {
+    "homepage": {
+      "sections": [
+        "Hero: Massive Cabinet Grotesk typography ('PURE INDIAN BOLD.'). Bento grid layout with product showcase card, dynamic video/image block, and primary CTA block.",
+        "Marquee: Electric Blue background with Off-White text scrolling 'COLD PRESSED • 100% PURE • NO PRESERVATIVES • DIRECT FROM FARMS'.",
+        "Category Grid: 3 columns. Solid backgrounds for each card (Mustard=Yellow, Soyabean=Blue, Groundnut=Orange). Large typography overlapping the card borders.",
+        "Trust/Story: Split screen. Left side scrolling sticky text, right side parallax images (Farmer -> Field -> Family).",
+        "Best Sellers: Horizontal scroll carousel. Cards have hard #1B5E20 shadows.",
+        "Footer: Massive brand logo footprint, #1B5E20 background, #F9A825 text."
+      ]
+    },
+    "product_listing": {
+      "layout": "Sidebar filters (left) with brutalist checkboxes (square, thick border). Grid of products (right).",
+      "cards": "Image container top half (Off-white bg), content bottom half. Price in massive typography. Sticky hover button."
+    },
+    "product_detail": {
+      "layout": "Left: Sticky product image with zoom. Right: Content with pack size selectors (brutalist toggles), story details.",
+      "sticky_cart": "Fixed bar at bottom of viewport on mobile, or floating right column on desktop, with immediate 'Add to Cart' action."
+    },
+    "checkout": {
+      "layout": "Clean, focused flow. Multi-step accordion style. High contrast active states."
+    }
+  },
+  "testing_requirements": {
+    "attributes": "All interactive elements MUST use data-testid (e.g., data-testid='hero-cta-button', data-testid='add-to-cart-btn', data-testid='filter-mustard-checkbox')."
+  },
+  "instructions_to_main_agent": [
+    "Inject the Cabinet Grotesk and Satoshi fonts via Fontshare URLs in index.html or global css.",
+    "Do NOT use tailwind's default rounded classes, enforce sharp corners everywhere (rounded-none).",
+    "Do NOT use standard drop shadows (e.g. shadow-md). Use custom hard-edge box shadows as defined in layout_and_spacing.",
+    "All components must be written using raw Tailwind classes and Framer Motion. Shadcn UI can be used but MUST be customized to remove all soft corners and light gray borders, replacing them with thick #1B5E20 borders.",
+    "Implement an SVG noise filter overlay in the root layout to give the solid colors texture.",
+    "Make product cards feel physical with hover states that 'press down' (remove translate-y, reduce shadow)."
+  ]
+}

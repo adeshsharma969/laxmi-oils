@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @map("user_id")
+  email          String   @unique
+  passwordHash   String?  @map("password_hash")
+  name           String
+  phone          String?
+  role           String   @default("user")
+  provider       String   @default("password")
+  picture        String?
+  referralCode   String?  @unique @map("referral_code")
+  referredBy     String?  @map("referred_by")
+  rewardsEarned  Int?     @default(0) @map("rewards_earned")
+  createdAt      String?  @map("created_at")
+  updatedAt      String?  @map("updated_at")
+
+  @@map("users")
+}
+
+model Category {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId  String   @unique @map("category_id")
+  slug        String   @unique
+  name        String
+  description String?
+  createdAt   String?  @map("created_at")
+  updatedAt   String?  @map("updated_at")
+
+  @@map("categories")
+}
+
+model Product {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String        @unique @map("product_id")
+  name        String
+  category    String
+  categoryId  String?       @map("category_id") @db.ObjectId
+  sizes       ProductSize[]
+  description String
+  badge       String        @default("NEW")
+  image       String
+  bg          String        @default("#D98F00")
+  benefits    String[]
+  nutrition   Json?
+  rating      Float         @default(4.8)
+  reviews     Int           @default(0)
+  inventory   Int?          @default(0)
+  active      Boolean?      @default(true)
+  createdAt   String?       @map("created_at")
+  updatedAt   String?       @map("updated_at")
+
+  @@map("products")
+}
+
+model Cart {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @unique @map("user_id")
+  items     Json
+  createdAt String?    @map("created_at")
+  updatedAt String?    @map("updated_at")
+
+  @@map("carts")
+}
+
+model Order {
+  id                 String        @id @default(auto()) @map("_id") @db.ObjectId
+  orderId            String        @unique @map("order_id")
+  userId             String?       @map("user_id")
+  email              String
+  address            Json
+  items              Json
+  subtotal           Float
+  shipping           Float
+  discount           Float?        @default(0)
+  creditUsed         Float?        @default(0) @map("credit_used")
+  total              Float
+  delivery           String
+  paymentMethod      String        @map("payment_method")
+  paymentStatus      String?       @default("pending") @map("payment_status")
+  status             String        @default("paid")
+  couponCode         String?       @map("coupon_code")
+  couponKind         String?       @map("coupon_kind")
+  couponReferrerId   String?       @map("coupon_referrer_id")
+  paymentId          String?       @map("payment_id")
+  shipmentId         String?       @map("shipment_id")
+  tracking           Json?
+  createdAt          String?       @map("created_at")
+  updatedAt          String?       @map("updated_at")
+
+  @@map("orders")
+}
+
+model Payment {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  paymentId          String   @unique @map("payment_id")
+  orderId            String?  @map("order_id")
+  userId             String?  @map("user_id")
+  provider           String   @default("razorpay")
+  amount             Float
+  currency           String   @default("INR")
+  status             String   @default("created")
+  razorpayOrderId    String?  @map("razorpay_order_id")
+  razorpayPaymentId  String?  @map("razorpay_payment_id")
+  signature          String?
+  raw                Json?
+  createdAt          String?  @map("created_at")
+  updatedAt          String?  @map("updated_at")
+
+  @@map("payments")
+}
+
+model B2BLead {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  leadId    String   @unique @map("lead_id")
+  company   String
+  name      String
+  email     String
+  phone     String
+  volume    String?
+  message   String?
+  status    String   @default("new")
+  createdAt String?  @map("created_at")
+  updatedAt String?  @map("updated_at")
+
+  @@map("b2b_leads")
+}
+
+type ProductSize {
+  label String
+  price Float
+}

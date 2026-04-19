@@ -1,0 +1,121 @@
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingBag, Menu, X, User as UserIcon, LogOut, Search } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import SearchCommand from "./SearchCommand";
+
+const links = [
+  { to: "/", label: "Home" },
+  { to: "/products", label: "Shop" },
+  { to: "/b2b", label: "Bulk / B2B" },
+];
+
+export default function Navbar() {
+  const { count, setDrawerOpen, bump } = useCart();
+  const { user, logout } = useAuth();
+  const nav = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setSearchOpen(true); }
+      else if (e.key === "/" && e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") { e.preventDefault(); setSearchOpen(true); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
+    const f = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", f);
+    return () => window.removeEventListener("scroll", f);
+  }, []);
+
+  return (
+    <header data-testid="navbar" className={`sticky top-0 z-40 bg-[#F5F1E8] border-b-[3px] border-[#1F3D2B] transition-shadow ${scrolled?"shadow-[0_6px_0_0_#1F3D2B]":""}`}>
+      <div className="flex items-center justify-between px-5 md:px-10 py-4">
+        <Link to="/" data-testid="brand-logo" className="flex items-center group">
+          <img src="/logo.png" alt="Laxmi Oils" className="h-14 w-auto group-hover:scale-105 transition-transform" />
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-8">
+          {links.map(l => (
+            <NavLink key={l.to} to={l.to} data-testid={`nav-${l.label.toLowerCase()}`} className={({isActive}) => `font-bold uppercase text-sm tracking-wider ${isActive?"text-[#B8431A]":"text-[#1F3D2B]"} hover:text-[#B8431A] transition-colors`}>
+              {l.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <button data-testid="search-trigger" onClick={()=>setSearchOpen(true)} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider flex items-center gap-2 hover:bg-[#D98F00]" aria-label="Search">
+            <Search size={14} strokeWidth={3}/>
+            <span className="hidden lg:inline text-xs tracking-widest">search</span>
+          </button>
+          {user ? (
+            <div className="relative hidden md:block">
+              <button data-testid="account-btn" onClick={()=>setMenuOpen(o=>!o)} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider flex items-center gap-2">
+                <UserIcon size={14} strokeWidth={3}/> {user.name?.split(" ")[0] || "Account"}
+              </button>
+              <AnimatePresence>
+                {menuOpen && (
+                  <motion.div initial={{opacity:0,y:-6}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-6}} className="absolute right-0 mt-2 w-56 bg-[#F5F1E8] border-[3px] border-[#1F3D2B] shadow-[5px_5px_0_0_#1F3D2B] z-50">
+                    <Link to="/account" onClick={()=>setMenuOpen(false)} className="block px-4 py-3 border-b-2 border-[#1F3D2B]/20 font-bold uppercase text-xs tracking-widest hover:bg-[#D98F00]">My Orders</Link>
+                    {user.role==="admin" && <Link to="/admin" onClick={()=>setMenuOpen(false)} className="block px-4 py-3 border-b-2 border-[#1F3D2B]/20 font-bold uppercase text-xs tracking-widest hover:bg-[#D98F00]">Admin Panel</Link>}
+                    <button onClick={()=>{logout(); setMenuOpen(false); nav("/");}} className="w-full text-left px-4 py-3 font-bold uppercase text-xs tracking-widest text-[#B8431A] hover:bg-[#B8431A] hover:text-[#F5F1E8] flex items-center gap-2"><LogOut size={12} strokeWidth={3}/> Logout</button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <Link to="/login" data-testid="nav-login" className="hidden md:inline-flex border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider items-center gap-2 hover:bg-[#D98F00]">
+              <UserIcon size={14} strokeWidth={3}/> Login
+            </Link>
+          )}
+          <motion.button
+            data-testid="cart-button"
+            onClick={() => setDrawerOpen(true)}
+            key={bump}
+            initial={{ scale: 1 }}
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 0.35 }}
+            className="relative bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-2 font-bold uppercase text-sm tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors flex items-center gap-2"
+          >
+            <ShoppingBag size={16} strokeWidth={3}/>
+            <span className="hidden sm:inline">Cart</span>
+            <span data-testid="cart-count" className="bg-[#D98F00] text-[#1F3D2B] px-2 py-0.5 text-xs font-black border-2 border-[#F5F1E8]">{count}</span>
+          </motion.button>
+          <button data-testid="menu-toggle" onClick={() => setOpen(o=>!o)} className="md:hidden w-10 h-10 border-[3px] border-[#1F3D2B] flex items-center justify-center">
+            {open ? <X size={20} strokeWidth={3}/> : <Menu size={20} strokeWidth={3}/>}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{height:0}} animate={{height:"auto"}} exit={{height:0}} className="md:hidden overflow-hidden border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
+            <div className="flex flex-col">
+              {links.map(l => (
+                <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">{l.label}</NavLink>
+              ))}
+              {user ? (
+                <>
+                  <NavLink to="/account" onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">My Orders</NavLink>
+                  {user.role==="admin" && <NavLink to="/admin" onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">Admin</NavLink>}
+                  <button onClick={()=>{logout(); setOpen(false);}} className="text-left px-6 py-4 font-bold uppercase tracking-wide text-[#B8431A]">Logout</button>
+                </>
+              ) : (
+                <NavLink to="/login" onClick={()=>setOpen(false)} className="px-6 py-4 font-bold uppercase tracking-wide text-[#1F3D2B]">Login</NavLink>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <SearchCommand open={searchOpen} onClose={()=>setSearchOpen(false)}/>
+    </header>
+  );
+}
