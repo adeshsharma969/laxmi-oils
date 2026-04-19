@@ -10,8 +10,11 @@ const steps = [{ id:1, label:"Address", icon:User }, { id:2, label:"Delivery", i
 
 export default function Checkout() {
   const nav = useNavigate();
-  const { items, subtotal, clear } = useCart();
-  const { user } = useAuth();
+  const cart = useCart();
+  const auth = useAuth();
+  if (!cart || !auth) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
+  const { items, subtotal, clear } = cart;
+  const { user } = auth;
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ name: user?.name||"", email: user?.email||"", phone: user?.phone||"", address:"", city:"", pincode:"" });
   const [delivery, setDelivery] = useState("standard");

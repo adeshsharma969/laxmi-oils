@@ -4,10 +4,17 @@ import { useAuth } from "../context/AuthContext";
 
 export default function AuthCallback() {
   // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  const { googleExchange } = useAuth();
+  const auth = useAuth();
   const nav = useNavigate();
   const loc = useLocation();
   const processed = useRef(false);
+  
+  if (!auth) return (
+    <div className="px-5 py-20 text-center">
+      <div className="font-display font-black text-3xl text-[#1F3D2B]">Loading...</div>
+    </div>
+  );
+  const { googleExchange } = auth;
 
   useEffect(() => {
     if (processed.current) return;

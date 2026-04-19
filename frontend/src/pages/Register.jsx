@@ -5,7 +5,9 @@ import { useAuth } from "../context/AuthContext";
 import { fmtErr } from "../api/client";
 
 export default function Register() {
-  const { register } = useAuth();
+  const auth = useAuth();
+  if (!auth) return <div className="p-10 text-center">Loading...</div>;
+  const { register } = auth;
   const nav = useNavigate();
   const [params] = useSearchParams();
   const [form, setForm] = useState({ name:"", email:"", phone:"", password:"", ref: params.get("ref") || "" });

@@ -57,3 +57,5 @@ export const FAQ = policyPage("FAQ.", "Your questions, our answers", [
   { h: "Why is your oil pricier than the supermarket?", p: ["Two reasons — we only source from wood-kolhu mills (10× slower than refined oil plants), and we lab-test every batch at our cost. Shortcuts don't exist in our supply chain, and our price reflects that."]},
   { h: "How do I contact you?", p: ["WhatsApp: +91 98765 43210 · Email: hello@laxmioils.in · Mon–Sat, 10am–7pm IST."]},
 ]);
+
+export default Terms;

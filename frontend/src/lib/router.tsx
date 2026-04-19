@@ -82,7 +82,7 @@ export function NavLink({
   const pathname = usePathname();
   const targetHref = toHref(to ?? href);
   const targetPath = cleanPath(targetHref);
-  const isActive = targetPath === "/" ? pathname === "/" : pathname === targetPath || pathname.startsWith(`${targetPath}/`);
+  const isActive = !!pathname && (targetPath === "/" ? pathname === "/" : pathname === targetPath || pathname.startsWith(`${targetPath}/`));
   const resolvedClassName =
     typeof className === "function"
       ? className({ isActive, isPending: false, isTransitioning: false })
@@ -116,14 +116,14 @@ export function useNavigate() {
 export function useLocation() {
   const pathname = usePathname();
   const params = useNextSearchParams();
-  const search = params.toString() ? `?${params.toString()}` : "";
+  const search = params?.toString() ? `?${params.toString()}` : "";
 
   return useMemo(
     () => ({
       pathname,
       search,
       hash: typeof window === "undefined" ? "" : window.location.hash,
-      state: readRouteState(pathname, search),
+      state: pathname ? readRouteState(pathname, search) : undefined,
     }),
     [pathname, search],
   );
@@ -139,11 +139,11 @@ export function useSearchParams() {
   const readonlyParams = useNextSearchParams();
 
   return useMemo(() => {
-    const params = new URLSearchParams(readonlyParams.toString());
+    const params = new URLSearchParams(readonlyParams?.toString() || "");
     const setParams = (next: URLSearchParams | Record<string, string>, options: { replace?: boolean } = {}) => {
       const nextParams = next instanceof URLSearchParams ? new URLSearchParams(next.toString()) : new URLSearchParams(next);
       const query = nextParams.toString();
-      const href = query ? `${pathname}?${query}` : pathname;
+      const href = pathname ? (query ? `${pathname}?${query}` : pathname) : "/";
 
       if (options.replace) router.replace(href, { scroll: false });
       else router.push(href, { scroll: false });

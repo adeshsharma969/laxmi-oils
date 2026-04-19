@@ -5,7 +5,9 @@ import { ArrowLeft, Clock, User } from "lucide-react";
 import { BLOG_POSTS } from "../data/blog";
 
 export default function BlogDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  if (!params) return <div className="p-16 text-center"><div className="font-display font-black text-4xl text-[#1F3D2B]">Loading...</div></div>;
+  const { id } = params;
   const post = BLOG_POSTS[id];
   if (!post) return (
     <div className="p-16 text-center">

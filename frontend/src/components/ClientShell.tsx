@@ -31,7 +31,7 @@ function ScrollToTop() {
 function FloatingCart() {
   const cart = useCart();
   if (!cart) return null;
-  const { count, setDrawerOpen } = cart;
+  const { count, setDrawerOpen } = cart as { count: number; setDrawerOpen: (v: boolean) => void };
 
   if (count === 0) return null;
 

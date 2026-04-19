@@ -5,7 +5,9 @@ import { useAuth } from "../context/AuthContext";
 import { fmtErr } from "../api/client";
 
 export default function Login() {
-  const { login } = useAuth();
+  const auth = useAuth();
+  if (!auth) return <div className="p-10 text-center">Loading...</div>;
+  const { login } = auth;
   const nav = useNavigate();
   const loc = useLocation();
   const from = loc.state?.from || "/account";

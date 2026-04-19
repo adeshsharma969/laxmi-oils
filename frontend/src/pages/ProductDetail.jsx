@@ -7,7 +7,9 @@ import { GALLERY } from "../data/mock";
 import { useCart } from "../context/CartContext";
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const params = useParams();
+  if (!params) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
+  const { id } = params;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [size, setSize] = useState(null);

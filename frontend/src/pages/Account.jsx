@@ -6,7 +6,9 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 
 export default function Account() {
-  const { user, logout, loading } = useAuth();
+  const auth = useAuth();
+  if (!auth) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
+  const { user, logout, loading } = auth;
   const nav = useNavigate();
   const [orders, setOrders] = useState([]);
   const [busy, setBusy] = useState(true);

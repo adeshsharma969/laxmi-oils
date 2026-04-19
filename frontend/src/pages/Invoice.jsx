@@ -4,9 +4,12 @@ import { Printer } from "lucide-react";
 import api from "../api/client";
 
 export default function Invoice() {
-  const { id } = useParams();
+  const params = useParams();
   const [order, setOrder] = useState(null);
   const [err, setErr] = useState(false);
+  
+  if (!params) return <div className="p-10 text-center text-sm">Loading…</div>;
+  const { id } = params;
 
   useEffect(() => {
     api.get(`/orders/${id}`).then(({data})=>setOrder(data)).catch(()=>setErr(true));
