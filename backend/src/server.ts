@@ -1,6 +1,10 @@
 import { app } from "./app.js";
 import { env } from "./config/env.js";
 import { prisma } from "./prisma/client.js";
+import { seed } from "./seed.js";
+
+// Run seed on startup (for Render and fresh deployments)
+seed().catch(console.error);
 
 const server = app.listen(env.port, () => {
   console.log(`Laxmi Oils API listening on http://localhost:${env.port}`);
