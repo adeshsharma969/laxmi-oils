@@ -56,23 +56,23 @@ export default function Admin() {
   const updateLeadStatus = async (id, status) => { await api.put(`/admin/leads/${id}/status`, { status }); await reload(); };
 
   return (
-    <div data-testid="admin-page" className="px-5 md:px-10 py-10">
-      <div className="border-b-[3px] border-[#1F3D2B] pb-6 mb-6 flex flex-wrap justify-between items-end gap-3">
+    <div data-testid="admin-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
+      <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-4 md:mb-6 flex flex-wrap justify-between items-end gap-3">
         <div>
-          <div className="text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Control Room</div>
-          <h1 className="font-display font-black text-4xl md:text-5xl text-[#1F3D2B] tracking-tighter">Admin.</h1>
+          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Control Room</div>
+          <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-[#1F3D2B] tracking-tighter">Admin.</h1>
         </div>
-        <Link to="/account" className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 font-black uppercase tracking-widest text-sm">← My Account</Link>
+        <Link to="/account" className="touch-target-sm border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm">← Account</Link>
       </div>
 
-      <div className="flex flex-wrap gap-2 border-b-2 border-[#1F3D2B]/30 mb-6">
+      <div className="flex flex-wrap gap-1 sm:gap-2 border-b-2 border-[#1F3D2B]/30 mb-4 md:mb-6">
         {TABS.map(t => (
-          <button key={t.id} data-testid={`tab-${t.id}`} onClick={()=>setTab(t.id)} className={`px-4 py-2 font-black uppercase tracking-widest text-sm border-[3px] border-b-0 -mb-[2px] ${tab===t.id?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-transparent hover:border-[#1F3D2B]"}`}>{t.label}</button>
+          <button key={t.id} data-testid={`tab-${t.id}`} onClick={()=>setTab(t.id)} className={`touch-target-sm px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm border-[3px] border-b-0 -mb-[2px] ${tab===t.id?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-transparent hover:border-[#1F3D2B]"}`}>{t.label}</button>
         ))}
       </div>
 
       {tab==="dash" && stats && (
-        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
           {[
             { icon:IndianRupee, label:"Revenue", value:`₹${stats.revenue.toLocaleString('en-IN')}`, bg:"#D98F00" },
             { icon:ShoppingCart, label:"Orders", value:stats.orders, bg:"#F5F1E8" },
@@ -80,10 +80,10 @@ export default function Admin() {
             { icon:Briefcase, label:"B2B Leads", value:stats.leads, bg:"#F5F1E8" },
             { icon:Users, label:"Customers", value:stats.customers, bg:"#F5F1E8" },
           ].map((s,i)=>{const Ic=s.icon;return (
-            <div key={i} className="border-[3px] border-[#1F3D2B] p-4 brutal-shadow-sm" style={{background:s.bg}}>
-              <Ic size={22} strokeWidth={2.5}/>
-              <div className="font-display font-black text-2xl md:text-3xl text-[#1F3D2B] mt-2">{s.value}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">{s.label}</div>
+            <div key={i} className="border-[3px] border-[#1F3D2B] p-3 sm:p-4 brutal-shadow-sm" style={{background:s.bg}}>
+              <Ic size={20} sm:size={22} strokeWidth={2.5}/>
+              <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#1F3D2B] mt-2">{s.value}</div>
+              <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">{s.label}</div>
             </div>
           );})}
         </motion.div>
@@ -92,10 +92,10 @@ export default function Admin() {
       {tab==="products" && (
         <div>
           <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-            <div className="font-display font-black text-2xl text-[#1F3D2B]">{products.length} products</div>
+            <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">{products.length} products</div>
             <div className="flex gap-2">
-              <label data-testid="csv-import" className="cursor-pointer bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-4 py-2 font-black uppercase tracking-widest text-sm flex items-center gap-2 hover:bg-[#D98F00]">
-                <Upload size={14} strokeWidth={3}/> Import CSV
+              <label data-testid="csv-import" className="cursor-pointer touch-target-sm bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2 hover:bg-[#D98F00]">
+                <Upload size={14} strokeWidth={3}/> Import
                 <input type="file" accept=".csv" className="hidden" onChange={async (e)=>{
                   const f = e.target.files?.[0]; if (!f) return;
                   const text = await f.text();
@@ -117,24 +117,24 @@ export default function Admin() {
                   finally { e.target.value = ""; }
                 }}/>
               </label>
-              <button data-testid="new-product-btn" onClick={()=>setEditing({...EMPTY_PRODUCT})} className="bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-2 font-black uppercase tracking-widest text-sm flex items-center gap-2"><Plus size={14} strokeWidth={3}/> New Product</button>
+              <button data-testid="new-product-btn" onClick={()=>setEditing({...EMPTY_PRODUCT})} className="touch-target-sm bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2"><Plus size={14} strokeWidth={3}/> New</button>
             </div>
           </div>
-          <div className="text-[11px] text-[#1F3D2B]/60 mb-3 font-mono">CSV headers: name, category, sizes (e.g. "500ml:159|1L:289"), description, badge, image, bg, benefits, rating, reviews</div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/60 mb-3 font-mono hidden sm:block">CSV headers: name, category, sizes (e.g. "500ml:159|1L:289"), description, badge, image, bg, benefits, rating, reviews</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {products.map(p=>(
-              <div key={p.product_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 brutal-shadow-sm">
+              <div key={p.product_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
                 <div className="flex gap-3">
-                  <div className="w-16 h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.image} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.image} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-display font-black text-[#1F3D2B] truncate">{p.name}</div>
-                    <div className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
+                    <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{p.name}</div>
+                    <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
                     <div className="text-xs mt-1">From <b>₹{p.sizes[0].price}</b></div>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <button onClick={()=>setEditing(p)} className="flex-1 border-2 border-[#1F3D2B] bg-[#D98F00] py-1.5 font-black uppercase text-xs tracking-wider flex items-center justify-center gap-1"><Edit3 size={12} strokeWidth={3}/> Edit</button>
-                  <button onClick={()=>deleteProduct(p.product_id)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-3 py-1.5 text-[#B8431A]"><Trash2 size={14} strokeWidth={3}/></button>
+                  <button onClick={()=>setEditing(p)} className="touch-target-sm flex-1 border-2 border-[#1F3D2B] bg-[#D98F00] py-1.5 font-black uppercase text-xs tracking-wider flex items-center justify-center gap-1"><Edit3 size={12} strokeWidth={3}/> Edit</button>
+                  <button onClick={()=>deleteProduct(p.product_id)} className="touch-target-sm border-2 border-[#1F3D2B] bg-[#F5F1E8] px-3 py-1.5 text-[#B8431A]"><Trash2 size={14} strokeWidth={3}/></button>
                 </div>
               </div>
             ))}
@@ -149,28 +149,28 @@ export default function Admin() {
               const r = await api.get("/admin/orders.csv", { responseType: "blob" });
               const url = URL.createObjectURL(r.data);
               const a = document.createElement("a"); a.href = url; a.download = "laxmi-orders.csv"; a.click(); URL.revokeObjectURL(url);
-            }} className="bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-4 py-2 font-black uppercase tracking-widest text-sm flex items-center gap-2 hover:bg-[#D98F00]">
-              <Download size={14} strokeWidth={3}/> Export CSV
+            }} className="touch-target-sm bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2 hover:bg-[#D98F00]">
+              <Download size={14} strokeWidth={3}/> Export
             </button>
           </div>
           <div className="space-y-3">
-            {orders.length===0 && <div className="text-sm">No orders yet.</div>}
+            {orders.length===0 && <div className="text-xs sm:text-sm">No orders yet.</div>}
             {orders.map(o=>(
-              <div key={o.order_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 brutal-shadow-sm">
+              <div key={o.order_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>
-                    <div className="font-mono font-black text-[#1F3D2B]">{o.order_id}</div>
-                    <div className="text-[11px] text-[#1F3D2B]/70">{o.address?.name} · {o.address?.phone} · {o.address?.city}</div>
-                    <div className="text-[11px] text-[#1F3D2B]/70">{new Date(o.created_at).toLocaleString('en-IN')}</div>
+                    <div className="font-mono font-black text-sm sm:text-base text-[#1F3D2B]">{o.order_id}</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/70">{o.address?.name} · {o.address?.phone}</div>
+                    <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/70">{new Date(o.created_at).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="text-right">
-                    <div className="font-display font-black text-xl text-[#1F3D2B]">₹{o.total}</div>
-                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs font-black uppercase">
+                    <div className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">₹{o.total}</div>
+                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-[10px] sm:text-xs font-black uppercase">
                       {["paid","packed","shipped","delivered","cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
-                <div className="mt-2 text-xs">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
+                <div className="mt-2 text-[10px] sm:text-xs">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
                 <div className="mt-2"><Link to={`/invoice/${o.order_id}`} className="text-[10px] font-black uppercase tracking-widest underline">View Invoice →</Link></div>
               </div>
             ))}
@@ -180,17 +180,17 @@ export default function Admin() {
 
       {tab==="leads" && (
         <div className="space-y-3">
-          {leads.length===0 && <div className="text-sm">No B2B leads yet.</div>}
+          {leads.length===0 && <div className="text-xs sm:text-sm">No B2B leads yet.</div>}
           {leads.map(l=>(
-            <div key={l.lead_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 brutal-shadow-sm">
+            <div key={l.lead_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
               <div className="flex flex-wrap justify-between gap-3">
                 <div>
-                  <div className="font-display font-black text-[#1F3D2B]">{l.company}</div>
-                  <div className="text-xs text-[#1F3D2B]/70">{l.name} · {l.phone} · {l.email}</div>
-                  <div className="text-xs text-[#1F3D2B]/70">Volume: <b>{l.volume||"—"} L</b></div>
-                  {l.message && <div className="mt-1 text-sm">"{l.message}"</div>}
+                  <div className="font-display font-black text-base sm:text-lg text-[#1F3D2B]">{l.company}</div>
+                  <div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">{l.name} · {l.phone}</div>
+                  <div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">Volume: <b>{l.volume||"—"} L</b></div>
+                  {l.message && <div className="mt-1 text-xs sm:text-sm">"{l.message}"</div>}
                 </div>
-                <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs font-black uppercase self-start">
+                <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-[10px] sm:text-xs font-black uppercase self-start">
                   {["new","contacted","quoted","won","lost"].map(s=><option key={s} value={s}>{s}</option>)}
                 </select>
               </div>

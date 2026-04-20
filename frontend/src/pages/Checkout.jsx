@@ -89,32 +89,32 @@ export default function Checkout() {
   );
 
   return (
-    <div data-testid="checkout-page" className="px-5 md:px-10 py-10">
-      <div className="border-b-[3px] border-[#1F3D2B] pb-6 mb-8">
-        <div className="text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Almost there</div>
-        <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-[#1F3D2B] tracking-tighter">Checkout.</h1>
+    <div data-testid="checkout-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
+      <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-6 md:mb-8">
+        <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Almost there</div>
+        <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-[#1F3D2B] tracking-tighter">Checkout.</h1>
       </div>
 
-      <div className="grid grid-cols-12 gap-8">
+      <div className="grid grid-cols-12 gap-6 md:gap-8">
         <div className="col-span-12 lg:col-span-8">
           {/* Stepper */}
-          <div className="grid grid-cols-3 mb-8 border-[3px] border-[#1F3D2B]">
+          <div className="grid grid-cols-3 mb-6 md:mb-8 border-[3px] border-[#1F3D2B]">
             {steps.map((s,i)=>{const Ic=s.icon; const active=step===s.id; const done=step>s.id;return (
-              <div key={s.id} className={`p-4 flex items-center gap-3 ${i<2?"border-r-[3px] border-[#1F3D2B]":""} ${active?"bg-[#D98F00]":done?"bg-[#1F3D2B] text-[#F5F1E8]":"bg-[#F5F1E8]"}`}>
-                <div className={`w-8 h-8 border-2 ${done?"bg-[#D98F00] border-[#D98F00] text-[#1F3D2B]":active?"bg-[#1F3D2B] border-[#1F3D2B] text-[#D98F00]":"border-[#1F3D2B]"} flex items-center justify-center`}>{done?<Check size={16} strokeWidth={3}/>:<Ic size={16} strokeWidth={2.5}/>}</div>
-                <div><div className="text-[10px] font-black uppercase tracking-[0.25em] opacity-70">Step {s.id}</div><div className="font-display font-black">{s.label}</div></div>
+              <div key={s.id} className={`p-2 sm:p-3 md:p-4 flex items-center gap-2 md:gap-3 ${i<2?"border-r-[3px] border-[#1F3D2B]":""} ${active?"bg-[#D98F00]":done?"bg-[#1F3D2B] text-[#F5F1E8]":"bg-[#F5F1E8]"}`}>
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-2 ${done?"bg-[#D98F00] border-[#D98F00] text-[#1F3D2B]":active?"bg-[#1F3D2B] border-[#1F3D2B] text-[#D98F00]":"border-[#1F3D2B]"} flex items-center justify-center flex-shrink-0`}>{done?<Check size={14} sm:size={16} strokeWidth={3}/>:<Ic size={14} sm:size={16} strokeWidth={2.5}/>}</div>
+                <div className="hidden sm:block"><div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.25em] opacity-70">Step {s.id}</div><div className="font-display font-black text-sm sm:text-base">{s.label}</div></div>
               </div>
             );})}
           </div>
 
           <AnimatePresence mode="wait">
             {step===1 && (
-              <motion.div key="s1" initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-6 brutal-shadow">
-                <div className="grid grid-cols-2 gap-4">
-                  {[["name","Full Name",2],["email","Email",1],["phone","Phone",1],["address","Address",2],["city","City",1],["pincode","Pincode",1]].map(([k,l,sp])=>(
-                    <label key={k} className={`block ${sp===2?"col-span-2":"col-span-2 sm:col-span-1"}`}>
-                      <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-1">{l}</div>
-                      <input data-testid={`field-${k}`} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} className="w-full border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2.5 font-bold focus:outline-none focus:bg-[#D98F00]"/>
+              <motion.div key="s1" initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-6 brutal-shadow">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  {[['name','Full Name',2],['email','Email',1],['phone','Phone',1],['address','Address',2],['city','City',1],['pincode','Pincode',1]].map(([k,l,sp])=>(
+                    <label key={k} className={`block ${sp===2?'col-span-2':'col-span-2 sm:col-span-1'}`}>
+                      <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-1">{l}</div>
+                      <input data-testid={`field-${k}`} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})} className="touch-target-sm w-full border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 sm:py-2.5 font-bold text-sm focus:outline-none focus:bg-[#D98F00]"/>
                     </label>
                   ))}
                 </div>
@@ -147,17 +147,17 @@ export default function Checkout() {
           </AnimatePresence>
 
           <div className="flex justify-between mt-6">
-            <button onClick={back} disabled={step===1} className="border-[3px] border-[#1F3D2B] px-6 py-3 font-black uppercase tracking-widest bg-[#F5F1E8] disabled:opacity-40">← Back</button>
+            <button onClick={back} disabled={step===1} className="touch-target border-[3px] border-[#1F3D2B] px-4 sm:px-6 py-3 font-black uppercase tracking-widest bg-[#F5F1E8] disabled:opacity-40 text-sm sm:text-base">← Back</button>
             {step<3 ? (
-              <button data-testid="next-step" onClick={next} className="bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-8 py-3 font-black uppercase tracking-widest hover:bg-[#B8431A] hover:border-[#B8431A]">Continue →</button>
+              <button data-testid="next-step" onClick={next} className="touch-target bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-3 font-black uppercase tracking-widest hover:bg-[#B8431A] hover:border-[#B8431A] text-sm sm:text-base">Continue →</button>
             ) : (
-              <button data-testid="place-order-btn" disabled={busy} onClick={pay} className="bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-8 py-3 font-black uppercase tracking-widest hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all disabled:opacity-60">{busy?"Processing…":"Place Order →"}</button>
+              <button data-testid="place-order-btn" disabled={busy} onClick={pay} className="touch-target bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-3 font-black uppercase tracking-widest hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all disabled:opacity-60 text-sm sm:text-base">{busy?"Processing…":"Place Order →"}</button>
             )}
           </div>
         </div>
 
-        <aside className="col-span-12 lg:col-span-4">
-          <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-5 brutal-shadow sticky top-24">
+        <aside className="col-span-12 lg:col-span-4 mt-6 lg:mt-0">
+          <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-5 brutal-shadow sticky top-24">
             <div className="text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-4">Order Summary</div>
             <div className="space-y-3 max-h-64 overflow-auto">
               {items.map(it=>(

@@ -38,9 +38,9 @@ export default function Navbar() {
 
   return (
     <header data-testid="navbar" className={`sticky top-0 z-40 bg-[#F5F1E8] border-b-[3px] border-[#1F3D2B] transition-shadow ${scrolled?"shadow-[0_6px_0_0_#1F3D2B]":""}`}>
-      <div className="flex items-center justify-between px-5 md:px-10 py-4">
+      <div className="flex items-center justify-between px-4 sm:px-5 md:px-10 py-3 md:py-4">
         <Link to="/" data-testid="brand-logo" className="flex items-center group">
-          <img src="/logo.png" alt="Laxmi Oils" className="h-14 w-auto group-hover:scale-105 transition-transform" />
+          <img src="/logo.png" alt="Laxmi Oils" className="h-10 sm:h-12 md:h-14 w-auto group-hover:scale-105 transition-transform" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -51,15 +51,15 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <button data-testid="search-trigger" onClick={()=>setSearchOpen(true)} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider flex items-center gap-2 hover:bg-[#D98F00]" aria-label="Search">
-            <Search size={14} strokeWidth={3}/>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button data-testid="search-trigger" onClick={()=>setSearchOpen(true)} className="touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-2 sm:px-3 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2 hover:bg-[#D98F00]" aria-label="Search">
+            <Search size={16} strokeWidth={3}/>
             <span className="hidden lg:inline text-xs tracking-widest">search</span>
           </button>
           {user ? (
             <div className="relative hidden md:block">
-              <button data-testid="account-btn" onClick={()=>setMenuOpen(o=>!o)} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider flex items-center gap-2">
-                <UserIcon size={14} strokeWidth={3}/> {user.name?.split(" ")[0] || "Account"}
+              <button data-testid="account-btn" onClick={()=>setMenuOpen(o=>!o)} className="touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2">
+                <UserIcon size={16} strokeWidth={3}/> <span className="truncate max-w-[80px]">{user.name?.split(" ")[0] || "Account"}</span>
               </button>
               <AnimatePresence>
                 {menuOpen && (
@@ -72,8 +72,8 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
           ) : (
-            <Link to="/login" data-testid="nav-login" className="hidden md:inline-flex border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-sm tracking-wider items-center gap-2 hover:bg-[#D98F00]">
-              <UserIcon size={14} strokeWidth={3}/> Login
+            <Link to="/login" data-testid="nav-login" className="hidden md:inline-flex touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider items-center gap-2 hover:bg-[#D98F00]">
+              <UserIcon size={16} strokeWidth={3}/> <span>Login</span>
             </Link>
           )}
           <motion.button
@@ -83,14 +83,14 @@ export default function Navbar() {
             initial={{ scale: 1 }}
             animate={{ scale: [1, 1.15, 1] }}
             transition={{ duration: 0.35 }}
-            className="relative bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-2 font-bold uppercase text-sm tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors flex items-center gap-2"
+            className="touch-target relative bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors flex items-center gap-1 sm:gap-2"
           >
-            <ShoppingBag size={16} strokeWidth={3}/>
+            <ShoppingBag size={18} strokeWidth={3}/>
             <span className="hidden sm:inline">Cart</span>
-            <span data-testid="cart-count" className="bg-[#D98F00] text-[#1F3D2B] px-2 py-0.5 text-xs font-black border-2 border-[#F5F1E8]">{count}</span>
+            <span data-testid="cart-count" className="bg-[#D98F00] text-[#1F3D2B] px-1.5 sm:px-2 py-0.5 text-xs font-black border-2 border-[#F5F1E8]">{count}</span>
           </motion.button>
-          <button data-testid="menu-toggle" onClick={() => setOpen(o=>!o)} className="md:hidden w-10 h-10 border-[3px] border-[#1F3D2B] flex items-center justify-center">
-            {open ? <X size={20} strokeWidth={3}/> : <Menu size={20} strokeWidth={3}/>}
+          <button data-testid="menu-toggle" onClick={() => setOpen(o=>!o)} className="touch-target md:hidden w-11 h-11 border-[3px] border-[#1F3D2B] flex items-center justify-center">
+            {open ? <X size={22} strokeWidth={3}/> : <Menu size={22} strokeWidth={3}/>}
           </button>
         </div>
       </div>
@@ -100,16 +100,16 @@ export default function Navbar() {
           <motion.div initial={{height:0}} animate={{height:"auto"}} exit={{height:0}} className="md:hidden overflow-hidden border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
             <div className="flex flex-col">
               {links.map(l => (
-                <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">{l.label}</NavLink>
+                <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">{l.label}</NavLink>
               ))}
               {user ? (
                 <>
-                  <NavLink to="/account" onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">My Orders</NavLink>
-                  {user.role==="admin" && <NavLink to="/admin" onClick={()=>setOpen(false)} className="px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B]">Admin</NavLink>}
-                  <button onClick={()=>{logout(); setOpen(false);}} className="text-left px-6 py-4 font-bold uppercase tracking-wide text-[#B8431A]">Logout</button>
+                  <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">My Orders</NavLink>
+                  {user.role==="admin" && <NavLink to="/admin" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">Admin</NavLink>}
+                  <button onClick={()=>{logout(); setOpen(false);}} className="touch-target text-left px-6 py-4 font-bold uppercase tracking-wide text-[#B8431A] active:bg-[#B8431A]/10">Logout</button>
                 </>
               ) : (
-                <NavLink to="/login" onClick={()=>setOpen(false)} className="px-6 py-4 font-bold uppercase tracking-wide text-[#1F3D2B]">Login</NavLink>
+                <NavLink to="/login" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">Login</NavLink>
               )}
             </div>
           </motion.div>
