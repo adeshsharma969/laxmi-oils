@@ -35,7 +35,7 @@ export default function ProductCard({ product, index=0 }) {
               <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">₹{from}</div>
             </div>
             <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
-              <ArrowUpRight size={16} sm:size={18} strokeWidth={3}/>
+              <ArrowUpRight size={16} strokeWidth={3}/>
             </div>
           </div>
         </div>

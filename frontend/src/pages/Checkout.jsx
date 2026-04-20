@@ -101,7 +101,7 @@ export default function Checkout() {
           <div className="grid grid-cols-3 mb-6 md:mb-8 border-[3px] border-[#1F3D2B]">
             {steps.map((s,i)=>{const Ic=s.icon; const active=step===s.id; const done=step>s.id;return (
               <div key={s.id} className={`p-2 sm:p-3 md:p-4 flex items-center gap-2 md:gap-3 ${i<2?"border-r-[3px] border-[#1F3D2B]":""} ${active?"bg-[#D98F00]":done?"bg-[#1F3D2B] text-[#F5F1E8]":"bg-[#F5F1E8]"}`}>
-                <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-2 ${done?"bg-[#D98F00] border-[#D98F00] text-[#1F3D2B]":active?"bg-[#1F3D2B] border-[#1F3D2B] text-[#D98F00]":"border-[#1F3D2B]"} flex items-center justify-center flex-shrink-0`}>{done?<Check size={14} sm:size={16} strokeWidth={3}/>:<Ic size={14} sm:size={16} strokeWidth={2.5}/>}</div>
+                <div className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-2 ${done?"bg-[#D98F00] border-[#D98F00] text-[#1F3D2B]":active?"bg-[#1F3D2B] border-[#1F3D2B] text-[#D98F00]":"border-[#1F3D2B]"} flex items-center justify-center flex-shrink-0`}>{done?<Check size={14} strokeWidth={3}/>:<Ic size={14} strokeWidth={2.5}/>}</div>
                 <div className="hidden sm:block"><div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.25em] opacity-70">Step {s.id}</div><div className="font-display font-black text-sm sm:text-base">{s.label}</div></div>
               </div>
             );})}

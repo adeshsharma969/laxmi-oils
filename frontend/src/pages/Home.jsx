@@ -88,7 +88,7 @@ lab-tested for purity before reaching your home.</p>
                   <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em]">0{i+1} · {c.tagline}</div>
                   <div>
                     <div className="font-display font-black text-lg sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter leading-none uppercase">{c.name}</div>
-                    <div className="mt-2 md:mt-3 inline-flex items-center gap-1 sm:gap-2 font-black text-[10px] sm:text-xs uppercase tracking-widest">Shop Now <ArrowRight size={12} sm:size={14} strokeWidth={3}/></div>
+                    <div className="mt-2 md:mt-3 inline-flex items-center gap-1 sm:gap-2 font-black text-[10px] sm:text-xs uppercase tracking-widest">Shop Now <ArrowRight size={12} strokeWidth={3}/></div>
                   </div>
                 </div>
               </Link>
@@ -110,7 +110,7 @@ lab-tested for purity before reaching your home.</p>
             { icon: Truck, title: "Curated & Packed in Jaipur", desc: "Carefully inspected, packed, and QR-traceable. From our facility to your kitchen—fresh and verified." },
           ].map((f,i)=>{const Ic = f.icon; return (
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1, duration:0.5}} className="border-[3px] border-[#D98F00] p-5 sm:p-6 md:p-7 bg-[#1F3D2B] hover:bg-[#D98F00] hover:text-[#1F3D2B] transition-colors group">
-              <Ic size={32} sm:size={36} md:size={40} strokeWidth={2} className="text-[#D98F00] group-hover:text-[#1F3D2B]"/>
+              <Ic size={32} strokeWidth={2} className="text-[#D98F00] group-hover:text-[#1F3D2B]"/>
               <div className="font-display font-black text-xl sm:text-2xl md:text-3xl mt-3 md:mt-5">{f.title}</div>
               <div className="mt-2 text-xs sm:text-sm md:text-base opacity-90">{f.desc}</div>
             </motion.div>
@@ -157,7 +157,7 @@ lab-tested for purity before reaching your home.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-6 md:mt-10">
           {TESTIMONIALS.map((t,i)=>(
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08, duration:0.5}} className="border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 bg-[#F5F1E8] brutal-shadow">
-              <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} sm:size={14} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
+              <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
               <p className="mt-3 md:mt-4 font-display font-bold text-lg sm:text-xl text-[#1F3D2B] leading-tight">"{t.quote}"</p>
               <div className="mt-3 md:mt-5 text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-[#1F3D2B]/70">{t.name} · {t.city}</div>
             </motion.div>

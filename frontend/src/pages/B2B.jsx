@@ -45,7 +45,7 @@ export default function B2B() {
           ].map((b,i)=>{const Ic=b.icon; return (
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1}} className="border-[3px] border-[#1F3D2B] bg-white p-5 sm:p-6 md:p-8 brutal-shadow hover:translate-y-[-4px] transition-transform">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#D98F00] border-[3px] border-[#1F3D2B] flex items-center justify-center">
-                <Ic size={24} sm:size={28} strokeWidth={2} className="text-[#1F3D2B]"/>
+                <Ic size={24} strokeWidth={2} className="text-[#1F3D2B]"/>
               </div>
               <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B] mt-4 sm:mt-5">{b.t}</div>
               <div className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-[#1F3D2B]/80 leading-relaxed">{b.d}</div>
@@ -73,7 +73,7 @@ export default function B2B() {
               ))}
             </ul>
             <div className="mt-4 sm:mt-6 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-[#1F3D2B]/80">
-              <Phone size={14} sm:size={16} />
+              <Phone size={14} />
               <span>Need a custom quote? Call: <a href="tel:+919999999999" className="font-bold underline">+91 9999-999-999</a></span>
             </div>
           </motion.div>
@@ -81,7 +81,7 @@ export default function B2B() {
           {/* Contact Form */}
           {sent ? (
             <motion.div initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} data-testid="b2b-success" className="border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#F5F1E8] p-6 sm:p-10 text-center brutal-shadow h-full flex flex-col justify-center min-h-[400px] sm:min-h-[500px]">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#D98F00] flex items-center justify-center mb-4 sm:mb-6"><Check size={36} sm:size={48} strokeWidth={4}/></div>
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#D98F00] flex items-center justify-center mb-4 sm:mb-6"><Check size={36} strokeWidth={4}/></div>
               <div className="font-display font-black text-3xl sm:text-4xl text-[#D98F00]">Got it!</div>
               <p className="mt-3 sm:mt-4 text-base sm:text-lg">Our B2B desk will call you within 24 hours.</p>
               <button onClick={()=>setSent(false)} className="touch-target-sm mt-6 sm:mt-8 border-2 border-[#F5F1E8]/30 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm uppercase tracking-widest hover:border-[#F5F1E8] transition-colors mx-auto">Send another enquiry</button>

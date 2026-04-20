@@ -53,7 +53,7 @@ export default function ProductDetail() {
         </motion.div>
 
         <motion.div initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-5">
-          <div className="flex items-center gap-1">{Array(5).fill(0).map((_,i)=><Star key={i} size={14} sm:size={16} fill={i<Math.floor(product.rating)?"#D98F00":"none"} stroke="#1F3D2B"/>)}<span className="ml-2 text-[10px] sm:text-xs font-bold text-[#1F3D2B]">{product.rating} · {product.reviews} reviews</span></div>
+          <div className="flex items-center gap-1">{Array(5).fill(0).map((_,i)=><Star key={i} size={14} fill={i<Math.floor(product.rating)?"#D98F00":"none"} stroke="#1F3D2B"/>)}<span className="ml-2 text-[10px] sm:text-xs font-bold text-[#1F3D2B]">{product.rating} · {product.reviews} reviews</span></div>
           <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter mt-2 sm:mt-3 leading-[0.95]">{product.name}</h1>
           <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
 
@@ -87,7 +87,7 @@ export default function ProductDetail() {
           <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-2 sm:gap-3">
             {(product.benefits||[]).map(b=>(
               <div key={b} className="flex items-center gap-1.5 sm:gap-2 border-2 border-[#1F3D2B] px-2 sm:px-3 py-1.5 sm:py-2 bg-[#F5F1E8]">
-                <Check size={12} sm:size={14} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
+                <Check size={12} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
                 <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-[#1F3D2B]">{b}</span>
               </div>
             ))}

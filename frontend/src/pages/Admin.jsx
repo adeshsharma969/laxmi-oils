@@ -81,7 +81,7 @@ export default function Admin() {
             { icon:Users, label:"Customers", value:stats.customers, bg:"#F5F1E8" },
           ].map((s,i)=>{const Ic=s.icon;return (
             <div key={i} className="border-[3px] border-[#1F3D2B] p-3 sm:p-4 brutal-shadow-sm" style={{background:s.bg}}>
-              <Ic size={20} sm:size={22} strokeWidth={2.5}/>
+              <Ic size={20} strokeWidth={2.5}/>
               <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#1F3D2B] mt-2">{s.value}</div>
               <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">{s.label}</div>
             </div>

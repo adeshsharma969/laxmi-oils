@@ -65,7 +65,7 @@ export default function Account() {
         <section className="col-span-12 md:col-span-8 lg:col-span-9 space-y-8">
           {ref && (
             <div data-testid="referral-card" className="border-[3px] border-[#1F3D2B] bg-[#D98F00] p-4 sm:p-5 brutal-shadow relative overflow-hidden">
-              <Gift size={60} sm:size={80} strokeWidth={1.5} className="absolute -right-4 -bottom-4 text-[#1F3D2B]/10"/>
+              <Gift size={60} strokeWidth={1.5} className="absolute -right-4 -bottom-4 text-[#1F3D2B]/10"/>
               <div className="relative">
                 <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B]">Refer & Both Get ₹100 Off</div>
                 <h2 className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#1F3D2B] tracking-tighter mt-1">Spread the liquid gold.</h2>
@@ -85,10 +85,10 @@ export default function Account() {
           )}
 
           <div>
-            <div className="flex items-center gap-2 mb-3 sm:mb-4"><Package size={16} sm:size={18} strokeWidth={2.5}/><h2 className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">Order History</h2></div>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4"><Package size={16} strokeWidth={2.5}/><h2 className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">Order History</h2></div>
           {busy ? <div className="text-xs sm:text-sm">Loading orders…</div> : orders.length === 0 ? (
             <motion.div initial={{opacity:0}} animate={{opacity:1}} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-6 sm:p-10 text-center">
-              <ShoppingBag size={28} sm:size={36} strokeWidth={2.5} className="mx-auto text-[#1F3D2B]"/>
+              <ShoppingBag size={28} strokeWidth={2.5} className="mx-auto text-[#1F3D2B]"/>
               <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B] mt-3">No orders yet.</div>
               <Link to="/products" className="touch-target-sm inline-block mt-4 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 sm:px-6 py-2 sm:py-3 font-black uppercase tracking-widest text-xs sm:text-sm">Start shopping →</Link>
             </motion.div>
