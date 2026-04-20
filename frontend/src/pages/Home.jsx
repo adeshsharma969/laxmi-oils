@@ -73,22 +73,22 @@ lab-tested for purity before reaching your home.</p>
       <section className="px-5 md:px-10 py-20">
         <motion.div {...fadeUp} className="flex items-end justify-between mb-10">
           <div>
-            <div className="text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Three Oils. One Purity.</div>
+            <div className="text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Four Oils. One Purity.</div>
             <h2 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-[#1F3D2B] tracking-tighter">Choose what fits you.</h2>
           </div>
           <Link to="/products" className="hidden md:inline-block font-black uppercase text-sm tracking-widest text-[#1F3D2B] border-b-[3px] border-[#1F3D2B] pb-1">Explore All Oils →</Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
           {CATEGORIES.map((c,i)=>(
             <motion.div key={c.slug} initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5, delay:i*0.1, ease:[0.22,1,0.36,1]}}>
-              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-2 hover:shadow-[12px_12px_0_0_#1F3D2B] transition-all relative overflow-hidden min-h-[380px]" style={{background:c.bg}}>
+              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-2 hover:shadow-[12px_12px_0_0_#1F3D2B] transition-all relative overflow-hidden h-[340px]" style={{background:c.bg}}>
                 <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-80"/>
-                <div className="relative h-full flex flex-col justify-between p-6" style={{color:c.text}}>
-                  <div className="text-xs font-black uppercase tracking-[0.3em]">0{i+1} · {c.tagline}</div>
+                <div className="relative h-full flex flex-col justify-between p-5" style={{color:c.text}}>
+                  <div className="text-[10px] font-black uppercase tracking-[0.25em]">0{i+1} · {c.tagline}</div>
                   <div>
-                    <div className="font-display font-black text-5xl md:text-6xl tracking-tighter leading-none uppercase">{c.name}</div>
-                    <div className="mt-4 inline-flex items-center gap-2 font-black text-sm uppercase tracking-widest">Shop {c.name} <ArrowRight size={16} strokeWidth={3}/></div>
+                    <div className="font-display font-black text-3xl md:text-4xl tracking-tighter leading-none uppercase">{c.name}</div>
+                    <div className="mt-3 inline-flex items-center gap-2 font-black text-xs uppercase tracking-widest">Shop Now <ArrowRight size={14} strokeWidth={3}/></div>
                   </div>
                 </div>
               </Link>

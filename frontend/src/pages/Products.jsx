@@ -8,8 +8,9 @@ const CATEGORIES = [
   { slug: "mustard", name: "Mustard" },
   { slug: "soyabean", name: "Soyabean" },
   { slug: "groundnut", name: "Groundnut" },
+  { slug: "sunflower", name: "Sunflower" },
 ];
-const SIZES = ["500ml","1L","5L","15L"];
+const SIZES = ["500 ml","1 L","5 L","15 L"];
 
 export default function Products() {
   const [params, setParams] = useSearchParams();
@@ -24,7 +25,7 @@ export default function Products() {
 
   useEffect(() => {
     setLoading(true);
-    api.get("/products").then(({data}) => setProducts(data)).finally(()=>setLoading(false));
+    api.get("/products").then(({data}) => setProducts(data || [])).finally(()=>setLoading(false));
   }, []);
 
   const filtered = useMemo(()=>{
