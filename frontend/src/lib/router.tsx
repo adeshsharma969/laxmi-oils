@@ -115,8 +115,15 @@ export function useNavigate() {
 
 export function useLocation() {
   const pathname = usePathname();
-  const params = useNextSearchParams();
-  const search = params?.toString() ? `?${params.toString()}` : "";
+  // Use try-catch to handle static generation where search params aren't available
+  let search = "";
+  try {
+    const params = useNextSearchParams();
+    search = params?.toString() ? `?${params.toString()}` : "";
+  } catch {
+    // During static generation, search params aren't available
+    search = "";
+  }
 
   return useMemo(
     () => ({
@@ -158,7 +165,14 @@ function SearchParamsWrapper({ children }: { children: (params: URLSearchParams,
 export function useSearchParams() {
   const router = useRouter();
   const pathname = usePathname();
-  const readonlyParams = useNextSearchParams();
+  // Use try-catch to handle static generation where search params aren't available
+  let readonlyParams: URLSearchParams | null = null;
+  try {
+    readonlyParams = useNextSearchParams();
+  } catch {
+    // During static generation, search params aren't available
+    readonlyParams = null;
+  }
 
   return useMemo(() => {
     const params = new URLSearchParams(readonlyParams?.toString() || "");
