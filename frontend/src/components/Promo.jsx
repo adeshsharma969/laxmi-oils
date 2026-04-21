@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy, Check } from "lucide-react";
 
 export function CouponBanner() {
-  const [open, setOpen] = useState(() => typeof window === "undefined" ? true : localStorage.getItem("laxmi_coupon_dismissed") !== "1");
+  const [open, setOpen] = useState(true);
   const [copied, setCopied] = useState(false);
-  const dismiss = () => { if (typeof window !== "undefined") localStorage.setItem("laxmi_coupon_dismissed","1"); setOpen(false); };
+  const dismiss = () => setOpen(false);
   const copy = () => { navigator.clipboard.writeText("LAXMI100"); setCopied(true); setTimeout(()=>setCopied(false),1500); };
   return (
     <AnimatePresence>
