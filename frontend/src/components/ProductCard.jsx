@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 
 export default function ProductCard({ product, index=0 }) {
   const size = product.sizes[0];
@@ -34,19 +34,19 @@ export default function ProductCard({ product, index=0 }) {
         </div>
         <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
           <div className="flex items-center justify-between">
-            <div className="text-[8px] sm:text-[10px] font-black tracking-[0.3em] uppercase text-[#1F3D2B]/60">{product.rating}★ · {product.reviews} reviews</div>
+            <div className="text-[8px] sm:text-[10px] font-black tracking-[0.3em] uppercase text-[#1F3D2B]/60">{product.rating}★</div>
             {product.badge && (
-              <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-[#B8431A]">{product.badge}</div>
+              <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
             )}
           </div>
-          <h3 className="font-display font-black text-base sm:text-lg md:text-xl text-[#1F3D2B] mt-1 leading-tight line-clamp-2">{product.name}</h3>
+          <h3 className="font-display font-black text-base sm:text-lg md:text-xl text-[#1F3D2B] mt-1 leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
           <div className="flex items-end justify-between mt-3 sm:mt-4">
             <div>
-              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-[#1F3D2B]/50">{size.label}</div>
+              <div className="text-sm sm:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
+              <div className="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[#1F3D2B]/40">{size.label}</div>
             </div>
             <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
-              <ArrowUpRight size={16} strokeWidth={3}/>
+              <ShoppingCart size={16} strokeWidth={3}/>
             </div>
           </div>
         </div>
