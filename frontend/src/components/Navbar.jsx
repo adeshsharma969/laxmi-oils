@@ -48,7 +48,7 @@ export default function Navbar() {
     <header data-testid="navbar" className={`sticky top-0 z-40 bg-[#F5F1E8] border-b-[3px] border-[#1F3D2B] transition-shadow ${scrolled?"shadow-[0_6px_0_0_#1F3D2B]":""}`}>
       <div className="flex items-center justify-between px-4 sm:px-5 md:px-10 py-3 md:py-4">
         <Link to="/" data-testid="brand-logo" className="flex items-center group">
-          <img src="/logo.png" alt="Laxmi Oils" className="h-10 sm:h-12 md:h-14 w-auto group-hover:scale-105 transition-transform" />
+          <img src="/logo.png" alt="Laxmi Oils" className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto group-hover:scale-105 transition-transform" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

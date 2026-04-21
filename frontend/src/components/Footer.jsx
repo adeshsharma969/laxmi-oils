@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="lg:col-span-5">
             {/* Logo */}
             <div className="flex items-center gap-3 mb-5">
-              <img src="/logo.png" alt="Laxmi Oils" className="h-11 w-auto" />
+              <img src="/logo.png" alt="Laxmi Oils" className="h-14 sm:h-16 md:h-18 w-auto" />
               <div>
                 <div className="font-display font-black text-lg text-[#F5F1E8] tracking-tight">Laxmi.</div>
                 <div className="text-xs font-bold tracking-[0.2em] text-[#D98F00]">Edible Oils</div>
