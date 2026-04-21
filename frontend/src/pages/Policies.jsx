@@ -2,11 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 
 export const policyPage = (title, subtitle, sections) => () => (
-  <div className="px-5 md:px-10 py-12 max-w-4xl mx-auto">
+  <div className="px-4 sm:px-5 md:px-10 py-10 sm:py-12 max-w-4xl mx-auto">
     <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="border-b-[3px] border-[#1F3D2B] pb-6 mb-8">
-      <div className="text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">{subtitle}</div>
+      <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">{subtitle}</div>
       <h1 className="font-display font-black text-4xl md:text-6xl text-[#1F3D2B] tracking-tighter">{title}</h1>
-      <div className="text-xs font-black uppercase tracking-widest text-[#1F3D2B]/60 mt-3">Last updated: 18 Feb 2026</div>
+      <div className="text-xs sm:text-sm font-black uppercase tracking-[0.12em] text-[#1F3D2B]/60 mt-3">Last updated: 18 Feb 2026</div>
     </motion.div>
     <div className="space-y-8">
       {sections.map((s,i)=>(

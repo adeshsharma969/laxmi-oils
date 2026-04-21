@@ -14,7 +14,12 @@ export default function Home() {
   const { scrollYProgress } = useScroll({ target: storyRef, offset:["start end","end start"] });
   const storyY = useTransform(scrollYProgress, [0,1], [60, -60]);
   const [bestsellers, setBestsellers] = useState([]);
-  useEffect(() => { api.get("/products").then(({data}) => setBestsellers(data.slice(0,3).map(p=>({...p, id: p.product_id})))).catch(()=>{}); }, []);
+  const [bestErr, setBestErr] = useState("");
+  useEffect(() => {
+    api.get("/products")
+      .then(({data}) => setBestsellers(data.slice(0,3).map(p=>({...p, id: p.product_id}))))
+      .catch(() => setBestErr("Could not load bestsellers right now."));
+  }, []);
 
   return (
     <div data-testid="home-page">
@@ -22,7 +27,7 @@ export default function Home() {
       <section className="px-4 sm:px-5 md:px-10 pt-6 md:pt-8 pb-12 md:pb-16">
         <div className="grid grid-cols-12 gap-4 md:gap-5 lg:gap-6">
           <motion.div {...fadeUp} className="col-span-12 lg:col-span-8 bg-[#D98F00] border-[3px] border-[#1F3D2B] p-5 sm:p-6 md:p-8 lg:p-14 relative overflow-hidden min-h-[360px] sm:min-h-[400px] md:min-h-[440px] flex flex-col justify-between brutal-shadow">
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B]">Better Oil. Better Life.</div>
+            <div className="eyebrow text-[#1F3D2B]">Better Oil. Better Life.</div>
             <div className="relative z-10">
               <h1 data-testid="hero-heading" className="font-display font-black text-[#1F3D2B] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.85] tracking-tighter uppercase">Pure<br/>Natural.<br/><span className="text-[#B8431A]">Trusted.</span></h1>
               <p className="mt-4 md:mt-5 max-w-lg font-body text-[#1F3D2B] text-sm sm:text-base md:text-lg font-medium">Cold-pressed oils, crafted in Jaipur.
@@ -39,7 +44,7 @@ lab-tested for purity before reaching your home.</p>
 
           <div className="col-span-12 lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4 md:gap-5 lg:gap-6">
             <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D98F00]">Bestseller</div>
+              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
               <div>
                 <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">Kachi Ghani Mustard</div>
                 <div className="text-xs sm:text-sm mt-1 md:mt-2 opacity-80">1L · Cold Pressed</div>
@@ -51,7 +56,7 @@ lab-tested for purity before reaching your home.</p>
             </motion.div>
             <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.2}} className="bg-[#F5F1E8] border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px]">
               <img src="https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" alt="cooking" className="w-full h-full object-cover"/>
-              <div className="absolute top-3 left-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-1 text-[10px] font-black tracking-widest border-2 border-[#1F3D2B] rotate-[-3deg]">FRESH BATCH</div>
+              <div className="absolute top-3 left-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-1 text-xs font-black tracking-[0.12em] border-2 border-[#1F3D2B] rotate-[-3deg]">FRESH BATCH</div>
             </motion.div>
           </div>
         </div>
@@ -61,7 +66,7 @@ lab-tested for purity before reaching your home.</p>
           {TRUST.map((t,i)=>(
             <div key={i} className={`p-5 md:p-7 ${i<TRUST.length-1?"md:border-r-[3px] border-[#1F3D2B]":""} ${i<2?"border-b-[3px] md:border-b-0 border-[#1F3D2B]":""} ${i===0||i===2?"border-r-[3px] md:border-r-[3px] border-[#1F3D2B]":""}`}>
               <div className="font-display font-black text-2xl md:text-4xl text-[#1F3D2B]">{t.num}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70 mt-1">{t.label}</div>
+              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B]/70 mt-1">{t.label}</div>
             </div>
           ))}
         </motion.div>
@@ -73,7 +78,7 @@ lab-tested for purity before reaching your home.</p>
       <section className="px-4 sm:px-5 md:px-10 py-12 md:py-20">
         <motion.div {...fadeUp} className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-6 md:mb-10 gap-3">
           <div>
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Four Oils. One Purity.</div>
+            <div className="eyebrow text-[#B8431A]">Four Oils. One Purity.</div>
             <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter">Choose what fits you.</h2>
           </div>
           <Link to="/products" className="font-black uppercase text-xs sm:text-sm tracking-widest text-[#1F3D2B] border-b-[3px] border-[#1F3D2B] pb-1">Explore All →</Link>
@@ -85,10 +90,10 @@ lab-tested for purity before reaching your home.</p>
               <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-[6px_6px_0_0_#1F3D2B] md:hover:shadow-[12px_12px_0_0_#1F3D2B] transition-all relative overflow-hidden h-[200px] sm:h-[260px] md:h-[300px] lg:h-[340px]" style={{background:c.bg}}>
                 <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-80"/>
                 <div className="relative h-full flex flex-col justify-between p-3 sm:p-4 md:p-5" style={{color:c.text}}>
-                  <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.25em]">0{i+1} · {c.tagline}</div>
+                  <div className="text-xs font-black uppercase tracking-[0.16em]">0{i+1} · {c.tagline}</div>
                   <div>
                     <div className="font-display font-black text-lg sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter leading-none uppercase">{c.name}</div>
-                    <div className="mt-2 md:mt-3 inline-flex items-center gap-1 sm:gap-2 font-black text-[10px] sm:text-xs uppercase tracking-widest">Shop Now <ArrowRight size={12} strokeWidth={3}/></div>
+                    <div className="mt-2 md:mt-3 inline-flex items-center gap-1 sm:gap-2 font-black text-xs sm:text-sm uppercase tracking-[0.12em]">Shop Now <ArrowRight size={12} strokeWidth={3}/></div>
                   </div>
                 </div>
               </Link>
@@ -100,7 +105,7 @@ lab-tested for purity before reaching your home.</p>
       {/* WHY LAXMI */}
       <section className="bg-[#1F3D2B] text-[#F5F1E8] px-4 sm:px-5 md:px-10 py-12 md:py-20 border-y-[3px] border-[#1F3D2B]">
         <motion.div {...fadeUp}>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#D98F00]">Why Laxmi</div>
+            <div className="eyebrow text-[#D98F00]">Why Laxmi</div>
           <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl tracking-tighter mt-2 max-w-3xl">Small batch. High standards. No shortcuts.</h2>
         </motion.div>
         <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
@@ -122,20 +127,21 @@ lab-tested for purity before reaching your home.</p>
       <section className="px-4 sm:px-5 md:px-10 py-12 md:py-20">
         <motion.div {...fadeUp} className="flex items-end justify-between mb-6 md:mb-10">
           <div>
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Loved. Trusted. Reordered.</div>
+            <div className="eyebrow text-[#B8431A]">Loved. Trusted. Reordered.</div>
             <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#1F3D2B] tracking-tighter">Bestsellers.</h2>
           </div>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
           {bestsellers.map((p,i)=>(<ProductCard key={p.id} product={p} index={i}/>))}
         </div>
+        {bestErr && <div className="mt-4 text-sm font-bold text-[#B8431A]">{bestErr}</div>}
       </section>
 
       {/* STORY PARALLAX */}
       <section ref={storyRef} className="bg-[#D98F00] px-4 sm:px-5 md:px-10 py-16 md:py-24 border-y-[3px] border-[#1F3D2B] relative overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center">
           <motion.div style={{y: storyY}} className="relative z-10">
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B]">Our Story</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B]">Our Story</div>
             <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter mt-2 leading-[0.9]">
               Purity you can <span className="text-[#B8431A]">trust</span>.
             </h2>
@@ -151,7 +157,7 @@ lab-tested for purity before reaching your home.</p>
       {/* TESTIMONIALS */}
       <section className="px-4 sm:px-5 md:px-10 py-12 md:py-20">
         <motion.div {...fadeUp}>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">REAL KITCHENS. REAL TASTE.</div>
+          <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">REAL KITCHENS. REAL TASTE.</div>
           <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter">Loved in every home.</h2>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-6 md:mt-10">
@@ -159,7 +165,7 @@ lab-tested for purity before reaching your home.</p>
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08, duration:0.5}} className="border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 bg-[#F5F1E8] brutal-shadow">
               <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
               <p className="mt-3 md:mt-4 font-display font-bold text-lg sm:text-xl text-[#1F3D2B] leading-tight">"{t.quote}"</p>
-              <div className="mt-3 md:mt-5 text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-[#1F3D2B]/70">{t.name} · {t.city}</div>
+              <div className="mt-3 md:mt-5 text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{t.name} · {t.city}</div>
             </motion.div>
           ))}
         </div>
@@ -168,7 +174,7 @@ lab-tested for purity before reaching your home.</p>
       {/* BLOGS */}
       <section className="px-4 sm:px-5 md:px-10 py-12 md:py-20 bg-[#F5F1E8] border-t-[3px] border-[#1F3D2B]">
         <motion.div {...fadeUp}>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">LEARN</div>
+          <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">LEARN</div>
           <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#1F3D2B] tracking-tighter">Stories behind every drop.</h2>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mt-6 md:mt-10">

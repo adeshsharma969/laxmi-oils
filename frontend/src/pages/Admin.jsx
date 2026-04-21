@@ -12,7 +12,7 @@ const TABS = [
   { id: "leads", label: "B2B Leads" },
 ];
 
-const EMPTY_PRODUCT = { name:"", category:"mustard", description:"", badge:"NEW", image:"", bg:"#D98F00",
+const EMPTY_PRODUCT = { name:"", category:"mustard", description:"", badge:"NEW", images:["","","",""], bg:"#D98F00",
   sizes:[{label:"1L", price:0}], benefits:[], nutrition:{energy:"",fat:"",sat:"",trans:""}, rating:4.8, reviews:0 };
 
 export default function Admin() {
@@ -26,6 +26,8 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [leads, setLeads] = useState([]);
   const [editing, setEditing] = useState(null); // product obj or null
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!loading && (!user || user.role !== "admin")) nav("/login");
@@ -59,7 +61,7 @@ export default function Admin() {
     <div data-testid="admin-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
       <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-4 md:mb-6 flex flex-wrap justify-between items-end gap-3">
         <div>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Control Room</div>
+          <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">Control Room</div>
           <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-[#1F3D2B] tracking-tighter">Admin.</h1>
         </div>
         <Link to="/account" className="touch-target-sm border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm">← Account</Link>
@@ -83,7 +85,7 @@ export default function Admin() {
             <div key={i} className="border-[3px] border-[#1F3D2B] p-3 sm:p-4 brutal-shadow-sm" style={{background:s.bg}}>
               <Ic size={20} strokeWidth={2.5}/>
               <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#1F3D2B] mt-2">{s.value}</div>
-              <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">{s.label}</div>
+              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">{s.label}</div>
             </div>
           );})}
         </motion.div>
@@ -111,24 +113,30 @@ export default function Admin() {
                       rating: Number(r.rating)||4.8, reviews: Number(r.reviews)||0
                     })) };
                     const { data } = await api.post("/admin/products/import", payload);
-                    alert(`Imported ${data.created} products`);
+                    setError("");
+                    setNotice(`Imported ${data.created} products`);
                     await reload();
-                  } catch(err) { alert("Import failed: " + (err?.response?.data?.detail || err.message)); }
+                  } catch(err) {
+                    setNotice("");
+                    setError("Import failed: " + (err?.response?.data?.detail || err.message));
+                  }
                   finally { e.target.value = ""; }
                 }}/>
               </label>
               <button data-testid="new-product-btn" onClick={()=>setEditing({...EMPTY_PRODUCT})} className="touch-target-sm bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2"><Plus size={14} strokeWidth={3}/> New</button>
             </div>
           </div>
+          {notice && <div className="mb-3 text-sm font-bold text-[#1F3D2B] border-2 border-[#1F3D2B] bg-[#D98F00]/30 px-3 py-2">{notice}</div>}
+          {error && <div className="mb-3 text-sm font-bold text-[#B8431A] border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2">{error}</div>}
           <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/60 mb-3 font-mono hidden sm:block">CSV headers: name, category, sizes (e.g. "500ml:159|1L:289"), description, badge, image, bg, benefits, rating, reviews</div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {products.map(p=>(
               <div key={p.product_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
                 <div className="flex gap-3">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.image} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.images?.[0] || ""} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{p.name}</div>
-                    <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
+                    <div className="text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
                     <div className="text-xs mt-1">From <b>₹{p.sizes[0].price}</b></div>
                   </div>
                 </div>
@@ -165,13 +173,13 @@ export default function Admin() {
                   </div>
                   <div className="text-right">
                     <div className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">₹{o.total}</div>
-                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-[10px] sm:text-xs font-black uppercase">
+                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs sm:text-sm font-black uppercase">
                       {["paid","packed","shipped","delivered","cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
                 <div className="mt-2 text-[10px] sm:text-xs">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
-                <div className="mt-2"><Link to={`/invoice/${o.order_id}`} className="text-[10px] font-black uppercase tracking-widest underline">View Invoice →</Link></div>
+                <div className="mt-2"><Link to={`/invoice/${o.order_id}`} className="text-xs sm:text-sm font-black uppercase tracking-[0.12em] underline">View Invoice →</Link></div>
               </div>
             ))}
           </div>
@@ -190,7 +198,7 @@ export default function Admin() {
                   <div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">Volume: <b>{l.volume||"—"} L</b></div>
                   {l.message && <div className="mt-1 text-xs sm:text-sm">"{l.message}"</div>}
                 </div>
-                <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-[10px] sm:text-xs font-black uppercase self-start">
+                <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs sm:text-sm font-black uppercase self-start">
                   {["new","contacted","quoted","won","lost"].map(s=><option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
@@ -236,21 +244,33 @@ function ProductEditor({ product, onClose, onSave }) {
           <button onClick={onClose} className="w-8 h-8 border-2 border-[#1F3D2B]"><X size={14} strokeWidth={3}/></button>
         </div>
         <div className="p-5 space-y-3">
-          {[["name","Name"],["image","Image URL"],["bg","BG Color Hex"],["badge","Badge"],["description","Description"]].map(([k,l])=>(
+          {[["name","Name"],["bg","BG Color Hex"],["badge","Badge"],["description","Description"]].map(([k,l])=>(
             <label key={k} className="block">
-              <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-1">{l}</div>
+              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">{l}</div>
               {k==="description"? <textarea rows={2} value={p[k]||""} onChange={e=>set(k,e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
               : <input value={p[k]||""} onChange={e=>set(k,e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>}
             </label>
           ))}
+          <div className="block">
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Images (4 URLs)</div>
+            <div className="grid grid-cols-1 gap-2">
+              {(p.images || ["","","",""]).map((img, i) => (
+                <input key={i} placeholder={`Image ${i+1} URL`} value={img} onChange={e=>{
+                  const newImages = [...(p.images || ["","","",""])];
+                  newImages[i] = e.target.value;
+                  set("images", newImages);
+                }} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
+              ))}
+            </div>
+          </div>
           <label className="block">
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-1">Category</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Category</div>
             <select value={p.category} onChange={e=>set("category", e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]">
               <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option>
             </select>
           </label>
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-2">Sizes</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-2">Sizes</div>
             {p.sizes.map((s,i)=>(
               <div key={i} className="flex gap-2 mb-2">
                 <input placeholder="500ml" value={s.label} onChange={e=>setSize(i,"label",e.target.value)} className="flex-1 border-2 border-[#1F3D2B] px-2 py-1.5 bg-[#F5F1E8]"/>
@@ -261,7 +281,7 @@ function ProductEditor({ product, onClose, onSave }) {
             <button onClick={addSize} className="text-xs font-black uppercase tracking-widest border-2 border-[#1F3D2B] px-3 py-1 bg-[#F5F1E8]">+ Add Size</button>
           </div>
           <label className="block">
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-1">Benefits (comma separated)</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Benefits (comma separated)</div>
             <input value={p.benefits} onChange={e=>set("benefits",e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
           </label>
         </div>

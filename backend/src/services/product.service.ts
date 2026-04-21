@@ -9,7 +9,7 @@ export type ProductInput = {
   sizes: Array<{ label: string; price: number }>;
   description: string;
   badge?: string;
-  image: string;
+  images?: string[];
   bg?: string;
   benefits?: string[];
   nutrition?: Record<string, unknown>;
@@ -27,7 +27,8 @@ export function toPublicProduct(product: any) {
     sizes: product.sizes,
     description: product.description,
     badge: product.badge,
-    image: product.image,
+    images: product.images || [],
+    image: product.images?.[0] || "", // backward compatibility
     bg: product.bg,
     benefits: product.benefits || [],
     nutrition: product.nutrition || {},
@@ -40,13 +41,14 @@ export function toPublicProduct(product: any) {
 }
 
 function normalizeProduct(input: ProductInput) {
+  const images = input.images || (input as any).image ? [(input as any).image] : [];
   return {
     name: input.name,
     category: input.category,
     sizes: (input.sizes || []).map((size) => ({ label: size.label, price: toNumber(size.price) })),
     description: input.description,
     badge: input.badge || "NEW",
-    image: input.image,
+    images: images.filter(Boolean),
     bg: input.bg || "#D98F00",
     benefits: input.benefits || [],
     nutrition: (input.nutrition || {}) as any,

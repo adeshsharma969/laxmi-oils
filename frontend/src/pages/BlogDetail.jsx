@@ -19,11 +19,11 @@ export default function BlogDetail() {
 
   return (
     <article className="px-4 sm:px-5 md:px-10 py-6 md:py-10 max-w-4xl mx-auto" data-testid={`blog-${post.id}`}>
-      <Link to="/" className="touch-target-sm inline-flex items-center gap-2 text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] hover:text-[#B8431A]"><ArrowLeft size={14} strokeWidth={3}/> Back</Link>
+      <Link to="/" className="touch-target-sm inline-flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] hover:text-[#B8431A]"><ArrowLeft size={14} strokeWidth={3}/> Back</Link>
       <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.6}} className="mt-4 sm:mt-6">
-        <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">{post.tag}</div>
+        <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">{post.tag}</div>
         <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-[#1F3D2B] tracking-tighter leading-[0.95] mt-2">{post.title}</h1>
-        <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#1F3D2B]/60">
+        <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-black uppercase tracking-[0.12em] text-[#1F3D2B]/60">
           <span className="flex items-center gap-1.5"><User size={12} strokeWidth={3}/> {post.author}</span>
           <span className="hidden sm:inline">·</span>
           <span className="hidden sm:inline">{post.date}</span>
@@ -54,7 +54,7 @@ export default function BlogDetail() {
                 <img src={b.image} alt={b.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
               </div>
               <div className="p-4 sm:p-5">
-                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">{b.tag} · {b.read}</div>
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">{b.tag} · {b.read}</div>
                 <div className="font-display font-black text-lg sm:text-xl text-[#1F3D2B] mt-1">{b.title}</div>
               </div>
             </Link>

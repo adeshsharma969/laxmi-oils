@@ -5,10 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Prevent horizontal scroll on all devices */
+/* Keep accidental x-overflow from creating horizontal scrollbars */
 html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 /* Touch-friendly minimum sizes */
@@ -20,6 +20,9 @@ html, body {
   .touch-target-sm {
     min-height: 36px;
     min-width: 36px;
+  }
+  .eyebrow {
+    @apply text-xs sm:text-sm font-black uppercase tracking-[0.22em];
   }
 }
 

@@ -109,7 +109,7 @@ export default function Navbar() {
             <div className="flex flex-col">
               {/* Main Navigation */}
               <div className="py-2">
-                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Menu</div>
+                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Menu</div>
                 {links.map(l => {
                   const isActive = location.pathname === l.to;
                   return (
@@ -120,7 +120,7 @@ export default function Navbar() {
 
               {/* Category Filters */}
               <div className="py-2 border-t-2 border-[#1F3D2B]/10">
-                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Shop by Category</div>
+                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Shop by Category</div>
                 <div className="grid grid-cols-2 gap-2 px-4 py-2">
                   {CATEGORIES.map(cat => (
                     <Link
@@ -141,7 +141,7 @@ export default function Navbar() {
 
               {/* Account Section */}
               <div className="py-2 border-t-2 border-[#1F3D2B]/10">
-                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Account</div>
+                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Account</div>
                 {user ? (
                   <>
                     <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">

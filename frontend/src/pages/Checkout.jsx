@@ -24,6 +24,7 @@ export default function Checkout() {
   const [couponApplied, setCouponApplied] = useState(null); // {code, discount, kind} or null
   const [couponMsg, setCouponMsg] = useState("");
   const [useCredit, setUseCredit] = useState(false);
+  const [payError, setPayError] = useState("");
   const creditBalance = Math.max(0, Math.floor(user?.rewards_earned || 0));
 
   const shipping = delivery==="express"?79:subtotal>499?0:49;
@@ -48,6 +49,7 @@ export default function Checkout() {
 
   const pay = async () => {
     setBusy(true);
+    setPayError("");
     try {
       const payload = {
         items: items.map(i => ({ product_id: i.id, name: i.name, size: i.size, price: i.price, qty: i.qty, image: i.image, bg: i.bg })),
@@ -59,7 +61,9 @@ export default function Checkout() {
       const { data } = await api.post("/orders", payload);
       setSuccess(data);
       clear();
-    } catch (e) { alert("Order failed: " + (e?.response?.data?.detail || e.message)); }
+    } catch (e) {
+      setPayError("Order failed: " + (e?.response?.data?.detail || e.message));
+    }
     finally { setBusy(false); }
   };
 
@@ -154,6 +158,7 @@ export default function Checkout() {
               <button data-testid="place-order-btn" disabled={busy} onClick={pay} className="touch-target bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-3 font-black uppercase tracking-widest hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all disabled:opacity-60 text-sm sm:text-base">{busy?"Processing…":"Place Order →"}</button>
             )}
           </div>
+          {payError && <div className="mt-4 text-sm font-bold text-[#B8431A] border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2">{payError}</div>}
         </div>
 
         <aside className="col-span-12 lg:col-span-4 mt-6 lg:mt-0">

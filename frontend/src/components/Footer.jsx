@@ -50,15 +50,15 @@ export default function Footer() {
 
           {/* Links Columns */}
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6">
               {/* Shop */}
               <div>
                 <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Shop</h4>
                 <ul className="space-y-2.5">
-                  <li><Link to="/products" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">All Oils</Link></li>
-                  <li><Link to="/products?cat=mustard" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Mustard Oil</Link></li>
-                  <li><Link to="/products?cat=soyabean" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Soyabean Oil</Link></li>
-                  <li><Link to="/products?cat=groundnut" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Groundnut Oil</Link></li>
+                  <li><Link to="/products" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">All Oils</Link></li>
+                  <li><Link to="/products?cat=mustard" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Mustard Oil</Link></li>
+                  <li><Link to="/products?cat=soyabean" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Soyabean Oil</Link></li>
+                  <li><Link to="/products?cat=groundnut" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Groundnut Oil</Link></li>
                 </ul>
               </div>
 
@@ -66,10 +66,10 @@ export default function Footer() {
               <div>
                 <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Company</h4>
                 <ul className="space-y-2.5">
-                  <li><Link to="/b2b" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Bulk / B2B</Link></li>
-                  <li><Link to="/about" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Our Story</Link></li>
-                  <li><Link to="/blog" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Blog</Link></li>
-                  <li><Link to="/careers" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Careers</Link></li>
+                  <li><Link to="/b2b" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Bulk / B2B</Link></li>
+                  <li><Link to="/faq" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Our Story & FAQ</Link></li>
+                  <li><Link to="/blog/1" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Blog</Link></li>
+                  <li><Link to="/terms" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Company Terms</Link></li>
                 </ul>
               </div>
 
@@ -77,10 +77,10 @@ export default function Footer() {
               <div>
                 <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Support</h4>
                 <ul className="space-y-2.5">
-                  <li><Link to="/faq" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">FAQ</Link></li>
-                  <li><Link to="/shipping" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Shipping</Link></li>
-                  <li><Link to="/returns" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Returns</Link></li>
-                  <li><Link to="/contact" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Contact Us</Link></li>
+                  <li><Link to="/faq" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">FAQ</Link></li>
+                  <li><Link to="/terms" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Shipping Policy</Link></li>
+                  <li><Link to="/terms" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Returns Policy</Link></li>
+                  <li><a href="mailto:hello@laxmioils.in" className="touch-target-sm inline-flex items-center text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Contact Us</a></li>
                 </ul>
               </div>
             </div>

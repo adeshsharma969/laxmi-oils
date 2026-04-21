@@ -22,28 +22,28 @@ export default function Invoice() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-5 md:px-8 py-6 md:py-10 font-body text-[#1F3D2B]">
       <div className="flex justify-between items-start gap-3 print:hidden mb-4">
-        <Link to="/account" className="touch-target-sm text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] hover:text-[#B8431A]">← Account</Link>
-        <button data-testid="print-invoice" onClick={()=>window.print()} className="touch-target-sm bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2"><Printer size={14} strokeWidth={3}/> Print / PDF</button>
+        <Link to="/account" className="touch-target-sm text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] hover:text-[#B8431A]">← Account</Link>
+        <button data-testid="print-invoice" onClick={()=>window.print()} className="touch-target-sm bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-[0.14em] text-xs sm:text-sm flex items-center gap-2"><Printer size={14} strokeWidth={3}/> Print / PDF</button>
       </div>
 
       <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-6 md:p-10">
         <div className="flex flex-wrap justify-between items-start gap-4 border-b-[3px] border-[#1F3D2B] pb-4 md:pb-5">
           <div>
             <div className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">LAXMI</div>
-            <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70">Edible Oils · Jaipur</div>
-            <div className="text-[10px] sm:text-xs mt-2">hello@laxmioils.in · +91 98765 43210</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">Edible Oils · Jaipur</div>
+            <div className="text-xs sm:text-sm mt-2">hello@laxmioils.in · +91 98765 43210</div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Invoice</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">Invoice</div>
             <div className="font-mono font-black text-base sm:text-lg">{order.order_id}</div>
-            <div className="text-[10px] sm:text-xs mt-1">{new Date(order.created_at).toLocaleString('en-IN')}</div>
-            <div className="inline-block mt-1 px-2 py-0.5 text-[8px] sm:text-[10px] font-black uppercase tracking-widest border-2 border-[#1F3D2B] bg-[#D98F00]">{order.status}</div>
+            <div className="text-xs sm:text-sm mt-1">{new Date(order.created_at).toLocaleString('en-IN')}</div>
+            <div className="inline-block mt-1 px-2 py-0.5 text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] bg-[#D98F00]">{order.status}</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 mt-5 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5 text-sm">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/60 mb-1">Billed To</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Billed To</div>
             <div className="font-black">{a.name}</div>
             <div>{a.address}</div>
             <div>{a.city} — {a.pincode}</div>
@@ -51,9 +51,9 @@ export default function Invoice() {
             <div>{a.email}</div>
           </div>
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/60 mb-1">Delivery</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Delivery</div>
             <div className="capitalize font-bold">{order.delivery}</div>
-            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/60 mt-3 mb-1">Payment</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mt-3 mb-1">Payment</div>
             <div className="font-bold uppercase text-xs">{order.payment_method}</div>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function Invoice() {
           </div>
         </div>
 
-        <div className="mt-6 md:mt-8 pt-4 md:pt-5 border-t-2 border-[#1F3D2B]/30 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/60 text-center">
+        <div className="mt-6 md:mt-8 pt-4 md:pt-5 border-t-2 border-[#1F3D2B]/30 text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 text-center">
           Thank you for choosing Laxmi · Curated in Jaipur · GST inclusive
         </div>
       </div>
