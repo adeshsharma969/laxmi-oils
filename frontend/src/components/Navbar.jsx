@@ -12,6 +12,13 @@ const links = [
   { to: "/b2b", label: "Bulk / B2B" },
 ];
 
+const CATEGORIES = [
+  { slug: "mustard", name: "Mustard Oil", color: "#D98F00" },
+  { slug: "soyabean", name: "Soyabean Oil", color: "#4A7C59" },
+  { slug: "groundnut", name: "Groundnut Oil", color: "#B8431A" },
+  { slug: "sunflower", name: "Sunflower Oil", color: "#F4B942" },
+];
+
 export default function Navbar() {
   const { count, setDrawerOpen, bump } = useCart();
   const { user, logout } = useAuth();
@@ -97,20 +104,60 @@ export default function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div initial={{height:0}} animate={{height:"auto"}} exit={{height:0}} className="md:hidden overflow-hidden border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
+          <motion.div initial={{height:0, opacity:0}} animate={{height:"auto", opacity:1}} exit={{height:0, opacity:0}} transition={{duration:0.2}} className="md:hidden overflow-hidden border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
             <div className="flex flex-col">
-              {links.map(l => (
-                <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">{l.label}</NavLink>
-              ))}
-              {user ? (
-                <>
-                  <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">My Orders</NavLink>
-                  {user.role==="admin" && <NavLink to="/admin" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 border-b-2 border-[#1F3D2B]/20 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">Admin</NavLink>}
-                  <button onClick={()=>{logout(); setOpen(false);}} className="touch-target text-left px-6 py-4 font-bold uppercase tracking-wide text-[#B8431A] active:bg-[#B8431A]/10">Logout</button>
-                </>
-              ) : (
-                <NavLink to="/login" onClick={()=>setOpen(false)} className="touch-target px-6 py-4 font-bold uppercase tracking-wide text-[#1F3D2B] active:bg-[#D98F00]">Login</NavLink>
-              )}
+              {/* Main Navigation */}
+              <div className="py-2">
+                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Menu</div>
+                {links.map(l => (
+                  <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className={({isActive}) => `touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm ${isActive?"text-[#B8431A] bg-[#D98F00]/20":"text-[#1F3D2B]"} active:bg-[#D98F00]`}>{l.label}</NavLink>
+                )}
+              </div>
+
+              {/* Category Filters */}
+              <div className="py-2 border-t-2 border-[#1F3D2B]/10">
+                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Shop by Category</div>
+                <div className="grid grid-cols-2 gap-2 px-4 py-2">
+                  {CATEGORIES.map(cat => (
+                    <Link
+                      key={cat.slug}
+                      to={`/products?cat=${cat.slug}`}
+                      onClick={()=>setOpen(false)}
+                      className="touch-target flex items-center gap-2 px-3 py-3 border-2 border-[#1F3D2B] bg-[#F5F1E8] hover:bg-[#D98F00] transition-colors"
+                      style={{borderLeftWidth: "4px", borderLeftColor: cat.color}}
+                    >
+                      <span className="text-xs font-bold uppercase tracking-wide text-[#1F3D2B]">{cat.name}</span>
+                    </Link>
+                  ))}
+                </div>
+                <Link to="/products" onClick={()=>setOpen(false)} className="touch-target mx-4 mt-1 block text-center px-4 py-3 border-2 border-[#1F3D2B] bg-[#1F3D2B] text-[#F5F1E8] font-bold uppercase text-xs tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors">
+                  View All Products →
+                </Link>
+              </div>
+
+              {/* Account Section */}
+              <div className="py-2 border-t-2 border-[#1F3D2B]/10">
+                <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Account</div>
+                {user ? (
+                  <>
+                    <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">
+                      <UserIcon size={16} strokeWidth={3}/> My Orders
+                    </NavLink>
+                    {user.role==="admin" && (
+                      <NavLink to="/admin" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00]">
+                        Admin Panel
+                      </NavLink>
+                    )}
+                    <button onClick={()=>{logout(); setOpen(false);}} className="touch-target w-full text-left px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#B8431A] active:bg-[#B8431A]/10 flex items-center gap-2">
+                      <LogOut size={16} strokeWidth={3}/> Logout
+                    </button>
+                  </>
+                ) : (
+                  <NavLink to="/login" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">
+                    <UserIcon size={16} strokeWidth={3}/> Login
+                  </NavLink>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
