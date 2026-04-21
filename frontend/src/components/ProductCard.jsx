@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
 export default function ProductCard({ product, index=0 }) {
-  const from = product.sizes[0].price;
+  const size = product.sizes[0];
   return (
     <motion.div
       initial={{opacity:0, y:30}}
@@ -23,16 +23,27 @@ export default function ProductCard({ product, index=0 }) {
             whileHover={{scale:1.08}}
             transition={{duration:0.6, ease:[0.22,1,0.36,1]}}
           />
-          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[8px] sm:text-[10px] font-black uppercase tracking-widest border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
-          <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 bg-[#F5F1E8] text-[#1F3D2B] px-2 py-0.5 text-[8px] sm:text-[10px] font-black uppercase tracking-widest border-2 border-[#1F3D2B]">{product.category}</div>
+          {/* Size Badge - Prominent */}
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-[#1F3D2B]">
+            {size.label}
+          </div>
+          {/* Category Badge */}
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#1F3D2B] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[8px] sm:text-[10px] font-black uppercase tracking-widest border-2 border-[#F5F1E8]">
+            {product.category}
+          </div>
         </div>
         <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
-          <div className="text-[8px] sm:text-[10px] font-black tracking-[0.3em] uppercase text-[#1F3D2B]/60">{product.rating}★ · {product.reviews} reviews</div>
+          <div className="flex items-center justify-between">
+            <div className="text-[8px] sm:text-[10px] font-black tracking-[0.3em] uppercase text-[#1F3D2B]/60">{product.rating}★ · {product.reviews} reviews</div>
+            {product.badge && (
+              <div className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-[#B8431A]">{product.badge}</div>
+            )}
+          </div>
           <h3 className="font-display font-black text-base sm:text-lg md:text-xl text-[#1F3D2B] mt-1 leading-tight line-clamp-2">{product.name}</h3>
           <div className="flex items-end justify-between mt-3 sm:mt-4">
             <div>
-              <div className="text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-[#1F3D2B]/60">from</div>
-              <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">₹{from}</div>
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#1F3D2B]/50">{size.label}</div>
             </div>
             <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
               <ArrowUpRight size={16} strokeWidth={3}/>
