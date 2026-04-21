@@ -50,10 +50,17 @@ export default function Products() {
       <div className="grid grid-cols-12 gap-4 md:gap-6 lg:gap-8">
         <aside className="col-span-12 md:col-span-3 lg:col-span-3 md:sticky md:top-24 md:self-start">
           <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 md:p-5 brutal-shadow-sm">
-            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-2 md:mb-3">Category</div>
-            <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 -mx-1 px-1 md:mx-0 md:px-0">
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#1F3D2B] mb-3 md:mb-3">Category</div>
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-1 gap-2">
               {[{slug:"all", name:"All"},...CATEGORIES].map(c=>(
-                <button key={c.slug} data-testid={`filter-cat-${c.slug}`} onClick={()=>setCat(c.slug)} className={`touch-target-sm text-left px-3 py-2 border-2 font-bold uppercase text-xs sm:text-sm tracking-wider transition-colors whitespace-nowrap ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>{c.name}</button>
+                <button
+                  key={c.slug}
+                  data-testid={`filter-cat-${c.slug}`}
+                  onClick={()=>setCat(c.slug)}
+                  className={`touch-target-sm w-full text-center px-2 py-2.5 border-2 font-bold uppercase text-xs tracking-wider transition-colors ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}
+                >
+                  {c.name}
+                </button>
               ))}
             </div>
 

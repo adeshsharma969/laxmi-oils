@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Menu, X, User as UserIcon, LogOut, Search } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -23,6 +23,7 @@ export default function Navbar() {
   const { count, setDrawerOpen, bump } = useCart();
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -109,9 +110,12 @@ export default function Navbar() {
               {/* Main Navigation */}
               <div className="py-2">
                 <div className="px-6 py-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#B8431A]">Menu</div>
-                {links.map(l => (
-                  <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className={({isActive}) => `touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm ${isActive?"text-[#B8431A] bg-[#D98F00]/20":"text-[#1F3D2B]"} active:bg-[#D98F00]`}>{l.label}</NavLink>
-                )}
+                {links.map(l => {
+                  const isActive = location.pathname === l.to;
+                  return (
+                    <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className={`touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm ${isActive ? "text-[#B8431A] bg-[#D98F00]/20" : "text-[#1F3D2B]"} active:bg-[#D98F00]`}>{l.label}</NavLink>
+                  );
+                })}
               </div>
 
               {/* Category Filters */}
