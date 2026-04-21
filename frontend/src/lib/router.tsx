@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useCallback, useMemo } from "react";
+import React, { forwardRef, useCallback, useMemo, Suspense } from "react";
 import NextLink from "next/link";
 import {
   useParams as useNextParams,
@@ -133,6 +133,28 @@ export function useParams() {
   return useNextParams();
 }
 
+// Wrapper component to handle suspense boundary
+function SearchParamsWrapper({ children }: { children: (params: URLSearchParams, setParams: (next: URLSearchParams | Record<string, string>, options?: { replace?: boolean }) => void) => React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const readonlyParams = useNextSearchParams();
+
+  const [params, setParams] = useMemo(() => {
+    const params = new URLSearchParams(readonlyParams?.toString() || "");
+    const setParamsFn = (next: URLSearchParams | Record<string, string>, options: { replace?: boolean } = {}) => {
+      const nextParams = next instanceof URLSearchParams ? new URLSearchParams(next.toString()) : new URLSearchParams(next);
+      const query = nextParams.toString();
+      const href = pathname ? (query ? `${pathname}?${query}` : pathname) : "/";
+
+      if (options.replace) router.replace(href, { scroll: false });
+      else router.push(href, { scroll: false });
+    };
+    return [params, setParamsFn] as const;
+  }, [pathname, readonlyParams, router]);
+
+  return <>{children(params, setParams)}</>;
+}
+
 export function useSearchParams() {
   const router = useRouter();
   const pathname = usePathname();
@@ -151,6 +173,19 @@ export function useSearchParams() {
 
     return [params, setParams] as const;
   }, [pathname, readonlyParams, router]);
+}
+
+// Export a wrapped version of components that use search params
+export function withSearchParamsSuspense<P extends object>(
+  Component: React.ComponentType<P>
+): React.FC<P> {
+  return function WrappedComponent(props: P) {
+    return (
+      <Suspense fallback={<div className="p-10 text-center">Loading...</div>}>
+        <Component {...props} />
+      </Suspense>
+    );
+  };
 }
 
 export function BrowserRouter({ children }: { children: React.ReactNode }) {

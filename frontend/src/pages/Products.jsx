@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
@@ -12,7 +12,7 @@ const CATEGORIES = [
 ];
 const SIZES = ["500 ml","1 L","5 L","15 L"];
 
-export default function Products() {
+function ProductsContent() {
   const [params, setParams] = useSearchParams();
   const initialCat = params.get("cat") || "all";
   const [cat, setCat] = useState(initialCat);
@@ -98,5 +98,13 @@ export default function Products() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Products() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }

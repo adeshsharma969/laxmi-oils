@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { fmtErr } from "../api/client";
 
-export default function Register() {
+function RegisterContent() {
   const auth = useAuth();
   if (!auth) return <div className="p-10 text-center">Loading...</div>;
   const { register } = auth;
@@ -42,5 +42,13 @@ export default function Register() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function Register() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }
