@@ -1,50 +1,107 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer data-testid="footer" className="bg-[#1F3D2B] text-[#F5F1E8] border-t-[3px] border-[#1F3D2B]">
-      <div className="px-4 sm:px-6 md:px-12 py-12 md:py-16 grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-10">
-        <div className="col-span-2">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Laxmi Oils" className="h-12 sm:h-16 w-auto" />
-            <div>
-              <div className="font-display font-black text-lg sm:text-xl text-[#F5F1E8] tracking-tight">Laxmi.</div>
-              <div className="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-[#D98F00]">Edible Oils</div>
+    <footer data-testid="footer" className="bg-[#1F3D2B] text-[#F5F1E8]">
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-14 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+          
+          {/* Brand & Contact Column */}
+          <div className="lg:col-span-5">
+            {/* Logo */}
+            <div className="flex items-center gap-3 mb-5">
+              <img src="/logo.png" alt="Laxmi Oils" className="h-11 w-auto" />
+              <div>
+                <div className="font-display font-black text-lg text-[#F5F1E8] tracking-tight">Laxmi.</div>
+                <div className="text-xs font-bold tracking-[0.2em] text-[#D98F00]">Edible Oils</div>
+              </div>
+            </div>
+            
+            {/* Description */}
+            <p className="text-sm text-[#F5F1E8]/80 leading-relaxed mb-6 max-w-md">
+              A Jaipur-based edible oils brand. Curated from trusted Rajasthan mills. Every batch tested in our in-house lab for purity and quality.
+            </p>
+            
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <a href="tel:+919999999999" className="flex items-center gap-3 text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors group">
+                <div className="w-9 h-9 border border-[#D98F00]/30 flex items-center justify-center group-hover:border-[#D98F00] transition-colors">
+                  <Phone size={16} className="text-[#D98F00]" />
+                </div>
+                <span>+91 9999-999-999</span>
+              </a>
+              <a href="mailto:hello@laxmioils.in" className="flex items-center gap-3 text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors group">
+                <div className="w-9 h-9 border border-[#D98F00]/30 flex items-center justify-center group-hover:border-[#D98F00] transition-colors">
+                  <Mail size={16} className="text-[#D98F00]" />
+                </div>
+                <span>hello@laxmioils.in</span>
+              </a>
+              <div className="flex items-start gap-3 text-sm text-[#F5F1E8]/80">
+                <div className="w-9 h-9 border border-[#D98F00]/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <MapPin size={16} className="text-[#D98F00]" />
+                </div>
+                <span>Jaipur, Rajasthan, India</span>
+              </div>
             </div>
           </div>
-          <p className="mt-3 md:mt-4 text-xs sm:text-sm max-w-xs text-[#F5F1E8]/80">A Jaipur-based edible oils brand. Curated from trusted Rajasthan mills. Every batch tested in our in-house lab.</p>
-        </div>
-        <div>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#D98F00]">Shop</div>
-          <ul className="mt-3 md:mt-4 space-y-1.5 md:space-y-2 text-xs sm:text-sm">
-            <li><Link to="/products" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">All Oils</Link></li>
-            <li><Link to="/products?cat=mustard" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Mustard</Link></li>
-            <li><Link to="/products?cat=soyabean" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Soyabean</Link></li>
-            <li><Link to="/products?cat=groundnut" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Groundnut</Link></li>
-          </ul>
-        </div>
-        <div>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#D98F00]">Company</div>
-          <ul className="mt-3 md:mt-4 space-y-1.5 md:space-y-2 text-xs sm:text-sm">
-            <li><Link to="/b2b" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Bulk / B2B</Link></li>
-            <li><a href="#" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Our Story</a></li>
-            <li><a href="#" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Blog</a></li>
-          </ul>
-        </div>
-        <div>
-          <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#D98F00]">Help</div>
-          <ul className="mt-3 md:mt-4 space-y-1.5 md:space-y-2 text-xs sm:text-sm">
-            <li><Link to="/faq" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">FAQ</Link></li>
-            <li><Link to="/terms" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Terms</Link></li>
-            <li><Link to="/privacy" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Privacy</Link></li>
-            <li><Link to="/login" className="hover:text-[#D98F00] touch-target-sm inline-flex items-center">Login</Link></li>
-          </ul>
+
+          {/* Links Columns */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-3 gap-4 sm:gap-6">
+              {/* Shop */}
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Shop</h4>
+                <ul className="space-y-2.5">
+                  <li><Link to="/products" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">All Oils</Link></li>
+                  <li><Link to="/products?cat=mustard" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Mustard Oil</Link></li>
+                  <li><Link to="/products?cat=soyabean" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Soyabean Oil</Link></li>
+                  <li><Link to="/products?cat=groundnut" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Groundnut Oil</Link></li>
+                </ul>
+              </div>
+
+              {/* Company */}
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Company</h4>
+                <ul className="space-y-2.5">
+                  <li><Link to="/b2b" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Bulk / B2B</Link></li>
+                  <li><Link to="/about" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Our Story</Link></li>
+                  <li><Link to="/blog" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Blog</Link></li>
+                  <li><Link to="/careers" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Careers</Link></li>
+                </ul>
+              </div>
+
+              {/* Support */}
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-[#D98F00] mb-4">Support</h4>
+                <ul className="space-y-2.5">
+                  <li><Link to="/faq" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">FAQ</Link></li>
+                  <li><Link to="/shipping" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Shipping</Link></li>
+                  <li><Link to="/returns" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Returns</Link></li>
+                  <li><Link to="/contact" className="text-sm text-[#F5F1E8]/80 hover:text-[#D98F00] transition-colors">Contact Us</Link></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="px-4 sm:px-6 md:px-12 py-4 md:py-6 border-t border-[#F5F1E8]/15 flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[#F5F1E8]/70">
-        <div>© 2026 Laxmi Oils · Made with love ❤️.</div>
-        <div>Tested for purity. Trusted everywhere.</div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-[#F5F1E8]/10">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#F5F1E8]/60">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2">
+              <Link to="/terms" className="hover:text-[#D98F00] transition-colors">Terms</Link>
+              <Link to="/privacy" className="hover:text-[#D98F00] transition-colors">Privacy</Link>
+              <Link to="/login" className="hover:text-[#D98F00] transition-colors">Login</Link>
+            </div>
+            <div className="text-center sm:text-right">
+              © 2026 Laxmi Oils. Made with love in Jaipur.
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );
