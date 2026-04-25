@@ -48,6 +48,7 @@ function normalizeProduct(input: ProductInput) {
     sizes: (input.sizes || []).map((size) => ({ label: size.label, price: toNumber(size.price) })),
     description: input.description,
     badge: input.badge || "NEW",
+    image: images[0] || "", // Single image field for Prisma
     images: images.filter(Boolean),
     bg: input.bg || "#D98F00",
     benefits: input.benefits || [],
