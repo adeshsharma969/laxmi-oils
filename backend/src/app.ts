@@ -32,7 +32,19 @@ app.use(
   }),
 );
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/health", async (_req, res) => {
+  try {
+    await prisma.$connect();
+    await prisma.$disconnect();
+    res.json({ ok: true, database: "connected" });
+  } catch (error) {
+    res.status(500).json({ 
+      ok: false, 
+      database: "disconnected",
+      error: error instanceof Error ? error.message : "Database connection failed"
+    });
+  }
+});
 app.use("/api", apiRoutes);
 app.use(notFound);
 app.use(errorHandler);

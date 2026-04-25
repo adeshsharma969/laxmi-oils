@@ -20,7 +20,16 @@ const productSchema = z.object({
 });
 
 export const listProducts = asyncHandler(async (req: Request, res: Response) => {
-  res.json(await productService.listProducts({ cat: String(req.query.cat || ""), q: String(req.query.q || "") }));
+  try {
+    const products = await productService.listProducts({ cat: String(req.query.cat || ""), q: String(req.query.q || "") });
+    res.json(products);
+  } catch (error) {
+    console.error('Database connection error:', error);
+    res.status(500).json({ 
+      detail: "Database connection failed. Please check DATABASE_URL configuration.",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 });
 
 export const getProduct = asyncHandler(async (req: Request, res: Response) => {

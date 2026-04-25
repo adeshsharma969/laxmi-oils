@@ -80,10 +80,22 @@ export async function getProduct(productId: string) {
 }
 
 export async function createProduct(input: ProductInput) {
+  const normalized = normalizeProduct(input);
   const product = await prisma.product.create({
     data: {
       productId: prefixedId("prod", 5),
-      ...normalizeProduct(input),
+      name: normalized.name,
+      category: normalized.category,
+      sizes: normalized.sizes,
+      description: normalized.description,
+      badge: normalized.badge,
+      images: normalized.images,
+      bg: normalized.bg,
+      benefits: normalized.benefits,
+      nutrition: normalized.nutrition,
+      rating: normalized.rating,
+      reviews: normalized.reviews,
+      inventory: normalized.inventory,
       createdAt: nowIso(),
       updatedAt: nowIso(),
     },
@@ -111,10 +123,22 @@ export async function deleteProduct(productId: string) {
 export async function bulkImportProducts(products: ProductInput[]) {
   const created: string[] = [];
   for (const input of products) {
+    const normalized = normalizeProduct(input);
     const product = await prisma.product.create({
       data: {
         productId: prefixedId("prod", 5),
-        ...normalizeProduct(input),
+        name: normalized.name,
+        category: normalized.category,
+        sizes: normalized.sizes,
+        description: normalized.description,
+        badge: normalized.badge,
+        images: normalized.images,
+        bg: normalized.bg,
+        benefits: normalized.benefits,
+        nutrition: normalized.nutrition,
+        rating: normalized.rating,
+        reviews: normalized.reviews,
+        inventory: normalized.inventory,
         createdAt: nowIso(),
         updatedAt: nowIso(),
       },
