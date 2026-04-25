@@ -89,7 +89,6 @@ export async function createProduct(input: ProductInput) {
       sizes: normalized.sizes,
       description: normalized.description,
       badge: normalized.badge,
-      image: normalized.images?.[0] || "", // Single image for backward compatibility
       images: normalized.images,
       bg: normalized.bg,
       benefits: normalized.benefits,
@@ -133,7 +132,6 @@ export async function bulkImportProducts(products: ProductInput[]) {
         sizes: normalized.sizes,
         description: normalized.description,
         badge: normalized.badge,
-        image: normalized.images?.[0] || "", // Single image for backward compatibility
         images: normalized.images,
         bg: normalized.bg,
         benefits: normalized.benefits,

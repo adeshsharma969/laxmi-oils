@@ -47,7 +47,6 @@ model Product {
   sizes       ProductSize[]
   description String
   badge       String        @default("NEW")
-  image       String?       @default("")
   images      String[]
   bg          String        @default("#D98F00")
   benefits    String[]
