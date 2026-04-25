@@ -1,4 +1,5 @@
-import { prisma, type ProductUncheckedCreateInput } from "../prisma/client.js";
+import { prisma } from "../prisma/client.js";
+import type { Prisma } from "@prisma/client";
 import { AppError, toNumber } from "../utils/http.js";
 import { prefixedId } from "../utils/ids.js";
 import { nowIso } from "../utils/time.js";
@@ -81,7 +82,7 @@ export async function getProduct(productId: string) {
 
 export async function createProduct(input: ProductInput) {
   const normalized = normalizeProduct(input);
-  const data: ProductUncheckedCreateInput = {
+  const data: Prisma.ProductUncheckedCreateInput = {
     productId: prefixedId("prod", 5),
     name: normalized.name,
     category: normalized.category,
@@ -123,7 +124,7 @@ export async function bulkImportProducts(products: ProductInput[]) {
   const created: string[] = [];
   for (const input of products) {
     const normalized = normalizeProduct(input);
-    const data: ProductUncheckedCreateInput = {
+    const data: Prisma.ProductUncheckedCreateInput = {
       productId: prefixedId("prod", 5),
       name: normalized.name,
       category: normalized.category,
