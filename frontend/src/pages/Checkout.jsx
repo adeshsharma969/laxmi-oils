@@ -167,7 +167,7 @@ export default function Checkout() {
             <div className="space-y-3 max-h-64 overflow-auto">
               {items.map(it=>(
                 <div key={it.key} className="flex gap-3">
-                  <div className="w-14 h-14 border-2 border-[#1F3D2B]" style={{background:it.bg}}><img src={it.image} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
+                  <div className="w-14 h-14 border-2 border-[#1F3D2B]" style={{background:it.bg}}><img src={it.image} alt="" className="w-full h-full object-contain"/></div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-black text-[#1F3D2B] truncate">{it.name}</div>
                     <div className="text-[10px] uppercase tracking-wider text-[#1F3D2B]/70">{it.size} × {it.qty}</div>

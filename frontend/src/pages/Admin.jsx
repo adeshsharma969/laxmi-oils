@@ -47,7 +47,8 @@ export default function Admin() {
   if (!user || user.role !== "admin") return null;
 
   const saveProduct = async (p) => {
-    const payload = { ...p, sizes: p.sizes.map(s=>({label:s.label, price: Number(s.price)})), reviews: Number(p.reviews)||0, rating: Number(p.rating)||4.8,
+    const images = Array.isArray(p.images) ? p.images.filter(x=>x.trim()!=="") : [];
+    const payload = { ...p, images, sizes: p.sizes.map(s=>({label:s.label, price: Number(s.price)})), reviews: Number(p.reviews)||0, rating: Number(p.rating)||4.8,
       benefits: typeof p.benefits === "string" ? p.benefits.split(",").map(x=>x.trim()).filter(Boolean) : p.benefits };
     if (p.product_id) await api.put(`/products/${p.product_id}`, payload);
     else await api.post("/products", payload);
@@ -133,7 +134,7 @@ export default function Admin() {
             {products.map(p=>(
               <div key={p.product_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
                 <div className="flex gap-3">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.images?.[0] || ""} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}>{p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain"/>}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{p.name}</div>
                     <div className="text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
@@ -230,7 +231,8 @@ function parseCSV(text) {
 }
 
 function ProductEditor({ product, onClose, onSave }) {
-  const [p, setP] = useState({ ...product, benefits: Array.isArray(product.benefits)? product.benefits.join(", ") : (product.benefits||"") });
+  const ensureImages = (imgs) => { const arr = Array.isArray(imgs) ? imgs.filter(Boolean) : []; while (arr.length < 4) arr.push(""); return arr.slice(0,4); };
+  const [p, setP] = useState({ ...product, images: ensureImages(product.images), benefits: Array.isArray(product.benefits)? product.benefits.join(", ") : (product.benefits||"") });
   const set = (k,v) => setP(x=>({...x, [k]: v}));
   const setSize = (i, k, v) => setP(x=>({...x, sizes: x.sizes.map((s,idx)=>idx===i?{...s,[k]:v}:s)}));
   const addSize = () => setP(x=>({...x, sizes: [...x.sizes, {label:"", price:0}]}));
@@ -254,9 +256,9 @@ function ProductEditor({ product, onClose, onSave }) {
           <div className="block">
             <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Images (4 URLs)</div>
             <div className="grid grid-cols-1 gap-2">
-              {(p.images || ["","","",""]).map((img, i) => (
+              {p.images.map((img, i) => (
                 <input key={i} placeholder={`Image ${i+1} URL`} value={img} onChange={e=>{
-                  const newImages = [...(p.images || ["","","",""])];
+                  const newImages = [...p.images];
                   newImages[i] = e.target.value;
                   set("images", newImages);
                 }} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
@@ -266,7 +268,7 @@ function ProductEditor({ product, onClose, onSave }) {
           <label className="block">
             <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Category</div>
             <select value={p.category} onChange={e=>set("category", e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]">
-              <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option>
+              <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option><option value="sunflower">Sunflower</option>
             </select>
           </label>
           <div>

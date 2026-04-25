@@ -71,7 +71,7 @@ export default function SearchCommand({ open, onClose }) {
               {!busy && !error && results.length === 0 && <div className="p-8 text-center text-sm font-bold text-[#1F3D2B]/60">No matches.</div>}
               {results.map((p, idx) => (
                 <button key={p.product_id} data-testid={`search-res-${p.product_id}`} onClick={()=>go(p)} onMouseEnter={()=>setI(idx)} className={`w-full flex items-center gap-3 px-4 py-3 border-b-2 border-[#1F3D2B]/10 text-left ${i===idx?"bg-[#D98F00]/30":""}`}>
-                  <div className="w-12 h-12 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.image} alt="" className="w-full h-full object-cover mix-blend-multiply"/></div>
+                  <div className="w-12 h-12 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}><img src={p.image} alt="" className="w-full h-full object-contain"/></div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-black text-[#1F3D2B] truncate">{p.name}</div>
                     <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B]/70">{p.category} · from ₹{p.sizes[0].price}</div>

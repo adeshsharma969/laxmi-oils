@@ -17,7 +17,18 @@ export default function Home() {
   const [bestErr, setBestErr] = useState("");
   useEffect(() => {
     api.get("/products")
-      .then(({data}) => setBestsellers(data.slice(0,3).map(p=>({...p, id: p.product_id}))))
+      .then(({data}) => {
+        const categories = ['mustard', 'soyabean', 'groundnut', 'sunflower'];
+        const categoryProducts = {};
+        categories.forEach(cat => {
+          categoryProducts[cat] = data.find(p => p.category === cat);
+        });
+        const selected = categories
+          .map(cat => categoryProducts[cat])
+          .filter(p => p)
+          .map(p => ({...p, id: p.product_id}));
+        setBestsellers(selected);
+      })
       .catch(() => setBestErr("Could not load bestsellers right now."));
   }, []);
 
@@ -87,14 +98,16 @@ lab-tested for purity before reaching your home.</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
           {CATEGORIES.map((c,i)=>(
             <motion.div key={c.slug} initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5, delay:i*0.1, ease:[0.22,1,0.36,1]}}>
-              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-[6px_6px_0_0_#1F3D2B] md:hover:shadow-[12px_12px_0_0_#1F3D2B] transition-all relative overflow-hidden h-[200px] sm:h-[260px] md:h-[300px] lg:h-[340px]" style={{background:c.bg}}>
-                <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-80"/>
-                <div className="relative h-full flex flex-col justify-between p-3 sm:p-4 md:p-5" style={{color:c.text}}>
-                  <div className="text-xs font-black uppercase tracking-[0.16em]">0{i+1} · {c.tagline}</div>
-                  <div>
-                    <div className="font-display font-black text-lg sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter leading-none uppercase">{c.name}</div>
-                    <div className="mt-2 md:mt-3 inline-flex items-center gap-1 sm:gap-2 font-black text-xs sm:text-sm uppercase tracking-[0.12em]">Shop Now <ArrowRight size={12} strokeWidth={3}/></div>
-                  </div>
+              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-[6px_6px_0_0_#1F3D2B] md:hover:shadow-[12px_12px_0_0_#1F3D2B] hover:scale-[1.02] transition-all relative overflow-hidden h-[200px] sm:h-[260px] md:h-[300px] lg:h-[340px]" style={{background:c.bg}}>
+                <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover"/>
+                <div className="absolute inset-0 w-full h-full" style={{background: "linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 40%, rgba(0, 0, 0, 0) 70%)"}}></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-6 text-white" style={{textShadow: "0 2px 8px rgba(0,0,0,0.45)"}}>
+                  <div className="text-[11px] sm:text-xs font-medium uppercase tracking-[1.5px] opacity-80 mb-3">0{i+1} · {c.tagline}</div>
+                  <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-2xl leading-tight tracking-[-0.5px] uppercase mb-3 line-clamp-2">{c.name}</h3>
+                  <button className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.5px] hover:opacity-80 transition-all duration-300">
+                    Shop Now 
+                    <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform"/>
+                  </button>
                 </div>
               </Link>
             </motion.div>
@@ -131,8 +144,8 @@ lab-tested for purity before reaching your home.</p>
             <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#1F3D2B] tracking-tighter">Bestsellers.</h2>
           </div>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-          {bestsellers.map((p,i)=>(<ProductCard key={p.id} product={p} index={i}/>))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
+          {bestsellers.map((p,i)=>(<ProductCard key={p.id} product={p} index={i} sizeIndex={i % p.sizes.length}/>))}
         </div>
         {bestErr && <div className="mt-4 text-sm font-bold text-[#B8431A]">{bestErr}</div>}
       </section>
@@ -163,7 +176,7 @@ lab-tested for purity before reaching your home.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-6 md:mt-10">
           {TESTIMONIALS.map((t,i)=>(
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08, duration:0.5}} className="border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 bg-[#F5F1E8] brutal-shadow">
-              <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
+Removed separate "Total" section - The price is now only shown inside the pack size button (e.g., "500 ML ₹129")              <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
               <p className="mt-3 md:mt-4 font-display font-bold text-lg sm:text-xl text-[#1F3D2B] leading-tight">"{t.quote}"</p>
               <div className="mt-3 md:mt-5 text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{t.name} · {t.city}</div>
             </motion.div>

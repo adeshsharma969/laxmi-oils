@@ -26,10 +26,10 @@ export const GALLERY = {
 };
 
 export const CATEGORIES = [
-  { slug: "mustard", name: "Laxmi Mustard Oil (Kachi Ghani)", tagline: "Kachi Ghani Cold Pressed", bg: "#D98F00", text: "#1F3D2B", image: "https://images.unsplash.com/photo-1646476110859-f1d73d8436b6?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" },
-  { slug: "soyabean", name: "Laxmi Soyabean Oil", tagline: "Refined Heart-Light", bg: "#4A7C59", text: "#F5F1E8", image: "https://images.unsplash.com/photo-1703218039342-779a2487f176?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" },
-  { slug: "groundnut", name: "Laxmi Groundnut Oil", tagline: "Filtered Nutty Rich", bg: "#B8431A", text: "#F5F1E8", image: "https://images.unsplash.com/photo-1561911298-389ebc538835?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" },
-  { slug: "sunflower", name: "Laxmi Sunflower Oil", tagline: "Light & Healthy", bg: "#F4B942", text: "#1F3D2B", image: "https://images.unsplash.com/photo-1596522869169-95231d2b6864?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" },
+  { slug: "mustard", name: "Laxmi Mustard Oil (Kachi Ghani)", tagline: "Kachi Ghani Cold Pressed", bg: "#D98F00", text: "#1F3D2B", image: "https://res.cloudinary.com/dogl0onpu/image/upload/v1777131292/mustard_bg_bq9wd1.png" },
+  { slug: "soyabean", name: "Laxmi Soyabean Oil", tagline: "Refined Heart-Light", bg: "#4A7C59", text: "#F5F1E8", image: "https://res.cloudinary.com/dogl0onpu/image/upload/v1777131267/soyabean_bg_zvp9py.png" },
+  { slug: "groundnut", name: "Laxmi Groundnut Oil", tagline: "Filtered Nutty Rich", bg: "#B8431A", text: "#F5F1E8", image: "https://res.cloudinary.com/dogl0onpu/image/upload/v1777131271/groundnut_bg_vsweyc.png" },
+  { slug: "sunflower", name: "Laxmi Sunflower Oil", tagline: "Light & Healthy", bg: "#F4B942", text: "#1F3D2B", image: "https://res.cloudinary.com/dogl0onpu/image/upload/v1777131456/sunflower_bg_d7dqvr.png" },
 ];
 
 export const PRODUCTS = []; // Products are now seeded in the database

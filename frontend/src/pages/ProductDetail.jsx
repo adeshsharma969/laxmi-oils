@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Plus, Minus, Star, ArrowLeft } from "lucide-react";
+import { Check, Plus, Minus, ArrowLeft } from "lucide-react";
 import api from "../api/client";
 import { GALLERY } from "../data/mock";
 import { useCart } from "../context/CartContext";
@@ -27,7 +27,9 @@ export default function ProductDetail() {
   if (loading) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
   if (!product) return <div className="p-10 font-display text-3xl">Product not found. <Link to="/products" className="underline">Back to shop.</Link></div>;
 
-  const gallery = Array.from(new Set([product.image, ...(GALLERY[product.category]||[])])).slice(0,4);
+  const gallery = (product.images?.length > 0
+    ? product.images.filter(Boolean)
+    : Array.from(new Set([product.image, ...(GALLERY[product.category]||[])])).filter(Boolean)).slice(0,4);
   const handleAdd = () => { for (let i=0;i<qty;i++) add({...product, id: product.product_id}, size); };
 
   return (
@@ -38,7 +40,7 @@ export default function ProductDetail() {
         <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-7">
           <div className="border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden" style={{background: product.bg, minHeight:"280px"}}>
             <AnimatePresence mode="wait">
-              <motion.img key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} src={gallery[activeImg]} alt={product.name} className="w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[520px] object-cover mix-blend-multiply"/>
+              <motion.img key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} src={gallery[activeImg]} alt={product.name} className="w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[520px] object-contain"/>
             </AnimatePresence>
             <div className="absolute top-3 sm:top-5 left-3 sm:left-5 bg-[#F5F1E8] text-[#1F3D2B] px-2 sm:px-3 py-1 text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B]">{product.category}</div>
             <div className="absolute top-3 sm:top-5 right-3 sm:right-5 bg-[#B8431A] text-[#F5F1E8] px-2 sm:px-3 py-1 text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
@@ -46,15 +48,14 @@ export default function ProductDetail() {
           <div className="mt-3 sm:mt-4 grid grid-cols-4 gap-2 sm:gap-3">
             {gallery.map((src,i)=>(
               <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`touch-target-sm border-[3px] overflow-hidden aspect-square transition-all ${activeImg===i?"border-[#B8431A] shadow-[4px_4px_0_0_#1F3D2B]":"border-[#1F3D2B] hover:-translate-y-0.5"}`} style={{background:product.bg}}>
-                <img src={src} alt="" className="w-full h-full object-cover mix-blend-multiply"/>
+                <img src={src} alt="" className="w-full h-full object-contain"/>
               </button>
             ))}
           </div>
         </motion.div>
 
         <motion.div initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-5">
-          <div className="flex items-center gap-1">{Array(5).fill(0).map((_,i)=><Star key={i} size={14} fill={i<Math.floor(product.rating)?"#D98F00":"none"} stroke="#1F3D2B"/>)}<span className="ml-2 text-xs sm:text-sm font-bold text-[#1F3D2B]">{product.rating} · {product.reviews} reviews</span></div>
-          <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter mt-2 sm:mt-3 leading-[0.95]">{product.name}</h1>
+          <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter leading-[0.95]">{product.name}</h1>
           <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
 
           <div className="mt-6 sm:mt-8">
@@ -62,7 +63,7 @@ export default function ProductDetail() {
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {product.sizes.map(s=>(
                 <button key={s.label} data-testid={`size-${s.label}`} onClick={()=>setSize(s)} className={`touch-target px-3 sm:px-5 py-2 sm:py-3 border-[3px] font-black uppercase tracking-wider transition-all text-xs sm:text-sm ${size.label===s.label?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B] shadow-[4px_4px_0_0_#1A1814]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>
-                  {s.label} <span className="ml-1 opacity-80">₹{s.price}</span>
+                  {s.label}
                 </button>
               ))}
             </div>

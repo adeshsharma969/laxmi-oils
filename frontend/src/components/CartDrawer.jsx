@@ -35,7 +35,7 @@ export default function CartDrawer() {
               {items.map(it => (
                 <motion.div key={it.key} layout initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,x:60}} className="flex gap-3 sm:gap-4 border-[3px] border-[#1F3D2B] p-2 sm:p-3 bg-[#F5F1E8] shadow-[4px_4px_0_0_#1F3D2B]">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-[#1F3D2B] flex-shrink-0" style={{background: it.bg}}>
-                    <img src={it.image} alt={it.name} className="w-full h-full object-cover mix-blend-multiply"/>
+                    <img src={it.image} alt={it.name} className="w-full h-full object-contain"/>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{it.name}</div>

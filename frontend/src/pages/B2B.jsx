@@ -84,7 +84,7 @@ export default function B2B() {
             </ul>
             <div className="mt-4 sm:mt-6 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-[#1F3D2B]/80">
               <Phone size={14} />
-              <span>Need a custom quote? Call: <a href="tel:+919999999999" className="font-bold underline">+91 9999-999-999</a></span>
+              <span>Need a custom quote? Call: <a href="tel:+919999999999" className="font-bold underline">+91 9887651555</a></span>
             </div>
           </motion.div>
 

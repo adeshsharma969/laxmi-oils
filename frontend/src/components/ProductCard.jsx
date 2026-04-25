@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 
-export default function ProductCard({ product, index=0 }) {
-  const size = product.sizes[0];
+export default function ProductCard({ product, index=0, sizeIndex=0 }) {
+  const size = product.sizes[sizeIndex] || product.sizes[0];
   return (
     <motion.div
       initial={{opacity:0, y:30}}
@@ -16,13 +16,15 @@ export default function ProductCard({ product, index=0 }) {
     >
       <Link to={`/product/${product.id}`} className="block h-full">
         <div className="relative h-44 sm:h-48 md:h-52 lg:h-56 overflow-hidden border-b-[3px] border-[#1F3D2B]" style={{background: product.bg}}>
-          <motion.img
-            src={product.images?.[0] || product.image || ""}
-            alt={product.name}
-            className="w-full h-full object-cover mix-blend-multiply"
-            whileHover={{scale:1.08}}
-            transition={{duration:0.6, ease:[0.22,1,0.36,1]}}
-          />
+          {(product.images?.[0] || product.image) && (
+            <motion.img
+              src={product.images?.[0] || product.image}
+              alt={product.name}
+              className="w-full h-full object-contain p-4"
+              whileHover={{scale:1.08}}
+              transition={{duration:0.6, ease:[0.22,1,0.36,1]}}
+            />
+          )}
           {/* Size Badge - Prominent */}
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-[#1F3D2B]">
             {size.label}

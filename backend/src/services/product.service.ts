@@ -41,7 +41,7 @@ export function toPublicProduct(product: any) {
 }
 
 function normalizeProduct(input: ProductInput) {
-  const images = input.images || (input as any).image ? [(input as any).image] : [];
+  const images = (input.images && input.images.length > 0) ? input.images : ((input as any).image ? [(input as any).image] : []);
   return {
     name: input.name,
     category: input.category,
