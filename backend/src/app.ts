@@ -8,6 +8,7 @@ import morgan from "morgan";
 import { env } from "./config/env.js";
 import { errorHandler, notFound } from "./middlewares/error.js";
 import { apiRoutes } from "./routes/index.js";
+import { prisma } from "./prisma/client.js";
 
 export const app = express();
 

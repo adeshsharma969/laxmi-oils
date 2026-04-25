@@ -1,4 +1,4 @@
-import { prisma } from "../prisma/client.js";
+import { prisma, type ProductUncheckedCreateInput } from "../prisma/client.js";
 import { AppError, toNumber } from "../utils/http.js";
 import { prefixedId } from "../utils/ids.js";
 import { nowIso } from "../utils/time.js";
@@ -81,25 +81,24 @@ export async function getProduct(productId: string) {
 
 export async function createProduct(input: ProductInput) {
   const normalized = normalizeProduct(input);
-  const product = await prisma.product.create({
-    data: {
-      productId: prefixedId("prod", 5),
-      name: normalized.name,
-      category: normalized.category,
-      sizes: normalized.sizes,
-      description: normalized.description,
-      badge: normalized.badge,
-      images: normalized.images,
-      bg: normalized.bg,
-      benefits: normalized.benefits,
-      nutrition: normalized.nutrition,
-      rating: normalized.rating,
-      reviews: normalized.reviews,
-      inventory: normalized.inventory,
-      createdAt: nowIso(),
-      updatedAt: nowIso(),
-    },
-  });
+  const data: ProductUncheckedCreateInput = {
+    productId: prefixedId("prod", 5),
+    name: normalized.name,
+    category: normalized.category,
+    sizes: normalized.sizes,
+    description: normalized.description,
+    badge: normalized.badge,
+    images: normalized.images,
+    bg: normalized.bg,
+    benefits: normalized.benefits,
+    nutrition: normalized.nutrition,
+    rating: normalized.rating,
+    reviews: normalized.reviews,
+    inventory: normalized.inventory,
+    createdAt: nowIso(),
+    updatedAt: nowIso(),
+  };
+  const product = await prisma.product.create({ data });
   return toPublicProduct(product);
 }
 
@@ -124,25 +123,24 @@ export async function bulkImportProducts(products: ProductInput[]) {
   const created: string[] = [];
   for (const input of products) {
     const normalized = normalizeProduct(input);
-    const product = await prisma.product.create({
-      data: {
-        productId: prefixedId("prod", 5),
-        name: normalized.name,
-        category: normalized.category,
-        sizes: normalized.sizes,
-        description: normalized.description,
-        badge: normalized.badge,
-        images: normalized.images,
-        bg: normalized.bg,
-        benefits: normalized.benefits,
-        nutrition: normalized.nutrition,
-        rating: normalized.rating,
-        reviews: normalized.reviews,
-        inventory: normalized.inventory,
-        createdAt: nowIso(),
-        updatedAt: nowIso(),
-      },
-    });
+    const data: ProductUncheckedCreateInput = {
+      productId: prefixedId("prod", 5),
+      name: normalized.name,
+      category: normalized.category,
+      sizes: normalized.sizes,
+      description: normalized.description,
+      badge: normalized.badge,
+      images: normalized.images,
+      bg: normalized.bg,
+      benefits: normalized.benefits,
+      nutrition: normalized.nutrition,
+      rating: normalized.rating,
+      reviews: normalized.reviews,
+      inventory: normalized.inventory,
+      createdAt: nowIso(),
+      updatedAt: nowIso(),
+    };
+    const product = await prisma.product.create({ data });
     created.push(product.productId);
   }
   return { created: created.length, product_ids: created };
