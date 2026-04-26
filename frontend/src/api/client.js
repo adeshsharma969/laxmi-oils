@@ -5,7 +5,7 @@ const rawApi =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   process.env.NEXT_PUBLIC_BACKEND_URL ||
   process.env.REACT_APP_BACKEND_URL ||
-  "http://localhost:8000/api";
+  "https://laxmiedibleoils.onrender.com/api";
 
 export const API = rawApi.endsWith("/api") ? rawApi : `${rawApi}/api`;
 
