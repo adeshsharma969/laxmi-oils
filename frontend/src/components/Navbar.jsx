@@ -51,7 +51,7 @@ export default function Navbar() {
           <img src="/logo.png" alt="Laxmi Oils" className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto group-hover:scale-105 transition-transform" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
           {links.map(l => (
             <NavLink key={l.to} to={l.to} data-testid={`nav-${l.label.toLowerCase()}`} className={({isActive}) => `font-bold uppercase text-sm tracking-wider ${isActive?"text-[#B8431A]":"text-[#1F3D2B]"} hover:text-[#B8431A] transition-colors`}>
               {l.label}
@@ -105,53 +105,30 @@ export default function Navbar() {
       <AnimatePresence>
         {open && (
           <motion.div initial={{height:0, opacity:0}} animate={{height:"auto", opacity:1}} exit={{height:0, opacity:0}} transition={{duration:0.2}} className="md:hidden overflow-hidden border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center">
               {/* Main Navigation */}
-              <div className="py-2">
-                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Menu</div>
+              <div className="py-2 w-full text-center">
                 {links.map(l => {
                   const isActive = location.pathname === l.to;
                   return (
-                    <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className={`touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm ${isActive ? "text-[#B8431A] bg-[#D98F00]/20" : "text-[#1F3D2B]"} active:bg-[#D98F00]`}>{l.label}</NavLink>
+                    <NavLink key={l.to} to={l.to} onClick={()=>setOpen(false)} className={`touch-target block px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm ${isActive ? "text-[#B8431A] bg-[#D98F00]/20" : "text-[#1F3D2B]"} active:bg-[#D98F00] text-center`}>{l.label}</NavLink>
                   );
                 })}
               </div>
 
-              {/* Category Filters */}
-              <div className="py-2 border-t-2 border-[#1F3D2B]/10">
-                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Shop by Category</div>
-                <div className="grid grid-cols-2 gap-2 px-4 py-2">
-                  {CATEGORIES.map(cat => (
-                    <Link
-                      key={cat.slug}
-                      to={`/products?cat=${cat.slug}`}
-                      onClick={()=>setOpen(false)}
-                      className="touch-target flex items-center gap-2 px-3 py-3 border-2 border-[#1F3D2B] bg-[#F5F1E8] hover:bg-[#D98F00] transition-colors"
-                      style={{borderLeftWidth: "4px", borderLeftColor: cat.color}}
-                    >
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#1F3D2B]">{cat.name}</span>
-                    </Link>
-                  ))}
-                </div>
-                <Link to="/products" onClick={()=>setOpen(false)} className="touch-target mx-4 mt-1 block text-center px-4 py-3 border-2 border-[#1F3D2B] bg-[#1F3D2B] text-[#F5F1E8] font-bold uppercase text-xs tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors">
-                  View All Products →
-                </Link>
-              </div>
-
               {/* Account Section */}
-              <div className="py-2 border-t-2 border-[#1F3D2B]/10">
-                <div className="px-6 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">Account</div>
+              <div className="py-2 border-t-2 border-[#1F3D2B]/10 w-full text-center">
                 {user ? (
                   <>
-                    <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">
+                    <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target block px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center justify-center gap-2">
                       <UserIcon size={16} strokeWidth={3}/> My Orders
                     </NavLink>
-                    <button onClick={()=>{logout(); setOpen(false);}} className="touch-target w-full text-left px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#B8431A] active:bg-[#B8431A]/10 flex items-center gap-2">
+                    <button onClick={()=>{logout(); setOpen(false);}} className="touch-target w-full px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#B8431A] active:bg-[#B8431A]/10 flex items-center justify-center gap-2">
                       <LogOut size={16} strokeWidth={3}/> Logout
                     </button>
                   </>
                 ) : (
-                  <NavLink to="/login" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">
+                  <NavLink to="/login" onClick={()=>setOpen(false)} className="touch-target block px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center justify-center gap-2">
                     <UserIcon size={16} strokeWidth={3}/> Login
                   </NavLink>
                 )}

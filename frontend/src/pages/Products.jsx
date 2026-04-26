@@ -56,13 +56,13 @@ function ProductsContent() {
         <aside className="col-span-12 md:col-span-3 lg:col-span-3 md:sticky md:top-24 md:self-start">
           <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 md:p-5 brutal-shadow-sm">
             <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] mb-3 md:mb-3">Category</div>
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-1 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-1 gap-2">
               {[{slug:"all", name:"All"},...CATEGORIES].map(c=>(
                 <button
                   key={c.slug}
                   data-testid={`filter-cat-${c.slug}`}
                   onClick={()=>setCat(c.slug)}
-                  className={`touch-target-sm w-full text-center px-2 py-2.5 border-2 font-bold uppercase text-xs tracking-wider transition-colors ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}
+                  className={`touch-target-sm w-full text-center px-2 py-2.5 border-2 font-bold uppercase text-xs tracking-wider transition-colors overflow-hidden text-ellipsis whitespace-nowrap ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}
                 >
                   {c.name}
                 </button>
@@ -72,7 +72,7 @@ function ProductsContent() {
             <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] mt-4 md:mt-6 mb-2 md:mb-3">Size</div>
             <div className="flex flex-wrap gap-2">
               {SIZES.map(s=>(
-                <button key={s} data-testid={`filter-size-${s}`} onClick={()=>toggleSize(s)} className={`touch-target-sm px-2 sm:px-3 py-1.5 border-2 font-bold text-xs uppercase tracking-wider transition-colors ${sizes.includes(s)?"bg-[#B8431A] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>{s}</button>
+                <button key={s} data-testid={`filter-size-${s}`} onClick={()=>toggleSize(s)} className={`touch-target-sm px-2 sm:px-3 py-1.5 border-2 font-bold text-xs uppercase tracking-wider transition-colors whitespace-nowrap ${sizes.includes(s)?"bg-[#B8431A] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>{s}</button>
               ))}
             </div>
 

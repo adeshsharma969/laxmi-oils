@@ -11,7 +11,8 @@
     "prisma:push": "prisma db push",
     "seed": "node prisma/seed.js",
     "clear-products": "tsx src/clear-products.ts",
-    "remove-seeded": "tsx src/remove-seeded-products.ts"
+    "remove-seeded": "tsx src/remove-seeded-products.ts",
+    "seed-test-users": "tsx src/seed-test-user.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
