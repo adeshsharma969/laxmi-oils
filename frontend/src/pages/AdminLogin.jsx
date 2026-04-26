@@ -9,8 +9,13 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { adminLogin, user, loading: authLoading } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
+
+  // Handle SSR/prerender where auth context is not available
+  const adminLogin = auth?.adminLogin;
+  const user = auth?.user;
+  const authLoading = auth?.loading ?? true;
 
   // Route guards: redirect if already authenticated
   useEffect(() => {
@@ -22,8 +27,8 @@ export default function AdminLogin() {
     }
   }, [user, authLoading, navigate]);
 
-  // Show loading while checking auth status
-  if (authLoading) {
+  // Show loading while checking auth status (or during SSR)
+  if (authLoading || !auth) {
     return (
       <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center">
         <div className="text-[#1F3D2B] font-bold">Loading...</div>
