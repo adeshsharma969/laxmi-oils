@@ -7,14 +7,33 @@ import { fmtErr } from "../api/client";
 function RegisterContent() {
   const auth = useAuth();
   if (!auth) return <div className="p-10 text-center">Loading...</div>;
-  const { register } = auth;
+  const { register, user, loading: authLoading } = auth;
   const nav = useNavigate();
   const [params] = useSearchParams();
   const [form, setForm] = useState({ name:"", email:"", phone:"", password:"", ref: params.get("ref") || "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Route guards: redirect if already authenticated
+  useEffect(() => {
+    if (authLoading) return;
+    if (user?.role === "admin") {
+      nav("/admin", { replace: true });
+    } else if (user) {
+      nav("/account", { replace: true });
+    }
+  }, [user, authLoading, nav]);
+
   useEffect(() => { const r = params.get("ref"); if (r) setForm(f=>({...f, ref: r})); }, [params]);
+
+  // Show loading while checking auth status
+  if (authLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-[#1F3D2B] font-bold">Loading...</div>
+      </div>
+    );
+  }
 
   const submit = async (e) => {
     e.preventDefault(); setErr(""); setBusy(true);

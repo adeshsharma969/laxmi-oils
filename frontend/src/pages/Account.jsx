@@ -19,6 +19,7 @@ export default function Account() {
 
   useEffect(() => {
     if (!loading && !user) nav("/login", { state: { from: "/account" } });
+    if (!loading && user?.role === "admin") nav("/admin");
   }, [loading, user, nav]);
 
   useEffect(() => {

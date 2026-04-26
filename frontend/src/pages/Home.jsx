@@ -21,7 +21,8 @@ export default function Home() {
         const categories = ['mustard', 'soyabean', 'groundnut', 'sunflower'];
         const categoryProducts = {};
         categories.forEach(cat => {
-          categoryProducts[cat] = data.find(p => p.category === cat);
+          const catProducts = data.filter(p => p.category === cat);
+          categoryProducts[cat] = catProducts[Math.floor(Math.random() * catProducts.length)];
         });
         const selected = categories
           .map(cat => categoryProducts[cat])
@@ -145,7 +146,7 @@ lab-tested for purity before reaching your home.</p>
           </div>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-          {bestsellers.map((p,i)=>(<ProductCard key={p.id} product={p} index={i} sizeIndex={i % p.sizes.length}/>))}
+          {bestsellers.map((p,i)=>(<ProductCard key={p.id} product={p} index={i} sizeIndex={Math.floor(Math.random() * p.sizes.length)}/>))}
         </div>
         {bestErr && <div className="mt-4 text-sm font-bold text-[#B8431A]">{bestErr}</div>}
       </section>
@@ -176,7 +177,7 @@ lab-tested for purity before reaching your home.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-6 md:mt-10">
           {TESTIMONIALS.map((t,i)=>(
             <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08, duration:0.5}} className="border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 bg-[#F5F1E8] brutal-shadow">
-Removed separate "Total" section - The price is now only shown inside the pack size button (e.g., "500 ML ₹129")              <div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
+<div className="flex gap-0.5">{Array(t.rating).fill(0).map((_,j)=><Star key={j} size={12} fill="#D98F00" stroke="#1F3D2B"/>)}</div>
               <p className="mt-3 md:mt-4 font-display font-bold text-lg sm:text-xl text-[#1F3D2B] leading-tight">"{t.quote}"</p>
               <div className="mt-3 md:mt-5 text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{t.name} · {t.city}</div>
             </motion.div>

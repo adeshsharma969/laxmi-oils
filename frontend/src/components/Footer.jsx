@@ -87,7 +87,6 @@ export default function Footer() {
             <div className="flex items-center gap-4">
               <a href="#" className="touch-target w-11 h-11 border-[2px] border-[#D98F00] flex items-center justify-center text-[#D98F00] hover:bg-[#D98F00] hover:text-[#0A0A0A] transition-all"><Instagram size={16} strokeWidth={2.5} /></a>
               <a href="#" className="touch-target w-11 h-11 border-[2px] border-[#D98F00] flex items-center justify-center text-[#D98F00] hover:bg-[#D98F00] hover:text-[#0A0A0A] transition-all"><Twitter size={16} strokeWidth={2.5} /></a>
-              <Link to="/login" className="touch-target-sm text-xs font-black text-[#F5F1E8] uppercase tracking-widest hover:text-[#D98F00]">Admin</Link>
             </div>
           </div>
         </div>

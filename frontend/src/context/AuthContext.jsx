@@ -27,6 +27,13 @@ export const AuthProvider = ({ children }) => {
     setUser(data.user);
     return data.user;
   };
+
+  const adminLogin = async (email, password) => {
+    const { data } = await api.post("/auth/admin-login", { email, password });
+    localStorage.setItem("laxmi_token", data.token);
+    setUser(data.user);
+    return data.user;
+  };
   const register = async (payload) => {
     const { data } = await api.post("/auth/register", payload);
     localStorage.setItem("laxmi_token", data.token);
@@ -44,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  return <AuthCtx.Provider value={{ user, loading, login, register, googleExchange, logout, checkAuth }}>{children}</AuthCtx.Provider>;
+  return <AuthCtx.Provider value={{ user, loading, login, adminLogin, register, googleExchange, logout, checkAuth }}>{children}</AuthCtx.Provider>;
 };
 
 export const useAuth = () => useContext(AuthCtx);

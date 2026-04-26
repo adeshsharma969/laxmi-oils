@@ -30,7 +30,7 @@ export default function Admin() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== "admin")) nav("/login");
+    if (!loading && (!user || user.role !== "admin")) nav("/admin-login");
   }, [loading, user, nav]);
 
   const reload = async () => {
@@ -46,6 +46,11 @@ export default function Admin() {
 
   if (!user || user.role !== "admin") return null;
 
+  const logout = () => {
+    localStorage.removeItem("laxmi_token");
+    window.location.href = "/admin-login";
+  };
+
   const saveProduct = async (p) => {
     const images = Array.isArray(p.images) ? p.images.filter(x=>x.trim()!=="") : [];
     const payload = { ...p, images, sizes: p.sizes.map(s=>({label:s.label, price: Number(s.price)})), reviews: Number(p.reviews)||0, rating: Number(p.rating)||4.8,
@@ -59,46 +64,64 @@ export default function Admin() {
   const updateLeadStatus = async (id, status) => { await api.put(`/admin/leads/${id}/status`, { status }); await reload(); };
 
   return (
-    <div data-testid="admin-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
-      <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-4 md:mb-6 flex flex-wrap justify-between items-end gap-3">
-        <div>
-          <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#B8431A]">Control Room</div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-[#1F3D2B] tracking-tighter">Admin.</h1>
+    <div data-testid="admin-page" className="min-h-screen bg-[#F8F7F4] px-4 sm:px-5 md:px-10 py-6 md:py-10">
+      {/* Header */}
+      <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E0] p-4 md:p-6 mb-6">
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#1F3D2B]/60">Admin Dashboard</div>
+            <h1 className="font-display font-bold text-2xl sm:text-3xl text-[#1F3D2B] tracking-tight mt-1">Control Center</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-[#1F3D2B]/60">{user?.email}</span>
+            <button onClick={logout} className="px-4 py-2 bg-[#1F3D2B] text-white text-sm font-medium rounded-lg hover:bg-[#2A5240] transition-colors">Logout</button>
+          </div>
         </div>
-        <Link to="/account" className="touch-target-sm border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm">← Account</Link>
       </div>
 
-      <div className="flex flex-wrap gap-1 sm:gap-2 border-b-2 border-[#1F3D2B]/30 mb-4 md:mb-6">
+      {/* Navigation Tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
         {TABS.map(t => (
-          <button key={t.id} data-testid={`tab-${t.id}`} onClick={()=>setTab(t.id)} className={`touch-target-sm px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm border-[3px] border-b-0 -mb-[2px] ${tab===t.id?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-transparent hover:border-[#1F3D2B]"}`}>{t.label}</button>
+          <button
+            key={t.id}
+            data-testid={`tab-${t.id}`}
+            onClick={()=>setTab(t.id)}
+            className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+              tab===t.id
+                ? "bg-[#1F3D2B] text-white shadow-sm"
+                : "bg-white text-[#1F3D2B]/70 hover:text-[#1F3D2B] hover:bg-[#E5E5E0]/50 border border-[#E5E5E0]"
+            }`}
+          >
+            {t.label}
+          </button>
         ))}
       </div>
 
       {tab==="dash" && stats && (
-        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
+        <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[
-            { icon:IndianRupee, label:"Revenue", value:`₹${stats.revenue.toLocaleString('en-IN')}`, bg:"#D98F00" },
-            { icon:ShoppingCart, label:"Orders", value:stats.orders, bg:"#F5F1E8" },
-            { icon:Package, label:"Products", value:stats.products, bg:"#F5F1E8" },
-            { icon:Briefcase, label:"B2B Leads", value:stats.leads, bg:"#F5F1E8" },
-            { icon:Users, label:"Customers", value:stats.customers, bg:"#F5F1E8" },
+            { icon:IndianRupee, label:"Revenue", value:`₹${stats.revenue.toLocaleString('en-IN')}`, accent:true },
+            { icon:ShoppingCart, label:"Orders", value:stats.orders },
+            { icon:Package, label:"Products", value:stats.products },
+            { icon:Briefcase, label:"B2B Leads", value:stats.leads },
+            { icon:Users, label:"Customers", value:stats.customers },
           ].map((s,i)=>{const Ic=s.icon;return (
-            <div key={i} className="border-[3px] border-[#1F3D2B] p-3 sm:p-4 brutal-shadow-sm" style={{background:s.bg}}>
-              <Ic size={20} strokeWidth={2.5}/>
-              <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#1F3D2B] mt-2">{s.value}</div>
-              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">{s.label}</div>
+            <div key={i} className={`bg-white rounded-xl p-4 shadow-sm border ${s.accent?"border-[#1F3D2B] bg-[#1F3D2B]":"border-[#E5E5E0]"}`}>
+              <Ic size={20} strokeWidth={2} className={s.accent?"text-[#D98F00]":"text-[#1F3D2B]"}/>
+              <div className={`font-display font-bold text-xl sm:text-2xl mt-2 ${s.accent?"text-white":"text-[#1F3D2B]"}`}>{s.value}</div>
+              <div className={`text-xs font-medium uppercase tracking-wider ${s.accent?"text-white/70":"text-[#1F3D2B]/50"}`}>{s.label}</div>
             </div>
           );})}
         </motion.div>
       )}
 
       {tab==="products" && (
-        <div>
-          <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
-            <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">{products.length} products</div>
+        <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E0] p-4 md:p-6">
+          <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
+            <div className="font-display font-bold text-xl text-[#1F3D2B]">{products.length} Products</div>
             <div className="flex gap-2">
-              <label data-testid="csv-import" className="cursor-pointer touch-target-sm bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2 hover:bg-[#D98F00]">
-                <Upload size={14} strokeWidth={3}/> Import
+              <label data-testid="csv-import" className="cursor-pointer px-4 py-2 bg-[#F8F7F4] text-[#1F3D2B] border border-[#E5E5E0] rounded-lg text-sm font-medium flex items-center gap-2 hover:border-[#1F3D2B] transition-colors">
+                <Upload size={16}/> Import CSV
                 <input type="file" accept=".csv" className="hidden" onChange={async (e)=>{
                   const f = e.target.files?.[0]; if (!f) return;
                   const text = await f.text();
@@ -124,26 +147,26 @@ export default function Admin() {
                   finally { e.target.value = ""; }
                 }}/>
               </label>
-              <button data-testid="new-product-btn" onClick={()=>setEditing({...EMPTY_PRODUCT})} className="touch-target-sm bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2"><Plus size={14} strokeWidth={3}/> New</button>
+              <button data-testid="new-product-btn" onClick={()=>setEditing({...EMPTY_PRODUCT})} className="px-4 py-2 bg-[#1F3D2B] text-white rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-[#2A5240] transition-colors"><Plus size={16}/> Add Product</button>
             </div>
           </div>
-          {notice && <div className="mb-3 text-sm font-bold text-[#1F3D2B] border-2 border-[#1F3D2B] bg-[#D98F00]/30 px-3 py-2">{notice}</div>}
-          {error && <div className="mb-3 text-sm font-bold text-[#B8431A] border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2">{error}</div>}
-          <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/60 mb-3 font-mono hidden sm:block">CSV headers: name, category, sizes (e.g. "500ml:159|1L:289"), description, badge, image, bg, benefits, rating, reviews</div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {notice && <div className="mb-4 text-sm font-medium text-[#1F3D2B] bg-[#F0FDF4] border border-[#86EFAC] rounded-lg px-4 py-3">{notice}</div>}
+          {error && <div className="mb-4 text-sm font-medium text-[#B8431A] bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-4 py-3">{error}</div>}
+          <div className="text-xs text-[#1F3D2B]/40 mb-4 font-mono hidden sm:block">CSV headers: name, category, sizes (e.g. "500ml:159|1L:289"), description, badge, image, bg, benefits, rating, reviews</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {products.map(p=>(
-              <div key={p.product_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
+              <div key={p.product_id} className="bg-[#F8F7F4] rounded-lg border border-[#E5E5E0] p-4">
                 <div className="flex gap-3">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background:p.bg}}>{p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain"/>}</div>
+                  <div className="w-16 h-16 rounded-lg border border-[#E5E5E0] flex-shrink-0 overflow-hidden" style={{background:p.bg}}>{p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain"/>}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{p.name}</div>
-                    <div className="text-xs sm:text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">{p.category} · {p.sizes.length} sizes</div>
-                    <div className="text-xs mt-1">From <b>₹{p.sizes[0].price}</b></div>
+                    <div className="font-display font-semibold text-sm text-[#1F3D2B] truncate">{p.name}</div>
+                    <div className="text-xs font-medium text-[#1F3D2B]/50 capitalize">{p.category} · {p.sizes.length} sizes</div>
+                    <div className="text-xs mt-1 text-[#1F3D2B]/70">From <span className="font-semibold text-[#1F3D2B]">₹{p.sizes[0].price}</span></div>
                   </div>
                 </div>
-                <div className="flex gap-2 mt-3">
-                  <button onClick={()=>setEditing(p)} className="touch-target-sm flex-1 border-2 border-[#1F3D2B] bg-[#D98F00] py-1.5 font-black uppercase text-xs tracking-wider flex items-center justify-center gap-1"><Edit3 size={12} strokeWidth={3}/> Edit</button>
-                  <button onClick={()=>deleteProduct(p.product_id)} className="touch-target-sm border-2 border-[#1F3D2B] bg-[#F5F1E8] px-3 py-1.5 text-[#B8431A]"><Trash2 size={14} strokeWidth={3}/></button>
+                <div className="flex gap-2 mt-4">
+                  <button onClick={()=>setEditing(p)} className="flex-1 py-2 bg-white border border-[#E5E5E0] rounded-lg text-sm font-medium text-[#1F3D2B] hover:border-[#1F3D2B] transition-colors flex items-center justify-center gap-1"><Edit3 size={14}/> Edit</button>
+                  <button onClick={()=>deleteProduct(p.product_id)} className="px-3 py-2 bg-white border border-[#FECACA] text-[#B8431A] rounded-lg hover:bg-[#FEF2F2] transition-colors"><Trash2 size={14}/></button>
                 </div>
               </div>
             ))}
@@ -152,35 +175,36 @@ export default function Admin() {
       )}
 
       {tab==="orders" && (
-        <div>
-          <div className="flex justify-end mb-3">
+        <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E0] p-4 md:p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div className="font-display font-bold text-xl text-[#1F3D2B]">{orders.length} Orders</div>
             <button data-testid="export-orders-csv" onClick={async ()=>{
               const r = await api.get("/admin/orders.csv", { responseType: "blob" });
               const url = URL.createObjectURL(r.data);
               const a = document.createElement("a"); a.href = url; a.download = "laxmi-orders.csv"; a.click(); URL.revokeObjectURL(url);
-            }} className="touch-target-sm bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2 hover:bg-[#D98F00]">
-              <Download size={14} strokeWidth={3}/> Export
+            }} className="px-4 py-2 bg-[#F8F7F4] text-[#1F3D2B] border border-[#E5E5E0] rounded-lg text-sm font-medium flex items-center gap-2 hover:border-[#1F3D2B] transition-colors">
+              <Download size={16}/> Export CSV
             </button>
           </div>
           <div className="space-y-3">
-            {orders.length===0 && <div className="text-xs sm:text-sm">No orders yet.</div>}
+            {orders.length===0 && <div className="text-sm text-[#1F3D2B]/50 py-8 text-center">No orders yet.</div>}
             {orders.map(o=>(
-              <div key={o.order_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
+              <div key={o.order_id} className="bg-[#F8F7F4] rounded-lg border border-[#E5E5E0] p-4">
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>
-                    <div className="font-mono font-black text-sm sm:text-base text-[#1F3D2B]">{o.order_id}</div>
-                    <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/70">{o.address?.name} · {o.address?.phone}</div>
-                    <div className="text-[10px] sm:text-[11px] text-[#1F3D2B]/70">{new Date(o.created_at).toLocaleString('en-IN')}</div>
+                    <div className="font-mono font-semibold text-sm text-[#1F3D2B]">{o.order_id}</div>
+                    <div className="text-xs text-[#1F3D2B]/50">{o.address?.name} · {o.address?.phone}</div>
+                    <div className="text-xs text-[#1F3D2B]/40">{new Date(o.created_at).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="text-right">
-                    <div className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">₹{o.total}</div>
-                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs sm:text-sm font-black uppercase">
+                    <div className="font-display font-bold text-lg text-[#1F3D2B]">₹{o.total}</div>
+                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 bg-white border border-[#E5E5E0] rounded px-2 py-1 text-xs font-medium text-[#1F3D2B] capitalize">
                       {["paid","packed","shipped","delivered","cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
-                <div className="mt-2 text-[10px] sm:text-xs">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
-                <div className="mt-2"><Link to={`/invoice/${o.order_id}`} className="text-xs sm:text-sm font-black uppercase tracking-[0.12em] underline">View Invoice →</Link></div>
+                <div className="mt-3 text-xs text-[#1F3D2B]/60">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
+                <div className="mt-3"><Link to={`/invoice/${o.order_id}`} className="text-sm font-medium text-[#1F3D2B] hover:text-[#D98F00] transition-colors">View Invoice →</Link></div>
               </div>
             ))}
           </div>
@@ -188,23 +212,28 @@ export default function Admin() {
       )}
 
       {tab==="leads" && (
-        <div className="space-y-3">
-          {leads.length===0 && <div className="text-xs sm:text-sm">No B2B leads yet.</div>}
-          {leads.map(l=>(
-            <div key={l.lead_id} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
-              <div className="flex flex-wrap justify-between gap-3">
-                <div>
-                  <div className="font-display font-black text-base sm:text-lg text-[#1F3D2B]">{l.company}</div>
-                  <div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">{l.name} · {l.phone}</div>
-                  <div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">Volume: <b>{l.volume||"—"} L</b></div>
-                  {l.message && <div className="mt-1 text-xs sm:text-sm">"{l.message}"</div>}
+        <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E0] p-4 md:p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div className="font-display font-bold text-xl text-[#1F3D2B]">{leads.length} B2B Leads</div>
+          </div>
+          <div className="space-y-3">
+            {leads.length===0 && <div className="text-sm text-[#1F3D2B]/50 py-8 text-center">No B2B leads yet.</div>}
+            {leads.map(l=>(
+              <div key={l.lead_id} className="bg-[#F8F7F4] rounded-lg border border-[#E5E5E0] p-4">
+                <div className="flex flex-wrap justify-between gap-3">
+                  <div>
+                    <div className="font-display font-semibold text-base text-[#1F3D2B]">{l.company}</div>
+                    <div className="text-xs text-[#1F3D2B]/50">{l.name} · {l.phone}</div>
+                    <div className="text-xs text-[#1F3D2B]/60">Volume: <span className="font-semibold">{l.volume||"—"} L</span></div>
+                    {l.message && <div className="mt-2 text-sm text-[#1F3D2B]/70 bg-white p-3 rounded border border-[#E5E5E0]">&ldquo;{l.message}&rdquo;</div>}
+                  </div>
+                  <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="bg-white border border-[#E5E5E0] rounded px-3 py-1.5 text-xs font-medium text-[#1F3D2B] capitalize self-start">
+                    {["new","contacted","quoted","won","lost"].map(s=><option key={s} value={s}>{s}</option>)}
+                  </select>
                 </div>
-                <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1 text-xs sm:text-sm font-black uppercase self-start">
-                  {["new","contacted","quoted","won","lost"].map(s=><option key={s} value={s}>{s}</option>)}
-                </select>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
@@ -239,57 +268,72 @@ function ProductEditor({ product, onClose, onSave }) {
   const rmSize = (i) => setP(x=>({...x, sizes: x.sizes.filter((_,idx)=>idx!==i)}));
 
   return (
-    <div className="fixed inset-0 bg-[#1A1814]/70 z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <div className="w-full max-w-2xl bg-[#F5F1E8] border-[3px] border-[#1F3D2B] my-8 brutal-shadow">
-        <div className="flex justify-between items-center p-4 border-b-[3px] border-[#1F3D2B] bg-[#D98F00]">
-          <div className="font-display font-black text-2xl text-[#1F3D2B]">{p.product_id?"Edit":"New"} Product</div>
-          <button onClick={onClose} className="w-8 h-8 border-2 border-[#1F3D2B]"><X size={14} strokeWidth={3}/></button>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg my-8 border border-[#E5E5E0]">
+        <div className="flex justify-between items-center p-5 border-b border-[#E5E5E0] bg-[#F8F7F4] rounded-t-xl">
+          <div className="font-display font-bold text-xl text-[#1F3D2B]">{p.product_id?"Edit":"New"} Product</div>
+          <button onClick={onClose} className="w-8 h-8 rounded-lg bg-white border border-[#E5E5E0] flex items-center justify-center hover:border-[#1F3D2B] transition-colors"><X size={16}/></button>
         </div>
-        <div className="p-5 space-y-3">
-          {[["name","Name"],["bg","BG Color Hex"],["badge","Badge"],["description","Description"]].map(([k,l])=>(
-            <label key={k} className="block">
-              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">{l}</div>
-              {k==="description"? <textarea rows={2} value={p[k]||""} onChange={e=>set(k,e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
-              : <input value={p[k]||""} onChange={e=>set(k,e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>}
+        <div className="p-5 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label className="block">
+              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Name</span>
+              <input value={p.name||""} onChange={e=>set("name",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
             </label>
-          ))}
-          <div className="block">
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Images (4 URLs)</div>
-            <div className="grid grid-cols-1 gap-2">
+            <label className="block">
+              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Category</span>
+              <select value={p.category} onChange={e=>set("category", e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors">
+                <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option><option value="sunflower">Sunflower</option>
+              </select>
+            </label>
+          </div>
+          <label className="block">
+            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Description</span>
+            <textarea rows={3} value={p.description||""} onChange={e=>set("description",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label className="block">
+              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Badge</span>
+              <input value={p.badge||""} onChange={e=>set("badge",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
+            </label>
+            <label className="block">
+              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Background Color</span>
+              <input value={p.bg||""} onChange={e=>set("bg",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors" placeholder="#D98F00"/>
+            </label>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Images (4 URLs)</span>
+            <div className="grid grid-cols-1 gap-2 mt-1">
               {p.images.map((img, i) => (
                 <input key={i} placeholder={`Image ${i+1} URL`} value={img} onChange={e=>{
                   const newImages = [...p.images];
                   newImages[i] = e.target.value;
                   set("images", newImages);
-                }} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
+                }} className="w-full border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
               ))}
             </div>
           </div>
-          <label className="block">
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Category</div>
-            <select value={p.category} onChange={e=>set("category", e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]">
-              <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option><option value="sunflower">Sunflower</option>
-            </select>
-          </label>
           <div>
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-2">Sizes</div>
-            {p.sizes.map((s,i)=>(
-              <div key={i} className="flex gap-2 mb-2">
-                <input placeholder="500ml" value={s.label} onChange={e=>setSize(i,"label",e.target.value)} className="flex-1 border-2 border-[#1F3D2B] px-2 py-1.5 bg-[#F5F1E8]"/>
-                <input placeholder="Price" type="number" value={s.price} onChange={e=>setSize(i,"price",e.target.value)} className="w-28 border-2 border-[#1F3D2B] px-2 py-1.5 bg-[#F5F1E8]"/>
-                <button onClick={()=>rmSize(i)} className="border-2 border-[#1F3D2B] px-2 bg-[#F5F1E8] text-[#B8431A]"><Trash2 size={14} strokeWidth={3}/></button>
-              </div>
-            ))}
-            <button onClick={addSize} className="text-xs font-black uppercase tracking-widest border-2 border-[#1F3D2B] px-3 py-1 bg-[#F5F1E8]">+ Add Size</button>
+            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Sizes</span>
+            <div className="space-y-2 mt-1">
+              {p.sizes.map((s,i)=>(
+                <div key={i} className="flex gap-2">
+                  <input placeholder="500ml" value={s.label} onChange={e=>setSize(i,"label",e.target.value)} className="flex-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
+                  <input placeholder="Price" type="number" value={s.price} onChange={e=>setSize(i,"price",e.target.value)} className="w-32 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
+                  <button onClick={()=>rmSize(i)} className="px-3 py-2 bg-white border border-[#FECACA] text-[#B8431A] rounded-lg hover:bg-[#FEF2F2] transition-colors"><Trash2 size={16}/></button>
+                </div>
+              ))}
+            </div>
+            <button onClick={addSize} className="mt-2 text-sm font-medium text-[#1F3D2B] hover:text-[#2A5240] transition-colors">+ Add Size</button>
           </div>
           <label className="block">
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-1">Benefits (comma separated)</div>
-            <input value={p.benefits} onChange={e=>set("benefits",e.target.value)} className="w-full border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8]"/>
+            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Benefits (comma separated)</span>
+            <input value={p.benefits} onChange={e=>set("benefits",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors" placeholder="Healthy, Organic, Fresh"/>
           </label>
         </div>
-        <div className="p-4 border-t-[3px] border-[#1F3D2B] flex justify-end gap-2">
-          <button onClick={onClose} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 font-black uppercase text-sm">Cancel</button>
-          <button data-testid="save-product" onClick={()=>onSave(p)} className="bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-6 py-2 font-black uppercase tracking-widest text-sm">Save →</button>
+        <div className="p-5 border-t border-[#E5E5E0] flex justify-end gap-3 bg-[#F8F7F4] rounded-b-xl">
+          <button onClick={onClose} className="px-5 py-2.5 border border-[#E5E5E0] bg-white text-[#1F3D2B] font-medium rounded-lg hover:border-[#1F3D2B] transition-colors">Cancel</button>
+          <button data-testid="save-product" onClick={()=>onSave(p)} className="px-6 py-2.5 bg-[#1F3D2B] text-white font-medium rounded-lg hover:bg-[#2A5240] transition-colors">Save Product</button>
         </div>
       </div>
     </div>

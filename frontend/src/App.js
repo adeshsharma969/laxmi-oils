@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CartDrawer from "./components/CartDrawer";
 import { CartProvider, useCart } from "./context/CartContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import AuthCallback from "./pages/AuthCallback";
 import BlogDetail from "./pages/BlogDetail";
 import Invoice from "./pages/Invoice";
@@ -50,6 +51,7 @@ function AnimatedRoutes() {
         <Route path="/register" element={wrap(Register)}/>
         <Route path="/account" element={wrap(Account)}/>
         <Route path="/admin" element={wrap(Admin)}/>
+        <Route path="/admin-login" element={wrap(AdminLogin)}/>
         <Route path="/auth/callback" element={wrap(AuthCallback)}/>
         <Route path="/blog/:id" element={wrap(BlogDetail)}/>
         <Route path="/invoice/:id" element={wrap(Invoice)}/>
@@ -77,24 +79,35 @@ function FloatingCart() {
   );
 }
 
+function AppLayout() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/admin-login');
+
+  return (
+    <>
+      <ScrollToTop/>
+      <div className="noise-overlay"></div>
+      <div className={`relative z-[2] min-h-screen flex flex-col ${isAdminRoute ? 'bg-[#F8F7F4]' : 'bg-[#F5F1E8]'}`}>
+        {!isAdminRoute && <CouponBanner/>}
+        {!isAdminRoute && <Navbar/>}
+        <main className="flex-1">
+          <AnimatedRoutes/>
+        </main>
+        {!isAdminRoute && <Footer/>}
+        {!isAdminRoute && <CartDrawer/>}
+        {!isAdminRoute && <FloatingCart/>}
+        {!isAdminRoute && <WhatsAppButton/>}
+      </div>
+    </>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <ScrollToTop/>
-          <div className="noise-overlay"></div>
-          <div className="relative z-[2] min-h-screen flex flex-col bg-[#F5F1E8]">
-            <CouponBanner/>
-            <Navbar/>
-            <main className="flex-1">
-              <AnimatedRoutes/>
-            </main>
-            <Footer/>
-            <CartDrawer/>
-            <FloatingCart/>
-            <WhatsAppButton/>
-          </div>
+          <AppLayout/>
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>

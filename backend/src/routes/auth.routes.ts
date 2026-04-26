@@ -6,6 +6,7 @@ export const authRoutes = Router();
 
 authRoutes.post("/register", auth.register);
 authRoutes.post("/login", auth.login);
+authRoutes.post("/admin-login", auth.adminLogin);
 authRoutes.post("/google-session", auth.googleSession);
 authRoutes.get("/me", requireAuth, auth.me);
 authRoutes.post("/logout", auth.logout);

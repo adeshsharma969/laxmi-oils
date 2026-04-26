@@ -73,7 +73,6 @@ export default function Navbar() {
                 {menuOpen && (
                   <motion.div initial={{opacity:0,y:-6}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-6}} className="absolute right-0 mt-2 w-56 bg-[#F5F1E8] border-[3px] border-[#1F3D2B] shadow-[5px_5px_0_0_#1F3D2B] z-50">
                     <Link to="/account" onClick={()=>setMenuOpen(false)} className="block px-4 py-3 border-b-2 border-[#1F3D2B]/20 font-bold uppercase text-xs tracking-widest hover:bg-[#D98F00]">My Orders</Link>
-                    {user.role==="admin" && <Link to="/admin" onClick={()=>setMenuOpen(false)} className="block px-4 py-3 border-b-2 border-[#1F3D2B]/20 font-bold uppercase text-xs tracking-widest hover:bg-[#D98F00]">Admin Panel</Link>}
                     <button onClick={()=>{logout(); setMenuOpen(false); nav("/");}} className="w-full text-left px-4 py-3 font-bold uppercase text-xs tracking-widest text-[#B8431A] hover:bg-[#B8431A] hover:text-[#F5F1E8] flex items-center gap-2"><LogOut size={12} strokeWidth={3}/> Logout</button>
                   </motion.div>
                 )}
@@ -147,11 +146,6 @@ export default function Navbar() {
                     <NavLink to="/account" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00] flex items-center gap-2">
                       <UserIcon size={16} strokeWidth={3}/> My Orders
                     </NavLink>
-                    {user.role==="admin" && (
-                      <NavLink to="/admin" onClick={()=>setOpen(false)} className="touch-target px-6 py-3.5 border-b border-[#1F3D2B]/10 font-bold uppercase tracking-wide text-sm text-[#1F3D2B] active:bg-[#D98F00]">
-                        Admin Panel
-                      </NavLink>
-                    )}
                     <button onClick={()=>{logout(); setOpen(false);}} className="touch-target w-full text-left px-6 py-3.5 font-bold uppercase tracking-wide text-sm text-[#B8431A] active:bg-[#B8431A]/10 flex items-center gap-2">
                       <LogOut size={16} strokeWidth={3}/> Logout
                     </button>

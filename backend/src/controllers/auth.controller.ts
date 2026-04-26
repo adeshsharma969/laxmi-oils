@@ -27,6 +27,11 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   res.json(await authService.login(body.email, body.password));
 });
 
+export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
+  const body = loginSchema.parse(req.body);
+  res.json(await authService.adminLogin(body.email, body.password));
+});
+
 export const me = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) throw new AppError(401, "Not authenticated");
   res.json(req.user);

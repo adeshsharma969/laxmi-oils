@@ -89,6 +89,19 @@ export async function login(emailInput: string, password: string) {
   const ok = user?.passwordHash ? await bcrypt.compare(password, user.passwordHash) : false;
 
   if (!user || !ok) throw new AppError(401, "Invalid email or password");
+  if (user.role === "admin") throw new AppError(401, "Invalid email or password");
+
+  const publicUser = toPublicUser(user);
+  return { token: signToken(user.userId, user.role), user: publicUser };
+}
+
+export async function adminLogin(emailInput: string, password: string) {
+  const email = emailInput.toLowerCase().trim();
+  const user = await prisma.user.findUnique({ where: { email } });
+  const ok = user?.passwordHash ? await bcrypt.compare(password, user.passwordHash) : false;
+
+  if (!user || !ok) throw new AppError(401, "Invalid email or password");
+  if (user.role !== "admin") throw new AppError(403, "Admin access only");
 
   const publicUser = toPublicUser(user);
   return { token: signToken(user.userId, user.role), user: publicUser };

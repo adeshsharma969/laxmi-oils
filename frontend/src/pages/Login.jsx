@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
@@ -7,13 +7,32 @@ import { fmtErr } from "../api/client";
 export default function Login() {
   const auth = useAuth();
   if (!auth) return <div className="p-10 text-center">Loading...</div>;
-  const { login } = auth;
+  const { login, user, loading: authLoading } = auth;
   const nav = useNavigate();
   const loc = useLocation();
   const from = loc.state?.from || "/account";
   const [form, setForm] = useState({ email: "", password: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Route guards: redirect if already authenticated
+  useEffect(() => {
+    if (authLoading) return;
+    if (user?.role === "admin") {
+      nav("/admin", { replace: true });
+    } else if (user) {
+      nav(from, { replace: true });
+    }
+  }, [user, authLoading, nav, from]);
+
+  // Show loading while checking auth status
+  if (authLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-[#1F3D2B] font-bold">Loading...</div>
+      </div>
+    );
+  }
 
   const submit = async (e) => {
     e.preventDefault();
