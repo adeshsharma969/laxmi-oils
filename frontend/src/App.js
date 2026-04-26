@@ -20,6 +20,8 @@ import AuthCallback from "./pages/AuthCallback";
 import BlogDetail from "./pages/BlogDetail";
 import Invoice from "./pages/Invoice";
 import { Terms, Privacy, FAQ } from "./pages/Policies";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import ReturnsPolicy from "./pages/ReturnsPolicy";
 import { CouponBanner, WhatsAppButton } from "./components/Promo";
 import { ShoppingBag } from "lucide-react";
 
@@ -58,6 +60,8 @@ function AnimatedRoutes() {
         <Route path="/terms" element={wrap(Terms)}/>
         <Route path="/privacy" element={wrap(Privacy)}/>
         <Route path="/faq" element={wrap(FAQ)}/>
+        <Route path="/shipping-policy" element={wrap(ShippingPolicy)}/>
+        <Route path="/returns-policy" element={wrap(ReturnsPolicy)}/>
       </Routes>
     </AnimatePresence>
   );
