@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -271,20 +272,29 @@ const PRODUCTS = [
 async function seed() {
   const now = new Date().toISOString();
 
-  for (const product of PRODUCTS) {
-    await prisma.product.upsert({
-      where: { productId: product.productId },
-      update: product,
-      create: {
-        ...product,
-        createdAt: now,
-        updatedAt: now,
-      },
-    });
-    console.log(`Seeded: ${product.name}`);
-  }
+  // Delete and recreate admin user to ensure fresh password hash
+  await prisma.user.deleteMany({ where: { email: 'admin@laxmioils.com' } });
+  const adminPasswordHash = await bcrypt.hash('admin123', 12);
+  await prisma.user.create({
+    data: {
+      userId: 'admin-001',
+      email: 'admin@laxmioils.com',
+      passwordHash: adminPasswordHash,
+      name: 'Admin User',
+      role: 'admin',
+      createdAt: now,
+      updatedAt: now,
+    },
+  });
+  console.log('Seeded admin user: admin@laxmioils.com / admin123');
+  console.log('Password hash:', adminPasswordHash);
 
-  console.log('Seeding complete!');
+  // PRODUCT SEEDING DISABLED - Products are now added via admin panel only
+  console.log('⚠️  Product seeding has been disabled.');
+  console.log('⚠️  Products should be added manually through the admin panel.');
+  console.log('⚠️  This prevents automatic seeding of placeholder products.');
+
+  console.log('Seeding complete! (Products skipped - admin only)');
   await prisma.$disconnect();
 }
 

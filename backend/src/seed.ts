@@ -25,6 +25,22 @@ export async function seed() {
   }
 
   // Product seeding removed - products should be added via admin panel
+  
+  // Safety check: Remove any automatically seeded products that might exist
+  const seededProductIds = [
+    'mustard-500ml', 'mustard-1l', 'mustard-5l', 'mustard-15l',
+    'soyabean-500ml', 'soyabean-1l', 'soyabean-5l', 'soyabean-15l',
+    'groundnut-500ml', 'groundnut-1l', 'groundnut-5l', 'groundnut-15l',
+    'sunflower-500ml', 'sunflower-1l', 'sunflower-5l', 'sunflower-15l'
+  ];
+  
+  const deletedSeeded = await prisma.product.deleteMany({
+    where: { productId: { in: seededProductIds } }
+  });
+  
+  if (deletedSeeded.count > 0) {
+    console.log(`🧹 Cleaned up ${deletedSeeded.count} automatically seeded products`);
+  }
 
   const existingAdmin = await prisma.user.findUnique({ where: { email: env.adminEmail } });
   const passwordHash = await bcrypt.hash(env.adminPassword, 12);

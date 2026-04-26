@@ -70,7 +70,7 @@ export default function AdminLogin() {
           <h1 className="font-display font-bold text-2xl text-[#1F3D2B] tracking-tight">
             Admin Access
           </h1>
-          <p className="text-[#1F3D2B]/60 text-sm mt-2">
+          <p className="text-[#1F3D2B]/80 text-sm mt-2">
             Authorized personnel only
           </p>
         </div>
@@ -85,11 +85,11 @@ export default function AdminLogin() {
           )}
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#1F3D2B]/70">
+            <label className="text-xs font-semibold uppercase tracking-wider text-[#1F3D2B]/80">
               Admin Email
             </label>
             <div className="relative">
-              <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]/40" />
+              <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]/60" />
               <input
                 type="email"
                 value={email}
@@ -102,11 +102,11 @@ export default function AdminLogin() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#1F3D2B]/70">
+            <label className="text-xs font-semibold uppercase tracking-wider text-[#1F3D2B]/80">
               Password
             </label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]/40" />
+              <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]/60" />
               <input
                 type="password"
                 value={password}
@@ -129,7 +129,7 @@ export default function AdminLogin() {
 
         {/* Security Notice */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-[#1F3D2B]/40">
+          <p className="text-xs text-[#1F3D2B]/60">
             Restricted area. Unauthorized access is prohibited.
           </p>
         </div>

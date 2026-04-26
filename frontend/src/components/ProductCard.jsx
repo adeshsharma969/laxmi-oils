@@ -42,7 +42,7 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
           <div className="flex items-end justify-between mt-3 sm:mt-4">
             <div>
               <div className="text-sm sm:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
-              <div className="text-xs font-medium uppercase tracking-[0.12em] text-[#1F3D2B]/50">{size.label}</div>
+              <div className="text-xs font-medium uppercase tracking-[0.12em] text-[#1F3D2B]/70">{size.label}</div>
             </div>
             <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
               <ShoppingCart size={16} strokeWidth={3}/>

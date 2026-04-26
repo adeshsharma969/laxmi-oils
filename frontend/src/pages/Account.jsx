@@ -59,13 +59,13 @@ export default function Account() {
               {user.picture ? <img src={user.picture} alt="" className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-[#1F3D2B]"/> : <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#D98F00] border-2 border-[#1F3D2B] flex items-center justify-center font-display font-black text-xl sm:text-2xl">{(user.name||user.email||"?")[0].toUpperCase()}</div>}
               <div className="min-w-0">
                 <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{user.name}</div>
-                <div className="text-xs sm:text-sm text-[#1F3D2B]/70 truncate">{user.email}</div>
+                <div className="text-xs sm:text-sm text-[#1F3D2B]/80 truncate">{user.email}</div>
               </div>
             </div>
             <div className="mt-4 sm:mt-5 space-y-1 text-xs sm:text-sm">
-              <div className="flex justify-between"><span className="text-[#1F3D2B]/70">Role</span><span className="font-black uppercase">{user.role}</span></div>
-              {user.phone && <div className="flex justify-between"><span className="text-[#1F3D2B]/70">Phone</span><span className="font-bold">{user.phone}</span></div>}
-              <div className="flex justify-between"><span className="text-[#1F3D2B]/70">Orders</span><span className="font-bold">{orders.length}</span></div>
+              <div className="flex justify-between"><span className="text-[#1F3D2B]/80">Role</span><span className="font-black uppercase">{user.role}</span></div>
+              {user.phone && <div className="flex justify-between"><span className="text-[#1F3D2B]/80">Phone</span><span className="font-bold">{user.phone}</span></div>}
+              <div className="flex justify-between"><span className="text-[#1F3D2B]/80">Orders</span><span className="font-bold">{orders.length}</span></div>
             </div>
           </div>
         </aside>
@@ -109,11 +109,11 @@ export default function Account() {
                 <div key={o.order_id} data-testid={`order-${o.order_id}`} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-5 brutal-shadow-sm">
                   <div className="flex flex-wrap justify-between gap-3 border-b-2 border-[#1F3D2B]/20 pb-3 mb-3">
                     <div>
-                      <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B]/60">Order</div>
+                      <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B]/80">Order</div>
                       <div className="font-mono font-black text-base sm:text-lg text-[#1F3D2B]">{o.order_id}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B]/60">{new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+                      <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B]/80">{new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
                       <div className={`inline-block mt-1 px-2 py-0.5 text-xs font-black uppercase tracking-[0.12em] border-2 ${o.status==='delivered'?'bg-[#1F3D2B] text-[#D98F00] border-[#1F3D2B]':'bg-[#D98F00] text-[#1F3D2B] border-[#1F3D2B]'}`}>{o.status}</div>
                     </div>
                   </div>
@@ -126,7 +126,7 @@ export default function Account() {
                     ))}
                   </div>
                   <div className="flex justify-between mt-3 pt-3 border-t-2 border-[#1F3D2B]/20">
-                    <span className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</span>
+                    <span className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80">Total</span>
                     <span className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">₹{o.total}</span>
                   </div>
                   {o.tracking?.trackingUrl && (
@@ -152,7 +152,7 @@ function Stat({ label, value, mono }) {
   return (
     <div className="bg-[#F5F1E8] border-2 border-[#1F3D2B] px-2 sm:px-3 py-2">
       <div className={`font-display font-black text-base sm:text-lg text-[#1F3D2B] ${mono?"font-mono tracking-tight":""}`}>{value}</div>
-      <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">{label}</div>
+      <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80">{label}</div>
     </div>
   );
 }

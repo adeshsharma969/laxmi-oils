@@ -30,7 +30,7 @@ export default function Invoice() {
         <div className="flex flex-wrap justify-between items-start gap-4 border-b-[3px] border-[#1F3D2B] pb-4 md:pb-5">
           <div>
             <div className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">LAXMI</div>
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">Edible Oils · Jaipur</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80">Edible Oils · Jaipur</div>
             <div className="text-xs sm:text-sm mt-2">hello@laxmioils.in · +91 98765 43210</div>
           </div>
           <div className="text-right">
@@ -43,7 +43,7 @@ export default function Invoice() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5 text-sm">
           <div>
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Billed To</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80 mb-1">Billed To</div>
             <div className="font-black">{a.name}</div>
             <div>{a.address}</div>
             <div>{a.city} — {a.pincode}</div>
@@ -51,9 +51,9 @@ export default function Invoice() {
             <div>{a.email}</div>
           </div>
           <div>
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Delivery</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80 mb-1">Delivery</div>
             <div className="capitalize font-bold">{order.delivery}</div>
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mt-3 mb-1">Payment</div>
+            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80 mt-3 mb-1">Payment</div>
             <div className="font-bold uppercase text-xs">{order.payment_method}</div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function Invoice() {
           <tbody>
             {order.items.map((it,i)=>(
               <tr key={i} className="border-b border-[#1F3D2B]/20">
-                <td className="p-1 sm:p-2"><div className="font-black">{it.name}</div><div className="text-[10px] sm:text-xs text-[#1F3D2B]/70">{it.size}</div></td>
+                <td className="p-1 sm:p-2"><div className="font-black">{it.name}</div><div className="text-[10px] sm:text-xs text-[#1F3D2B]/80">{it.size}</div></td>
                 <td className="p-1 sm:p-2 text-right">{it.qty}</td>
                 <td className="p-1 sm:p-2 text-right">₹{it.price}</td>
                 <td className="p-1 sm:p-2 text-right font-bold">₹{it.price * it.qty}</td>
@@ -82,7 +82,7 @@ export default function Invoice() {
           </div>
         </div>
 
-        <div className="mt-6 md:mt-8 pt-4 md:pt-5 border-t-2 border-[#1F3D2B]/30 text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 text-center">
+        <div className="mt-6 md:mt-8 pt-4 md:pt-5 border-t-2 border-[#1F3D2B]/30 text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80 text-center">
           Thank you for choosing Laxmi · Curated in Jaipur · GST inclusive
         </div>
       </div>

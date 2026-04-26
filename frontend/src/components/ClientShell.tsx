@@ -52,18 +52,36 @@ function FloatingCart() {
 
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin') || false;
+
+  // Admin routes use their own layout, so return minimal wrapper
+  if (isAdminRoute) {
+    return (
+      <AuthProvider>
+        <ScrollToTop />
+        <div className="relative z-[2] min-h-screen flex flex-col bg-[#F8F7F4]">
+          <main className="flex-1">
+            <AnimatePresence mode="wait">
+              <motion.div key={pathname || 'default'} {...pageAnim}>
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </main>
+        </div>
+      </AuthProvider>
+    );
+  }
 
   return (
     <AuthProvider>
       <CartProvider>
         <ScrollToTop />
-        <div className="noise-overlay"></div>
         <div className="relative z-[2] min-h-screen flex flex-col bg-[#F5F1E8]">
           <CouponBanner />
           <Navbar />
           <main className="flex-1">
             <AnimatePresence mode="wait">
-              <motion.div key={pathname} {...pageAnim}>
+              <motion.div key={pathname || 'default'} {...pageAnim}>
                 {children}
               </motion.div>
             </AnimatePresence>

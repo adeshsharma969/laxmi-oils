@@ -73,7 +73,7 @@ export default function Admin() {
             <h1 className="font-display font-bold text-2xl sm:text-3xl text-[#1F3D2B] tracking-tight mt-1">Control Center</h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-[#1F3D2B]/60">{user?.email}</span>
+            <span className="text-sm text-[#1F3D2B] font-medium">{user?.email}</span>
             <button onClick={logout} className="px-4 py-2 bg-[#1F3D2B] text-white text-sm font-medium rounded-lg hover:bg-[#2A5240] transition-colors">Logout</button>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function Admin() {
             className={`px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
               tab===t.id
                 ? "bg-[#1F3D2B] text-white shadow-sm"
-                : "bg-white text-[#1F3D2B]/70 hover:text-[#1F3D2B] hover:bg-[#E5E5E0]/50 border border-[#E5E5E0]"
+                : "bg-white text-[#1F3D2B] hover:text-[#F5F1E8] hover:bg-[#1F3D2B] border border-[#E5E5E0]"
             }`}
           >
             {t.label}
@@ -100,16 +100,30 @@ export default function Admin() {
       {tab==="dash" && stats && (
         <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[
-            { icon:IndianRupee, label:"Revenue", value:`₹${stats.revenue.toLocaleString('en-IN')}`, accent:true },
+            { icon:IndianRupee, label:"Revenue", value:`₹${(stats.revenue || 0).toLocaleString('en-IN')}`, accent:true, isRevenue:true },
             { icon:ShoppingCart, label:"Orders", value:stats.orders },
             { icon:Package, label:"Products", value:stats.products },
             { icon:Briefcase, label:"B2B Leads", value:stats.leads },
             { icon:Users, label:"Customers", value:stats.customers },
           ].map((s,i)=>{const Ic=s.icon;return (
-            <div key={i} className={`bg-white rounded-xl p-4 shadow-sm border ${s.accent?"border-[#1F3D2B] bg-[#1F3D2B]":"border-[#E5E5E0]"}`}>
+            <div key={i} className={`rounded-xl p-4 shadow-sm border ${
+              s.isRevenue 
+                ? "border-[#1F3D2B] bg-[#1F3D2B]" 
+                : s.accent 
+                  ? "border-[#1F3D2B] bg-[#1F3D2B]" 
+                  : "border-[#E5E5E0] bg-white"
+            }`}>
               <Ic size={20} strokeWidth={2} className={s.accent?"text-[#D98F00]":"text-[#1F3D2B]"}/>
-              <div className={`font-display font-bold text-xl sm:text-2xl mt-2 ${s.accent?"text-white":"text-[#1F3D2B]"}`}>{s.value}</div>
-              <div className={`text-xs font-medium uppercase tracking-wider ${s.accent?"text-white/70":"text-[#1F3D2B]/50"}`}>{s.label}</div>
+              <div className={`font-display font-bold text-xl sm:text-2xl mt-2 ${
+                s.isRevenue || s.accent 
+                  ? "text-white font-black drop-shadow-sm" 
+                  : "text-[#1F3D2B]"
+              }`}>{s.value || '0'}</div>
+              <div className={`text-xs font-medium uppercase tracking-wider ${
+                s.isRevenue || s.accent 
+                  ? "text-white/90" 
+                  : "text-[#1F3D2B]/80"
+              }`}>{s.label}</div>
             </div>
           );})}
         </motion.div>
@@ -160,12 +174,12 @@ export default function Admin() {
                   <div className="w-16 h-16 rounded-lg border border-[#E5E5E0] flex-shrink-0 overflow-hidden" style={{background:p.bg}}>{p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain"/>}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-semibold text-sm text-[#1F3D2B] truncate">{p.name}</div>
-                    <div className="text-xs font-medium text-[#1F3D2B]/50 capitalize">{p.category} · {p.sizes.length} sizes</div>
-                    <div className="text-xs mt-1 text-[#1F3D2B]/70">From <span className="font-semibold text-[#1F3D2B]">₹{p.sizes[0].price}</span></div>
+                    <div className="text-xs font-medium text-[#1F3D2B]/80 capitalize">{p.category} · {p.sizes.length} sizes</div>
+                    <div className="text-xs mt-1 text-[#1F3D2B]/80">From <span className="font-semibold text-[#1F3D2B]">₹{p.sizes[0].price}</span></div>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-4">
-                  <button onClick={()=>setEditing(p)} className="flex-1 py-2 bg-white border border-[#E5E5E0] rounded-lg text-sm font-medium text-[#1F3D2B] hover:border-[#1F3D2B] transition-colors flex items-center justify-center gap-1"><Edit3 size={14}/> Edit</button>
+                  <button onClick={()=>setEditing(p)} className="flex-1 py-2 bg-white border border-[#E5E5E0] rounded-lg text-sm font-medium text-[#1F3D2B] hover:border-[#1F3D2B] hover:bg-[#1F3D2B] hover:text-white transition-colors flex items-center justify-center gap-1"><Edit3 size={14}/> Edit</button>
                   <button onClick={()=>deleteProduct(p.product_id)} className="px-3 py-2 bg-white border border-[#FECACA] text-[#B8431A] rounded-lg hover:bg-[#FEF2F2] transition-colors"><Trash2 size={14}/></button>
                 </div>
               </div>
@@ -193,8 +207,8 @@ export default function Admin() {
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>
                     <div className="font-mono font-semibold text-sm text-[#1F3D2B]">{o.order_id}</div>
-                    <div className="text-xs text-[#1F3D2B]/50">{o.address?.name} · {o.address?.phone}</div>
-                    <div className="text-xs text-[#1F3D2B]/40">{new Date(o.created_at).toLocaleString('en-IN')}</div>
+                    <div className="text-xs text-[#1F3D2B]/80">{o.address?.name} · {o.address?.phone}</div>
+                    <div className="text-xs text-[#1F3D2B]/70">{new Date(o.created_at).toLocaleString('en-IN')}</div>
                   </div>
                   <div className="text-right">
                     <div className="font-display font-bold text-lg text-[#1F3D2B]">₹{o.total}</div>
@@ -203,7 +217,7 @@ export default function Admin() {
                     </select>
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-[#1F3D2B]/60">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
+                <div className="mt-3 text-xs text-[#1F3D2B]/80">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
                 <div className="mt-3"><Link to={`/invoice/${o.order_id}`} className="text-sm font-medium text-[#1F3D2B] hover:text-[#D98F00] transition-colors">View Invoice →</Link></div>
               </div>
             ))}
@@ -223,9 +237,9 @@ export default function Admin() {
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>
                     <div className="font-display font-semibold text-base text-[#1F3D2B]">{l.company}</div>
-                    <div className="text-xs text-[#1F3D2B]/50">{l.name} · {l.phone}</div>
-                    <div className="text-xs text-[#1F3D2B]/60">Volume: <span className="font-semibold">{l.volume||"—"} L</span></div>
-                    {l.message && <div className="mt-2 text-sm text-[#1F3D2B]/70 bg-white p-3 rounded border border-[#E5E5E0]">&ldquo;{l.message}&rdquo;</div>}
+                    <div className="text-xs text-[#1F3D2B]/80">{l.name} · {l.phone}</div>
+                    <div className="text-xs text-[#1F3D2B]/70">Volume: <span className="font-semibold">{l.volume||"—"} L</span></div>
+                    {l.message && <div className="mt-2 text-sm text-[#1F3D2B]/80 bg-white p-3 rounded border border-[#E5E5E0]">&ldquo;{l.message}&rdquo;</div>}
                   </div>
                   <select value={l.status} onChange={e=>updateLeadStatus(l.lead_id, e.target.value)} className="bg-white border border-[#E5E5E0] rounded px-3 py-1.5 text-xs font-medium text-[#1F3D2B] capitalize self-start">
                     {["new","contacted","quoted","won","lost"].map(s=><option key={s} value={s}>{s}</option>)}
@@ -277,32 +291,32 @@ function ProductEditor({ product, onClose, onSave }) {
         <div className="p-5 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="block">
-              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Name</span>
+              <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Name</span>
               <input value={p.name||""} onChange={e=>set("name",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
             </label>
             <label className="block">
-              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Category</span>
+              <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Category</span>
               <select value={p.category} onChange={e=>set("category", e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors">
                 <option value="mustard">Mustard</option><option value="soyabean">Soyabean</option><option value="groundnut">Groundnut</option><option value="sunflower">Sunflower</option>
               </select>
             </label>
           </div>
           <label className="block">
-            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Description</span>
+            <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Description</span>
             <textarea rows={3} value={p.description||""} onChange={e=>set("description",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="block">
-              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Badge</span>
+              <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Badge</span>
               <input value={p.badge||""} onChange={e=>set("badge",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors"/>
             </label>
             <label className="block">
-              <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Background Color</span>
+              <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Background Color</span>
               <input value={p.bg||""} onChange={e=>set("bg",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors" placeholder="#D98F00"/>
             </label>
           </div>
           <div>
-            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Images (4 URLs)</span>
+            <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Images (4 URLs)</span>
             <div className="grid grid-cols-1 gap-2 mt-1">
               {p.images.map((img, i) => (
                 <input key={i} placeholder={`Image ${i+1} URL`} value={img} onChange={e=>{
@@ -314,7 +328,7 @@ function ProductEditor({ product, onClose, onSave }) {
             </div>
           </div>
           <div>
-            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Sizes</span>
+            <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Sizes</span>
             <div className="space-y-2 mt-1">
               {p.sizes.map((s,i)=>(
                 <div key={i} className="flex gap-2">
@@ -327,7 +341,7 @@ function ProductEditor({ product, onClose, onSave }) {
             <button onClick={addSize} className="mt-2 text-sm font-medium text-[#1F3D2B] hover:text-[#2A5240] transition-colors">+ Add Size</button>
           </div>
           <label className="block">
-            <span className="text-xs font-medium text-[#1F3D2B]/70 uppercase tracking-wider">Benefits (comma separated)</span>
+            <span className="text-xs font-medium text-[#1F3D2B]/80 uppercase tracking-wider">Benefits (comma separated)</span>
             <input value={p.benefits} onChange={e=>set("benefits",e.target.value)} className="w-full mt-1 border border-[#E5E5E0] rounded-lg px-3 py-2 bg-[#F8F7F4] focus:border-[#1F3D2B] focus:outline-none transition-colors" placeholder="Healthy, Organic, Fresh"/>
           </label>
         </div>

@@ -86,7 +86,6 @@ function AppLayout() {
   return (
     <>
       <ScrollToTop/>
-      <div className="noise-overlay"></div>
       <div className={`relative z-[2] min-h-screen flex flex-col ${isAdminRoute ? 'bg-[#F8F7F4]' : 'bg-[#F5F1E8]'}`}>
         {!isAdminRoute && <CouponBanner/>}
         {!isAdminRoute && <Navbar/>}

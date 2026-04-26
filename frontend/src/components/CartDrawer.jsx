@@ -29,7 +29,7 @@ export default function CartDrawer() {
               {items.length===0 && (
                 <div className="text-center py-16 sm:py-20">
                   <div className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">Empty.</div>
-                  <div className="text-xs sm:text-sm mt-2 text-[#1F3D2B]/70">Let's fill it with something pure.</div>
+                  <div className="text-xs sm:text-sm mt-2 text-[#1F3D2B]/80">Let's fill it with something pure.</div>
                 </div>
               )}
               {items.map(it => (
@@ -39,7 +39,7 @@ export default function CartDrawer() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{it.name}</div>
-                    <div className="text-xs sm:text-sm font-bold uppercase text-[#1F3D2B]/70 tracking-[0.12em]">{it.size}</div>
+                    <div className="text-xs sm:text-sm font-bold uppercase text-[#1F3D2B]/80 tracking-[0.12em]">{it.size}</div>
                     <div className="flex items-center justify-between mt-2">
                       <div className="flex items-center border-2 border-[#1F3D2B]">
                         <button data-testid={`qty-dec-${it.key}`} onClick={()=>updateQty(it.key,-1)} className="touch-target-sm w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
