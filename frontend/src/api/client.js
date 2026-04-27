@@ -1,23 +1,15 @@
-const rawApi =
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  process.env.REACT_APP_BACKEND_URL ||
-  "https://laxmiedibleoils.onrender.com/api";
-
-// Force production API URL for deployed site
-const finalApiUrl = (typeof window !== 'undefined' && window.location.hostname !== 'localhost') 
-  ? "https://laxmiedibleoils.onrender.com/api" 
-  : rawApi;
+// Use Vercel proxy in production, direct backend in development
+const useProxy = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+const finalApiUrl = useProxy ? "/api/proxy" : "https://laxmiedibleoils.onrender.com/api";
 
 // Debug: Log the API URL being used
 if (typeof window !== 'undefined') {
-  console.log('🔍 Raw API URL:', rawApi);
+  console.log('🔍 Using Proxy:', useProxy);
   console.log('🔍 Final API URL:', finalApiUrl);
   console.log('🔍 Hostname:', window.location.hostname);
 }
 
-export const API = finalApiUrl.endsWith("/api") ? finalApiUrl : `${finalApiUrl}/api`;
+export const API = finalApiUrl;
 
 // Create a simple API client using fetch
 const api = {
@@ -41,7 +33,8 @@ const api = {
     }
 
     try {
-      const response = await fetch(`${API}${url}`, fetchOptions);
+      const fullUrl = useProxy ? `${API}/${url}` : `${API}${url}`;
+      const response = await fetch(fullUrl, fetchOptions);
       
       if (typeof window !== 'undefined') {
         console.log('✅ API Response:', 'GET', url, `Status: ${response.status}`);
@@ -110,7 +103,8 @@ const api = {
     }
 
     try {
-      const response = await fetch(`${API}${url}`, fetchOptions);
+      const fullUrl = useProxy ? `${API}/${url}` : `${API}${url}`;
+      const response = await fetch(fullUrl, fetchOptions);
       
       if (typeof window !== 'undefined') {
         console.log('✅ API Response:', 'POST', url, `Status: ${response.status}`);
