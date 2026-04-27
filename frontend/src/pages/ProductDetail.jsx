@@ -69,15 +69,38 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-6">
-            <div>
-              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
-              <div data-testid="pdp-price" className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-[#1F3D2B]">₹{size.price*qty}</div>
+          <div className="mt-6 sm:mt-8">
+            {/* Mobile Layout: Pack Size Left, Price Center, Quantity Right */}
+            <div className="sm:hidden flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Pack Size</div>
+                <div className="font-display font-black text-xl text-[#1F3D2B]">{size.label}</div>
+              </div>
+              <div className="flex-1 text-center">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
+              </div>
+              <div className="flex-1 flex justify-end">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 text-right">Qty</div>
+                <div className="flex items-center border-[3px] border-[#1F3D2B]">
+                  <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+                  <span data-testid="pdp-qty" className="w-6 text-center font-black text-sm">{qty}</span>
+                  <button onClick={()=>setQty(q=>q+1)} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center border-[3px] border-[#1F3D2B]">
-              <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={14} strokeWidth={3}/></button>
-              <span data-testid="pdp-qty" className="w-8 sm:w-10 text-center font-black text-base sm:text-lg">{qty}</span>
-              <button onClick={()=>setQty(q=>q+1)} className="touch-target w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={14} strokeWidth={3}/></button>
+
+            {/* Desktop Layout: Original side-by-side */}
+            <div className="hidden sm:flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-6">
+              <div>
+                <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-[#1F3D2B]">₹{size.price*qty}</div>
+              </div>
+              <div className="flex items-center border-[3px] border-[#1F3D2B]">
+                <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={14} strokeWidth={3}/></button>
+                <span data-testid="pdp-qty" className="w-8 sm:w-10 text-center font-black text-base sm:text-lg">{qty}</span>
+                <button onClick={()=>setQty(q=>q+1)} className="touch-target w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={14} strokeWidth={3}/></button>
+              </div>
             </div>
           </div>
 
