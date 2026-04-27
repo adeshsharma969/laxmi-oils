@@ -1,6 +1,9 @@
-// Use Vercel proxy in production, direct backend in development
-const useProxy = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
-const finalApiUrl = useProxy ? "/api/proxy" : "https://laxmiedibleoils.onrender.com/api";
+// Use a configured API URL when present, local backend in development, and Vercel proxy in production.
+const normalizeBaseUrl = (url) => String(url || "").replace(/\/+$/, "");
+const configuredApiUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL);
+const isLocalhost = typeof window !== 'undefined' && ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const useProxy = typeof window !== 'undefined' && !isLocalhost && !configuredApiUrl;
+const finalApiUrl = configuredApiUrl || (useProxy ? "/api/proxy" : "http://localhost:8000/api");
 
 // Debug: Log the API URL being used
 if (typeof window !== 'undefined') {
@@ -10,6 +13,11 @@ if (typeof window !== 'undefined') {
 }
 
 export const API = finalApiUrl;
+
+const buildUrl = (url) => {
+  const cleanUrl = String(url || "").replace(/^\/+/, "");
+  return `${API}/${cleanUrl}`;
+};
 
 // Create a simple API client using fetch
 const api = {
@@ -33,7 +41,7 @@ const api = {
     }
 
     try {
-      const fullUrl = useProxy ? `${API}/${url}` : `${API}${url}`;
+      const fullUrl = buildUrl(url);
       const response = await fetch(fullUrl, fetchOptions);
       
       if (typeof window !== 'undefined') {
@@ -58,7 +66,7 @@ const api = {
           stack: error.stack,
           toString: error.toString(),
           isNetworkError: !error.message.includes('HTTP'),
-          fullUrl: `${API}${url}`,
+          fullUrl: buildUrl(url),
           errorObject: error,
           errorKeys: Object.keys(error),
           errorProps: {}
@@ -103,7 +111,7 @@ const api = {
     }
 
     try {
-      const fullUrl = useProxy ? `${API}/${url}` : `${API}${url}`;
+      const fullUrl = buildUrl(url);
       const response = await fetch(fullUrl, fetchOptions);
       
       if (typeof window !== 'undefined') {
@@ -124,7 +132,7 @@ const api = {
           method: 'POST',
           message: error.message,
           isNetworkError: !error.message.includes('HTTP'),
-          fullUrl: `${API}${url}`
+          fullUrl: buildUrl(url)
         });
       }
       throw error;

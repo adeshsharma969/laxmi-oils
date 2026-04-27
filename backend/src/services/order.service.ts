@@ -105,6 +105,19 @@ export async function createOrder(input: OrderInput, user?: { user_id: string; r
     total -= creditUsed;
   }
 
+  if (input.payment_method === "razorpay") {
+    if (!input.payment_id) throw new AppError(400, "Verified Razorpay payment is required");
+
+    const verifiedPayment = await prisma.payment.findFirst({
+      where: {
+        razorpayPaymentId: input.payment_id,
+        status: "paid",
+      },
+    });
+
+    if (!verifiedPayment) throw new AppError(400, "Razorpay payment is not verified");
+  }
+
   const order = await prisma.order.create({
     data: {
       orderId: publicOrderId(),
