@@ -51,7 +51,6 @@ model Product {
   images      String[]
   bg          String        @default("#D98F00")
   benefits    String[]
-  nutrition   Json?
   rating      Float         @default(4.8)
   reviews     Int           @default(0)
   inventory   Int?          @default(0)

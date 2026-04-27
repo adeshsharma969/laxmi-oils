@@ -13,7 +13,7 @@ const TABS = [
 ];
 
 const EMPTY_PRODUCT = { name:"", category:"mustard", description:"", badge:"NEW", images:["","","",""], bg:"#D98F00",
-  sizes:[{label:"1L", price:0}], benefits:[], nutrition:{energy:"",fat:"",sat:"",trans:""}, rating:4.8, reviews:0 };
+  sizes:[{label:"1L", price:0}], benefits:[], rating:4.8, reviews:0 };
 
 export default function Admin() {
   const auth = useAuth();

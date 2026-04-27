@@ -94,15 +94,7 @@ export default function ProductDetail() {
             ))}
           </div>
 
-          <div className="mt-6 sm:mt-8 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-5">
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]">Nutrition (per 100g)</div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-3">
-              {Object.entries(product.nutrition||{}).map(([k,v])=>(
-                <div key={k}><div className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">{v}</div><div className="text-xs font-bold uppercase tracking-[0.12em] text-[#1F3D2B]/60">{k}</div></div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+                  </motion.div>
       </div>
     </div>
   );

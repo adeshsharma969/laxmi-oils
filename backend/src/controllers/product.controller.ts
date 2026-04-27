@@ -13,7 +13,6 @@ const productSchema = z.object({
   image: z.string().optional(),
   bg: z.string().optional(),
   benefits: z.array(z.string()).optional(),
-  nutrition: z.record(z.unknown()).optional(),
   rating: z.coerce.number().optional(),
   reviews: z.coerce.number().optional(),
   inventory: z.coerce.number().optional(),

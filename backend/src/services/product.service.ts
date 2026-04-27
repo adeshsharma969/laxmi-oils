@@ -12,7 +12,6 @@ export type ProductInput = {
   images?: string[];
   bg?: string;
   benefits?: string[];
-  nutrition?: Record<string, unknown>;
   rating?: number;
   reviews?: number;
   inventory?: number;
@@ -31,7 +30,6 @@ export function toPublicProduct(product: any) {
     image: product.images?.[0] || "", // backward compatibility
     bg: product.bg,
     benefits: product.benefits || [],
-    nutrition: product.nutrition || {},
     rating: product.rating,
     reviews: product.reviews,
     inventory: product.inventory,
@@ -52,7 +50,6 @@ function normalizeProduct(input: ProductInput) {
     images: images.filter(Boolean),
     bg: input.bg || "#D98F00",
     benefits: input.benefits || [],
-    nutrition: (input.nutrition || {}) as any,
     rating: toNumber(input.rating, 4.8),
     reviews: Math.trunc(toNumber(input.reviews, 0)),
     inventory: Math.trunc(toNumber(input.inventory, 0)),
