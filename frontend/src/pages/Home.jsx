@@ -55,17 +55,31 @@ lab-tested for purity before reaching your home.</p>
           </motion.div>
 
           <div className="col-span-12 lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4 md:gap-5 lg:gap-6">
-            <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
-              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
-              <div>
-                <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">Kachi Ghani Mustard</div>
-                <div className="text-xs sm:text-sm mt-1 md:mt-2 opacity-80">1L · Cold Pressed</div>
-              </div>
-              <div className="flex items-end justify-between">
-                <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#D98F00]">₹289</div>
-                <Link to="/product/mustard-1l" className="touch-target w-10 h-10 border-2 border-[#F5F1E8] flex items-center justify-center hover:bg-[#D98F00] hover:text-[#1F3D2B]"><ArrowRight size={16} strokeWidth={3}/></Link>
-              </div>
-            </motion.div>
+            {bestsellers[0] ? (
+              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
+                <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
+                <div>
+                  <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">{bestsellers[0].name.replace(/Laxmi\s/i, "").replace(/\s*\(.*\)/, "")}</div>
+                  <div className="text-xs sm:text-sm mt-1 md:mt-2 opacity-80">{bestsellers[0].sizes[0]?.label} · {bestsellers[0].category === "mustard" ? "Cold Pressed" : bestsellers[0].category === "soyabean" ? "Refined" : bestsellers[0].category === "groundnut" ? "Filtered" : "Light & Healthy"}</div>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#D98F00]">₹{bestsellers[0].sizes[0]?.price || 0}</div>
+                  <Link to={`/product/${bestsellers[0].id || bestsellers[0].product_id}`} className="touch-target w-10 h-10 border-2 border-[#F5F1E8] flex items-center justify-center hover:bg-[#D98F00] hover:text-[#1F3D2B]"><ArrowRight size={16} strokeWidth={3}/></Link>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
+                <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
+                <div>
+                  <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">Kachi Ghani Mustard</div>
+                  <div className="text-xs sm:text-sm mt-1 md:mt-2 opacity-80">1L · Cold Pressed</div>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-[#D98F00]">₹289</div>
+                  <Link to="/product/mustard-1l" className="touch-target w-10 h-10 border-2 border-[#F5F1E8] flex items-center justify-center hover:bg-[#D98F00] hover:text-[#1F3D2B]"><ArrowRight size={16} strokeWidth={3}/></Link>
+                </div>
+              </motion.div>
+            )}
             <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.2}} className="bg-[#F5F1E8] border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px]">
               <img src="https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" alt="cooking" className="w-full h-full object-cover"/>
               <div className="absolute top-3 left-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-1 text-xs font-black tracking-[0.12em] border-2 border-[#1F3D2B] rotate-[-3deg]">FRESH BATCH</div>
@@ -101,11 +115,11 @@ lab-tested for purity before reaching your home.</p>
             <motion.div key={c.slug} initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5, delay:i*0.1, ease:[0.22,1,0.36,1]}}>
               <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-[6px_6px_0_0_#1F3D2B] md:hover:shadow-[12px_12px_0_0_#1F3D2B] hover:scale-[1.02] transition-all relative overflow-hidden h-[200px] sm:h-[260px] md:h-[300px] lg:h-[340px]" style={{background:c.bg}}>
                 <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover"/>
-                <div className="absolute inset-0 w-full h-full" style={{background: "linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 40%, rgba(0, 0, 0, 0) 70%)"}}></div>
-                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-6 text-white" style={{textShadow: "0 2px 8px rgba(0,0,0,0.45)"}}>
-                  <div className="text-[11px] sm:text-xs font-medium uppercase tracking-[1.5px] opacity-80 mb-3">0{i+1} · {c.tagline}</div>
-                  <h3 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-2xl leading-tight tracking-[-0.5px] uppercase mb-3 line-clamp-2">{c.name}</h3>
-                  <button className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.5px] hover:opacity-80 transition-all duration-300">
+                <div className="absolute inset-0 w-full h-full" style={{background: "linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.65) 30%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0) 100%)"}}></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-6 text-white" style={{textShadow: "0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.5)"}}>
+                  <div className="text-[11px] sm:text-xs font-bold uppercase tracking-[2px] mb-2 text-[#D98F00]">0{i+1} · {c.tagline}</div>
+                  <h3 className="font-black text-xl sm:text-2xl md:text-2xl lg:text-3xl leading-tight tracking-[-0.5px] uppercase mb-3 line-clamp-2 drop-shadow-lg">{c.name}</h3>
+                  <button className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-[1px] hover:text-[#D98F00] transition-all duration-300">
                     Shop Now 
                     <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform"/>
                   </button>
