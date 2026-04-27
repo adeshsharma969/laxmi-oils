@@ -7,9 +7,16 @@ const rawApi =
   process.env.REACT_APP_BACKEND_URL ||
   "https://laxmiedibleoils.onrender.com/api";
 
+// Force production API URL for deployed site
+const finalApiUrl = (typeof window !== 'undefined' && window.location.hostname !== 'localhost') 
+  ? "https://laxmiedibleoils.onrender.com/api" 
+  : rawApi;
+
 // Debug: Log the API URL being used
 if (typeof window !== 'undefined') {
-  console.log('🔍 API URL being used:', rawApi);
+  console.log('🔍 Raw API URL:', rawApi);
+  console.log('🔍 Final API URL:', finalApiUrl);
+  console.log('🔍 Hostname:', window.location.hostname);
   console.log('🔍 Environment vars:', {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -18,7 +25,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export const API = rawApi.endsWith("/api") ? rawApi : `${rawApi}/api`;
+export const API = finalApiUrl.endsWith("/api") ? finalApiUrl : `${finalApiUrl}/api`;
 
 const api = axios.create({ baseURL: API });
 
