@@ -12,91 +12,41 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
       viewport={{once:true, margin:"-50px"}}
       transition={{duration:0.5, delay:index*0.06, ease:[0.22,1,0.36,1]}}
       data-testid={`product-card-${product.id}`}
-      className="group relative bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border-4 border-[#1F3D2B]"
+      className="brutal-card group flex flex-col h-full"
     >
       <Link to={`/product/${product.id}`} className="block h-full">
-        {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F8F7F4] via-white to-[#F5F1E8] opacity-50"></div>
-        
-        {/* Product Image Section */}
-        <div className="relative h-48 sm:h-52 md:h-56 lg:h-64 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
+        <div className="relative h-44 sm:h-48 md:h-52 lg:h-56 overflow-hidden border-b-[3px] border-[#1F3D2B]" style={{background: product.bg}}>
           {(product.images?.[0] || product.image) && (
             <motion.img
               src={product.images?.[0] || product.image}
               alt={product.name}
-              className="w-full h-full object-contain p-6 relative z-0"
-              whileHover={{scale:1.05, rotate:2}}
-              transition={{duration:0.4, ease:[0.22,1,0.36,1]}}
+              className="w-full h-full object-contain p-4"
+              whileHover={{scale:1.08}}
+              transition={{duration:0.6, ease:[0.22,1,0.36,1]}}
             />
           )}
-          
-          {/* Floating Badges */}
-          <motion.div 
-            className="absolute top-4 left-4 bg-gradient-to-r from-[#D98F00] to-[#B8431A] text-white px-4 py-2 text-sm font-black uppercase tracking-wider rounded-full border-2 border-white shadow-lg z-20"
-            whileHover={{scale:1.1}}
-            transition={{duration:0.2}}
-          >
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-[#1F3D2B]">
             {size.label}
-          </motion.div>
-          
-          <motion.div 
-            className="absolute top-4 right-4 bg-gradient-to-r from-[#1F3D2B] to-[#2A5240] text-white px-4 py-2 text-sm font-black uppercase tracking-wider rounded-full border-2 border-white shadow-lg z-20"
-            whileHover={{scale:1.1}}
-            transition={{duration:0.2}}
-          >
+          </div>
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#1F3D2B] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-xs font-black uppercase tracking-[0.16em] border-2 border-[#F5F1E8]">
             {product.category}
-          </motion.div>
-        </div>
-
-        {/* Content Section */}
-        <div className="relative p-6 flex-1 flex flex-col z-10">
-          {/* Product Name */}
-          <h3 className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B] leading-tight mb-3 line-clamp-2 group-hover:text-[#B8431A] transition-colors">
-            {product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}
-          </h3>
-          
-          {/* Special Badge */}
-          {product.badge && (
-            <motion.div 
-              className="mb-4 inline-block"
-              whileHover={{scale:1.05}}
-              transition={{duration:0.2}}
-            >
-              <span className="bg-gradient-to-r from-[#B8431A] to-[#D98F00] text-white px-4 py-2 text-sm font-black uppercase tracking-wider rounded-full shadow-lg border-2 border-white">
-                {product.badge === "BULK" ? "🔥 Bulk Deal" : `⭐ ${product.badge}`}
-              </span>
-            </motion.div>
-          )}
-
-          {/* Price and Cart Section */}
-          <div className="mt-auto flex items-end justify-between">
-            <div className="flex-1">
-              <motion.div 
-                className="text-3xl sm:text-4xl font-black text-[#1F3D2B] leading-none"
-                whileHover={{scale:1.05}}
-                transition={{duration:0.2}}
-              >
-                ₹{size.price}
-              </motion.div>
-              <div className="text-sm font-semibold text-[#1F3D2B]/70 mt-1 uppercase tracking-wider">
-                {size.label}
-              </div>
-            </div>
-            
-            <motion.button 
-              className="touch-target w-14 h-14 bg-gradient-to-r from-[#D98F00] to-[#B8431A] text-white rounded-full border-4 border-white shadow-xl flex items-center justify-center group-hover:scale-110 transition-all duration-200"
-              whileHover={{scale:1.1, rotate:5}}
-              whileTap={{scale:0.95}}
-              transition={{duration:0.2}}
-            >
-              <ShoppingCart size={20} strokeWidth={3} className="text-white"/>
-            </motion.button>
           </div>
         </div>
-
-        {/* Hover Effect Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1F3D2B]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+        <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
+          <h3 className="font-display font-black text-base sm:text-lg md:text-xl text-[#1F3D2B] leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
+          {product.badge && (
+            <div className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
+          )}
+          <div className="flex items-end justify-between mt-3 sm:mt-4">
+            <div>
+              <div className="text-sm sm:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
+              <div className="text-xs font-medium uppercase tracking-[0.12em] text-[#1F3D2B]/70">{size.label}</div>
+            </div>
+            <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
+              <ShoppingCart size={16} strokeWidth={3}/>
+            </div>
+          </div>
+        </div>
       </Link>
     </motion.div>
   );
