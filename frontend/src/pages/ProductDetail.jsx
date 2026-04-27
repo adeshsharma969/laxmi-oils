@@ -70,16 +70,17 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 sm:mt-8">
-            {/* Mobile Layout: Minimal side-by-side */}
-            <div className="sm:hidden flex items-center justify-between gap-3">
-              <div>
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
-                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
+            {/* Mobile Layout: Fill space better */}
+            <div className="sm:hidden flex items-end justify-between gap-3">
+              <div className="flex-1">
+                <div className="text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-3xl text-[#1F3D2B] leading-tight">₹{size.price*qty}</div>
+                <div className="text-xs text-[#1F3D2B]/60 mt-1">{size.label} × {qty}</div>
               </div>
               <div className="flex items-center border-[3px] border-[#1F3D2B]">
-                <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-9 h-9 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+                <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
                 <span data-testid="pdp-qty" className="w-8 text-center font-black text-base">{qty}</span>
-                <button onClick={()=>setQty(q=>q+1)} className="touch-target w-9 h-9 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
+                <button onClick={()=>setQty(q=>q+1)} className="touch-target w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
               </div>
             </div>
 
