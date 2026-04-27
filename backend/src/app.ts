@@ -12,7 +12,33 @@ import { prisma } from "./prisma/client.js";
 
 export const app = express();
 
-const allowedOrigins = env.clientOrigin.split(",").map((origin) => origin.trim());
+const expandAllowedOrigins = (origins: string[]) => {
+  const expanded = new Set<string>();
+
+  origins.forEach((origin) => {
+    const trimmed = origin.trim().replace(/\/+$/, "");
+    if (!trimmed) return;
+
+    expanded.add(trimmed);
+
+    try {
+      const url = new URL(trimmed);
+      if (url.hostname.startsWith("www.")) {
+        url.hostname = url.hostname.slice(4);
+        expanded.add(url.toString().replace(/\/+$/, ""));
+      } else if (!url.hostname.includes("localhost")) {
+        url.hostname = `www.${url.hostname}`;
+        expanded.add(url.toString().replace(/\/+$/, ""));
+      }
+    } catch {
+      // Ignore non-URL values such as "*"; the original value is already included.
+    }
+  });
+
+  return Array.from(expanded);
+};
+
+const allowedOrigins = expandAllowedOrigins(env.clientOrigin.split(","));
 
 app.disable("x-powered-by");
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));

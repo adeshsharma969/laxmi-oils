@@ -1,9 +1,11 @@
-// Use a configured API URL when present, local backend in development, and Vercel proxy in production.
+// Use local backend in development and same-origin proxy in production.
+// Direct production API URLs are opt-in so a bad env value cannot break the public site.
 const normalizeBaseUrl = (url) => String(url || "").replace(/\/+$/, "");
 const configuredApiUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL);
+const allowDirectApi = process.env.NEXT_PUBLIC_USE_DIRECT_API === "true";
 const isLocalhost = typeof window !== 'undefined' && ["localhost", "127.0.0.1"].includes(window.location.hostname);
-const useProxy = typeof window !== 'undefined' && !isLocalhost && !configuredApiUrl;
-const finalApiUrl = configuredApiUrl || (useProxy ? "/api/proxy" : "http://localhost:8000/api");
+const useProxy = typeof window !== 'undefined' && !isLocalhost && !allowDirectApi;
+const finalApiUrl = useProxy ? "/api/proxy" : configuredApiUrl || "http://localhost:8000/api";
 
 // Debug: Log the API URL being used
 if (typeof window !== 'undefined') {

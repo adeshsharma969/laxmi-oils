@@ -6,10 +6,17 @@ if (!process.env.DATABASE_URL && process.env.MONGO_URL) {
   process.env.DATABASE_URL = process.env.MONGO_URL;
 }
 
+const defaultClientOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://laxmiedibleoils.com",
+  "https://www.laxmiedibleoils.com",
+];
+
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || 8000),
-  clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
+  clientOrigin: process.env.CLIENT_ORIGIN || defaultClientOrigins.join(","),
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET || "development-only-change-me",
   jwtExpireDays: Number(process.env.JWT_EXPIRE_DAYS || 7),

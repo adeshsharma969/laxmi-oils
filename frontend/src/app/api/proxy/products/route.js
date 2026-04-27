@@ -1,52 +1,49 @@
-// Vercel serverless proxy for products
+const BACKEND_API_URL = (process.env.BACKEND_API_URL || "https://laxmiedibleoils.onrender.com/api").replace(/\/+$/, "");
+
+function proxyHeaders(request) {
+  const headers = {
+    "Content-Type": "application/json",
+    "User-Agent": "Vercel-Proxy",
+  };
+  const authorization = request.headers.get("authorization");
+  if (authorization) headers.Authorization = authorization;
+  return headers;
+}
+
+function corsHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+}
+
 export async function GET(request) {
   try {
-    // Forward the request to Render backend
-    const response = await fetch('https://laxmiedibleoils.onrender.com/api/products', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Vercel-Proxy'
-      }
+    const response = await fetch(`${BACKEND_API_URL}/products`, {
+      method: "GET",
+      headers: proxyHeaders(request),
+      cache: "no-store",
     });
 
-    if (!response.ok) {
-      throw new Error(`Backend responded with ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    // Return the data with proper CORS headers
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-      }
+    const text = await response.text();
+    return new Response(text, {
+      status: response.status,
+      headers: corsHeaders(),
     });
-
   } catch (error) {
-    console.error('Proxy error:', error);
-    return new Response(JSON.stringify({ error: 'Backend unavailable' }), {
+    console.error("Proxy error:", error);
+    return new Response(JSON.stringify({ error: "Backend unavailable" }), {
       status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
+      headers: corsHeaders(),
     });
   }
 }
 
-// Handle OPTIONS requests for CORS
 export async function OPTIONS() {
   return new Response(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+    headers: corsHeaders(),
   });
 }
