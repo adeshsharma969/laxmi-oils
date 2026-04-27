@@ -70,17 +70,11 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 sm:mt-8">
-            {/* Mobile Layout: Pack size left, price right */}
+            {/* Mobile Layout: Price centered, incrementer below */}
             <div className="sm:hidden space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Pack Size</div>
-                  <div className="font-display font-black text-xl text-[#1F3D2B]">{size.label}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
-                  <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
-                </div>
+              <div className="text-center">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
               </div>
               <div className="flex items-center justify-center border-[3px] border-[#1F3D2B]">
                 <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
