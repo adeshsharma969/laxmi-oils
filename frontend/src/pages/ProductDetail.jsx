@@ -70,17 +70,18 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 sm:mt-8">
-            {/* Mobile Layout: Simple and clean */}
-            <div className="sm:hidden space-y-3">
+            {/* Mobile Layout: Fill space properly */}
+            <div className="sm:hidden space-y-4">
               <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
-                  <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
+                <div className="flex-1">
+                  <div className="text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
+                  <div data-testid="pdp-price" className="font-display font-black text-3xl text-[#1F3D2B]">₹{size.price*qty}</div>
+                  <div className="text-xs text-[#1F3D2B]/60 mt-1">{size.label} • {product.category}</div>
                 </div>
                 <div className="flex items-center border-[3px] border-[#1F3D2B]">
-                  <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
-                  <span data-testid="pdp-qty" className="w-6 text-center font-black text-sm">{qty}</span>
-                  <button onClick={()=>setQty(q=>q+1)} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
+                  <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+                  <span data-testid="pdp-qty" className="w-8 text-center font-black text-base">{qty}</span>
+                  <button onClick={()=>setQty(q=>q+1)} className="touch-target w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
                 </div>
               </div>
             </div>
