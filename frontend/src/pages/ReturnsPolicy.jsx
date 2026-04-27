@@ -179,7 +179,7 @@ export default function ReturnsPolicy() {
               <div>
                 <h3 className="font-bold text-lg text-[#1F3D2B] mb-2">Contact Customer Service</h3>
                 <p className="text-[#1F3D2B]/80 text-sm sm:text-base">
-                  Email us at support@laxmioils.com or call +91-9876543210 within 7 days of delivery. 
+                  Email us at laxmiedibleoils@gmail.com or call +91-9876543210 within 7 days of delivery. 
                   Provide your order ID and reason for return.
                 </p>
               </div>
@@ -305,7 +305,7 @@ export default function ReturnsPolicy() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 text-sm">
             <div>
-              <strong>Email:</strong> support@laxmioils.com
+              <strong>Email:</strong> laxmiedibleoils@gmail.com
             </div>
             <div>
               <strong>Phone:</strong> +91-9876543210

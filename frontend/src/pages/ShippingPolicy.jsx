@@ -157,7 +157,7 @@ export default function ShippingPolicy() {
               <h3 className="font-bold text-lg text-[#1F3D2B] mb-3">Special Instructions</h3>
               <p className="text-[#1F3D2B]/80 text-sm sm:text-base leading-relaxed">
                 For bulk orders (15L and above) or special delivery requirements, 
-                please contact our customer service team at support@laxmioils.com or 
+                please contact our customer service team at laxmiedibleoils@gmail.com or 
                 call us at +91-9876543210.
               </p>
             </div>
@@ -178,7 +178,7 @@ export default function ShippingPolicy() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 text-sm">
             <div>
-              <strong>Email:</strong> support@laxmioils.com
+              <strong>Email:</strong> laxmiedibleoils@gmail.com
             </div>
             <div>
               <strong>Phone:</strong> +91-9876543210

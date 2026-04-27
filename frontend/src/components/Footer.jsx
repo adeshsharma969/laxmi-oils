@@ -67,7 +67,7 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <Mail size={18} className="text-[#D98F00] flex-shrink-0" />
                 <div>
-                  <div className="text-sm font-semibold text-[#F5F1E8]">support@laxmioils.com</div>
+                  <div className="text-sm font-semibold text-[#F5F1E8]">laxmiedibleoils@gmail.com</div>
                   <div className="text-xs text-[#F5F1E8]/60">We respond within 24hrs</div>
                 </div>
               </div>
