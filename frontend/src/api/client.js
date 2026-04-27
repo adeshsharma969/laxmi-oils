@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const rawApi =
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -17,78 +15,107 @@ if (typeof window !== 'undefined') {
   console.log('🔍 Raw API URL:', rawApi);
   console.log('🔍 Final API URL:', finalApiUrl);
   console.log('🔍 Hostname:', window.location.hostname);
-  console.log('🔍 Environment vars:', {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
-    REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL
-  });
 }
 
 export const API = finalApiUrl.endsWith("/api") ? finalApiUrl : `${finalApiUrl}/api`;
 
-const api = axios.create({ 
-  baseURL: API,
-  timeout: 15000, // 15 seconds timeout
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
+// Create a simple API client using fetch
+const api = {
+  get: async (url, options = {}) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("laxmi_token") : null;
+    
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers
+      },
+      mode: 'cors',
+      ...options
+    };
 
-api.interceptors.request.use((cfg) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("laxmi_token") : null;
-  if (token) cfg.headers.Authorization = `Bearer ${token}`;
-  
-  // Debug: Log outgoing requests
-  if (typeof window !== 'undefined') {
-    console.log('🚀 API Request:', cfg.method?.toUpperCase(), cfg.url);
-  }
-  
-  return cfg;
-});
-
-api.interceptors.response.use(
-  (response) => {
-    // Debug: Log successful responses
     if (typeof window !== 'undefined') {
-      console.log('✅ API Response:', response.config.method?.toUpperCase(), response.config.url, `Status: ${response.status}`);
+      console.log('🚀 API Request:', 'GET', url);
     }
-    return response;
-  },
-  (error) => {
-    // Debug: Log detailed errors
-    if (typeof window !== 'undefined') {
-      const errorInfo = {
-        url: error.config?.url,
-        method: error.config?.method?.toUpperCase(),
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        message: error.message,
-        data: error.response?.data,
-        code: error.code,
-        isNetworkError: !error.response,
-        isTimeout: error.code === 'ECONNABORTED',
-        isCORS: error.message.includes('CORS'),
-        baseURL: error.config?.baseURL,
-        fullHeaders: error.config?.headers
-      };
+
+    try {
+      const response = await fetch(`${API}${url}`, fetchOptions);
       
-      console.error('❌ API Error Details:', errorInfo);
-      
-      // Additional network error info
-      if (!error.response) {
-        console.error('🌐 Network Error - Possible causes:', [
-          'CORS issue',
-          'Backend down',
-          'Network connectivity',
-          'Firewall/blocking',
-          'Invalid URL'
-        ]);
+      if (typeof window !== 'undefined') {
+        console.log('✅ API Response:', 'GET', url, `Status: ${response.status}`);
       }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      return { data, status: response.status };
+    } catch (error) {
+      if (typeof window !== 'undefined') {
+        console.error('❌ API Error:', {
+          url,
+          method: 'GET',
+          message: error.message,
+          isNetworkError: !error.message.includes('HTTP'),
+          fullUrl: `${API}${url}`
+        });
+      }
+      throw error;
     }
-    return Promise.reject(error);
+  },
+
+  post: async (url, data, options = {}) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("laxmi_token") : null;
+    
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers
+      },
+      body: JSON.stringify(data),
+      mode: 'cors',
+      ...options
+    };
+
+    if (typeof window !== 'undefined') {
+      console.log('🚀 API Request:', 'POST', url);
+    }
+
+    try {
+      const response = await fetch(`${API}${url}`, fetchOptions);
+      
+      if (typeof window !== 'undefined') {
+        console.log('✅ API Response:', 'POST', url, `Status: ${response.status}`);
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+      }
+
+      const responseData = await response.json();
+      return { data: responseData, status: response.status };
+    } catch (error) {
+      if (typeof window !== 'undefined') {
+        console.error('❌ API Error:', {
+          url,
+          method: 'POST',
+          message: error.message,
+          isNetworkError: !error.message.includes('HTTP'),
+          fullUrl: `${API}${url}`
+        });
+      }
+      throw error;
+    }
   }
-);
+};
 
 export const fmtErr = (e) => {
   const d = e?.response?.data?.detail;
@@ -104,10 +131,7 @@ export const testAPIConnectivity = async () => {
       console.log('🔍 Testing API connectivity to:', API);
     }
     
-    const response = await api.get('/products', { 
-      timeout: 10000,
-      validateStatus: (status) => status < 500 // Don't throw for 4xx errors
-    });
+    const response = await api.get('/products');
     
     if (typeof window !== 'undefined') {
       console.log('✅ API Connectivity Test Passed:', {
