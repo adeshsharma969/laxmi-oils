@@ -26,26 +26,26 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
             />
           )}
           {/* Size Badge - Prominent */}
-          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-[#1F3D2B]">
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-3 py-1.5 text-sm sm:text-base font-black uppercase tracking-wider border-3 border-[#1F3D2B] shadow-md">
             {size.label}
           </div>
           {/* Category Badge */}
-          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#1F3D2B] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-xs font-black uppercase tracking-[0.16em] border-2 border-[#F5F1E8]">
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#1F3D2B] text-[#F5F1E8] px-3 py-1.5 text-sm font-black uppercase tracking-[0.16em] border-3 border-[#F5F1E8] shadow-md">
             {product.category}
           </div>
         </div>
-        <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
-          <h3 className="font-display font-black text-base sm:text-lg md:text-xl text-[#1F3D2B] leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
+        <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col bg-white">
+          <h3 className="font-display font-black text-lg sm:text-xl md:text-2xl text-[#1F3D2B] leading-tight line-clamp-2 mb-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
           {product.badge && (
-            <div className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
+            <div className="mb-3 text-sm sm:text-base font-black uppercase tracking-[0.12em] text-[#B8431A] bg-[#FEF3C7] px-2 py-1 rounded border border-[#B8431A] inline-block">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
           )}
-          <div className="flex items-end justify-between mt-3 sm:mt-4">
+          <div className="flex items-end justify-between mt-auto">
             <div>
-              <div className="text-sm sm:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
-              <div className="text-xs font-medium uppercase tracking-[0.12em] text-[#1F3D2B]/70">{size.label}</div>
+              <div className="text-lg sm:text-xl md:text-2xl font-black text-[#1F3D2B]">₹{size.price}</div>
+              <div className="text-sm font-semibold text-[#1F3D2B]/80 mt-1">{size.label}</div>
             </div>
-            <div className="touch-target w-9 h-9 sm:w-10 sm:h-10 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors">
-              <ShoppingCart size={16} strokeWidth={3}/>
+            <div className="touch-target w-10 h-10 sm:w-12 sm:h-12 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors shadow-sm">
+              <ShoppingCart size={18} strokeWidth={3} className="text-[#1F3D2B] group-hover:text-[#F5F1E8]"/>
             </div>
           </div>
         </div>
