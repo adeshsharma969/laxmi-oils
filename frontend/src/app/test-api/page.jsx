@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { testAPIConnectivity } from "@/api/client";
 
 export default function TestAPI() {
   const [status, setStatus] = useState("Loading...");
@@ -16,18 +17,18 @@ export default function TestAPI() {
     try {
       setStatus("Testing API connection...");
       
-      // Test the API endpoint
-      const response = await fetch('https://laxmiedibleoils.onrender.com/api/products');
+      // Use the connectivity test function
+      const result = await testAPIConnectivity();
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (result.success) {
+        setStatus("✅ API Connected Successfully!");
+        setData(result.data);
+        setError(null);
+      } else {
+        setStatus("❌ API Connection Failed");
+        setError(result.error);
+        setData(null);
       }
-      
-      const products = await response.json();
-      
-      setStatus("✅ API Connected Successfully!");
-      setData(products);
-      setError(null);
       
     } catch (err) {
       setStatus("❌ API Connection Failed");
