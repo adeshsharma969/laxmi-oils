@@ -58,7 +58,7 @@ export default function ProductDetail() {
           <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter leading-[0.95]">{product.name}</h1>
           <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
 
-          {/* Mobile Layout: Pack size left, incrementer middle, price right */}
+          {/* Mobile Layout: Pack size left, price middle, incrementer right */}
           <div className="mt-6 sm:mt-8">
             <div className="sm:hidden flex items-center justify-between gap-2">
               {/* Pack Size Selector */}
@@ -73,6 +73,12 @@ export default function ProductDetail() {
                 </div>
               </div>
               
+              {/* Total Price */}
+              <div className="flex-1 text-center">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-xl text-[#1F3D2B]">₹{size.price*qty}</div>
+              </div>
+              
               {/* Compact Incrementer */}
               <div className="flex flex-col items-center justify-center">
                 <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Qty</div>
@@ -81,12 +87,6 @@ export default function ProductDetail() {
                   <span data-testid="pdp-qty" className="w-5 text-center font-black text-xs">{qty}</span>
                   <button onClick={()=>setQty(q=>q+1)} className="touch-target w-6 h-6 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={10} strokeWidth={3}/></button>
                 </div>
-              </div>
-              
-              {/* Total Price */}
-              <div className="flex-1 text-right">
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Total</div>
-                <div data-testid="pdp-price" className="font-display font-black text-xl text-[#1F3D2B]">₹{size.price*qty}</div>
               </div>
             </div>
           </div>
