@@ -56,13 +56,34 @@ const api = {
       return { data, status: response.status };
     } catch (error) {
       if (typeof window !== 'undefined') {
-        console.error('❌ API Error:', {
+        // Log everything about the error
+        const errorDetails = {
           url,
           method: 'GET',
           message: error.message,
+          name: error.name,
+          stack: error.stack,
+          toString: error.toString(),
           isNetworkError: !error.message.includes('HTTP'),
-          fullUrl: `${API}${url}`
+          fullUrl: `${API}${url}`,
+          errorObject: error,
+          errorKeys: Object.keys(error),
+          errorProps: {}
+        };
+        
+        // Try to get all possible error properties
+        Object.getOwnPropertyNames(error).forEach(prop => {
+          try {
+            errorDetails.errorProps[prop] = error[prop];
+          } catch (e) {
+            errorDetails.errorProps[prop] = '[Unable to access]';
+          }
         });
+        
+        console.error('❌ API Error:', errorDetails);
+        console.error('❌ Raw Error Object:', error);
+        console.error('❌ Error Constructor:', error.constructor.name);
+        console.error('❌ Error Type:', typeof error);
       }
       throw error;
     }
