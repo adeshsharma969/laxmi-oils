@@ -58,7 +58,31 @@ export default function ProductDetail() {
           <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter leading-[0.95]">{product.name}</h1>
           <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
 
+          {/* Mobile Layout: Pack size selector left, total price right */}
           <div className="mt-6 sm:mt-8">
+            <div className="sm:hidden flex items-center justify-between gap-3">
+              {/* Pack Size Selector */}
+              <div className="flex-1">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Pack Size</div>
+                <div className="flex gap-2">
+                  {product.sizes.map(s=>(
+                    <button key={s.label} data-testid={`size-${s.label}`} onClick={()=>setSize(s)} className={`touch-target px-3 py-2 border-[3px] font-black uppercase tracking-wider transition-all text-xs ${size.label===s.label?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B] shadow-[4px_4px_0_0_#1A1814]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Total Price */}
+              <div className="text-right">
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout: Original */}
+          <div className="mt-6 sm:mt-8 hidden sm:block">
             <div className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-2 sm:mb-3">Pack Size</div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {product.sizes.map(s=>(
@@ -70,19 +94,6 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-6 sm:mt-8">
-            {/* Mobile Layout: Price centered, incrementer below */}
-            <div className="sm:hidden space-y-3">
-              <div className="text-center">
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60">Total</div>
-                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B]">₹{size.price*qty}</div>
-              </div>
-              <div className="flex items-center justify-center border-[3px] border-[#1F3D2B]">
-                <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
-                <span data-testid="pdp-qty" className="w-6 text-center font-black text-sm">{qty}</span>
-                <button onClick={()=>setQty(q=>q+1)} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
-              </div>
-            </div>
-
             {/* Desktop Layout: Original side-by-side */}
             <div className="hidden sm:flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-6">
               <div>
@@ -94,6 +105,13 @@ export default function ProductDetail() {
                 <span data-testid="pdp-qty" className="w-8 sm:w-10 text-center font-black text-base sm:text-lg">{qty}</span>
                 <button onClick={()=>setQty(q=>q+1)} className="touch-target w-10 sm:w-11 h-10 sm:h-11 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={14} strokeWidth={3}/></button>
               </div>
+            </div>
+
+            {/* Mobile Layout: Quantity incrementer below */}
+            <div className="sm:hidden flex items-center justify-center border-[3px] border-[#1F3D2B]">
+              <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+              <span data-testid="pdp-qty" className="w-6 text-center font-black text-sm">{qty}</span>
+              <button onClick={()=>setQty(q=>q+1)} className="touch-target w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
             </div>
           </div>
 
