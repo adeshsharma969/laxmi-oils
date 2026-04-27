@@ -74,9 +74,9 @@ export default function ProductDetail() {
               </div>
               
               {/* Total Price */}
-              <div className="flex-1 text-center">
+              <div className="flex-1 text-left pl-4">
                 <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Total</div>
-                <div data-testid="pdp-price" className="font-display font-black text-xl text-[#1F3D2B]">₹{size.price*qty}</div>
+                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B] leading-tight">₹{size.price*qty}</div>
               </div>
               
               {/* Compact Incrementer */}
