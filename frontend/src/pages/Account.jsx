@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Package, LogOut, ShoppingBag, User as UserIcon, Gift, Copy, Check, Share2 } from "lucide-react";
+import { Package, LogOut, ShoppingBag, Gift, Copy, Check, Share2, MapPin, ReceiptText, Truck, WalletCards } from "lucide-react";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { activeTimelineIndex, orderTimelineSteps } from "../lib/delivery";
 
 export default function Account() {
   const auth = useAuth();
   if (!auth) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
   const { user, logout, loading } = auth;
+  const cart = useCart();
   const nav = useNavigate();
   const [orders, setOrders] = useState([]);
   const [busy, setBusy] = useState(true);
@@ -36,6 +39,18 @@ export default function Account() {
   const shareUrl = ref ? `${window.location.origin}/register?ref=${ref.referral_code}` : "";
   const copy = (txt) => { navigator.clipboard.writeText(txt); setCopied(true); setTimeout(()=>setCopied(false), 1500); };
   const wa = () => window.open(`https://wa.me/?text=${encodeURIComponent((ref?.share_message||"") + " " + shareUrl)}`, "_blank");
+  const rewardBalance = Math.max(0, Number(ref?.rewards_earned ?? user?.rewards_earned ?? 0));
+  const savedAddresses = Array.from(
+    new Map(
+      orders
+        .map((order) => order.address)
+        .filter(Boolean)
+        .map((address) => [`${address.address}|${address.city}|${address.pincode}`.toLowerCase(), address]),
+    ).values(),
+  ).slice(0, 3);
+  const reorder = (order) => {
+    (order.items || []).forEach((item) => cart?.addItem?.(item));
+  };
 
   if (loading || !user) return <div className="p-10 text-center font-display text-2xl text-[#1F3D2B]">Loading…</div>;
 
@@ -50,6 +65,13 @@ export default function Account() {
           {user.role === "admin" && <Link to="/admin" data-testid="go-admin" className="touch-target-sm border-[3px] border-[#1F3D2B] bg-[#D98F00] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm">Admin →</Link>}
           <button data-testid="logout-btn" onClick={()=>{logout(); nav("/");}} className="touch-target-sm border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 sm:px-4 py-2 font-black uppercase tracking-widest text-xs sm:text-sm flex items-center gap-2"><LogOut size={14} strokeWidth={3}/> Logout</button>
         </div>
+      </div>
+
+      <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <StatCard icon={Package} label="Orders" value={orders.length} detail={orders[0] ? `Last: ${orders[0].status}` : "Start your first order"} />
+        <StatCard icon={WalletCards} label="Rewards" value={`₹${rewardBalance}`} detail="Available store credit" />
+        <StatCard icon={MapPin} label="Addresses" value={savedAddresses.length} detail="Ready for faster checkout" />
+        <StatCard icon={ReceiptText} label="Invoices" value={orders.length} detail="Download anytime" />
       </div>
 
       <div className="grid grid-cols-12 gap-4 md:gap-6">
@@ -93,6 +115,24 @@ export default function Account() {
             </div>
           )}
 
+          {savedAddresses.length > 0 && (
+            <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-5 brutal-shadow-sm">
+              <div className="mb-3 flex items-center gap-2">
+                <MapPin size={16} strokeWidth={3}/>
+                <h2 className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">Saved delivery addresses</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {savedAddresses.map((address, index) => (
+                  <div key={`${address.pincode}-${index}`} className="border-2 border-[#1F3D2B] bg-white p-3">
+                    <div className="font-display font-black text-lg text-[#1F3D2B]">{address.label || "Saved address"}</div>
+                    <div className="mt-1 text-xs font-bold text-[#1F3D2B]/78">{address.address}</div>
+                    <div className="mt-1 text-xs font-black uppercase tracking-[0.12em] text-[#B8431A]">{address.city} - {address.pincode}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <div className="flex items-center gap-2 mb-3 sm:mb-4"><Package size={16} strokeWidth={2.5}/><h2 className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">Order History</h2></div>
           {busy ? <div className="text-xs sm:text-sm">Loading orders…</div> : orderErr ? (
@@ -129,12 +169,26 @@ export default function Account() {
                     <span className="text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80">Total</span>
                     <span className="font-display font-black text-lg sm:text-xl text-[#1F3D2B]">₹{o.total}</span>
                   </div>
+                  <div className="mt-4 grid grid-cols-4 gap-2">
+                    {orderTimelineSteps.map((label, index) => {
+                      const done = index <= activeTimelineIndex(o.status);
+                      return (
+                        <div key={label} className="min-w-0">
+                          <div className={`mx-auto flex h-8 w-8 items-center justify-center border-2 border-[#1F3D2B] text-xs font-black ${done ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-white text-[#1F3D2B]"}`}>
+                            {done ? <Check size={13} strokeWidth={3}/> : index + 1}
+                          </div>
+                          <div className="mt-1 text-center text-[9px] font-black uppercase tracking-[0.1em] text-[#1F3D2B]">{label}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {o.tracking?.trackingUrl && (
                     <div className="mt-2 text-xs sm:text-sm font-black uppercase tracking-[0.12em] text-[#1F3D2B]">
-                      Tracking: <a href={o.tracking.trackingUrl} target="_blank" rel="noreferrer" className="underline hover:text-[#B8431A]">{o.tracking.trackingId || "Open link"}</a>
+                      <Truck size={13} strokeWidth={3} className="mr-1 inline"/> Tracking: <a href={o.tracking.trackingUrl} target="_blank" rel="noreferrer" className="underline hover:text-[#B8431A]">{o.tracking.trackingId || "Open link"}</a>
                     </div>
                   )}
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-3 flex flex-col justify-end gap-2 sm:flex-row">
+                    <button type="button" onClick={()=>reorder(o)} className="touch-target-sm text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] px-3 py-1.5 bg-[#D98F00] text-[#1F3D2B] hover:bg-[#1F3D2B] hover:text-[#F5F1E8]">Buy again</button>
                     <Link to={`/invoice/${o.order_id}`} data-testid={`invoice-${o.order_id}`} className="touch-target-sm text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] px-3 py-1.5 bg-[#F5F1E8] hover:bg-[#D98F00]">View Invoice →</Link>
                   </div>
                 </div>
@@ -153,6 +207,17 @@ function Stat({ label, value, mono }) {
     <div className="bg-[#F5F1E8] border-2 border-[#1F3D2B] px-2 sm:px-3 py-2">
       <div className={`font-display font-black text-base sm:text-lg text-[#1F3D2B] ${mono?"font-mono tracking-tight":""}`}>{value}</div>
       <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/80">{label}</div>
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, label, value, detail }) {
+  return (
+    <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4 brutal-shadow-sm">
+      <Icon size={18} strokeWidth={3} className="text-[#B8431A]"/>
+      <div className="mt-2 font-display text-2xl font-black text-[#1F3D2B]">{value}</div>
+      <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#1F3D2B]">{label}</div>
+      <div className="mt-1 text-xs font-bold text-[#1F3D2B]/70">{detail}</div>
     </div>
   );
 }

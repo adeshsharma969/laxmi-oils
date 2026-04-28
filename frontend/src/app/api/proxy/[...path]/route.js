@@ -17,16 +17,23 @@ function proxyHeaders(request) {
 
 function corsHeaders() {
   return {
-    "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
 
+function responseHeaders(response) {
+  const headers = corsHeaders();
+  const contentType = response.headers.get("content-type");
+  if (contentType) headers["Content-Type"] = contentType;
+  return headers;
+}
+
 async function proxyRequest(request, params, method) {
   try {
     const path = await routePath(params);
+    const search = request.nextUrl?.search || "";
     const init = {
       method,
       headers: proxyHeaders(request),
@@ -38,18 +45,21 @@ async function proxyRequest(request, params, method) {
       if (body) init.body = body;
     }
 
-    const response = await fetch(`${BACKEND_API_URL}/${path}`, init);
+    const response = await fetch(`${BACKEND_API_URL}/${path}${search}`, init);
     const text = await response.text();
 
     return new Response(text, {
       status: response.status,
-      headers: corsHeaders(),
+      headers: responseHeaders(response),
     });
   } catch (error) {
     console.error("Proxy error:", error);
     return new Response(JSON.stringify({ error: "Backend unavailable" }), {
       status: 500,
-      headers: corsHeaders(),
+      headers: {
+        ...corsHeaders(),
+        "Content-Type": "application/json",
+      },
     });
   }
 }

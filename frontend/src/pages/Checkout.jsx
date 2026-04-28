@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -23,11 +23,13 @@ import {
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import api from "../api/client";
+import api, { fmtErr } from "../api/client";
+import { activeTimelineIndex, deliveryDateRange, deliveryPromise, orderTimelineSteps, writeDeliveryPincode } from "../lib/delivery";
 import { downloadInvoice, formatInvoiceDate, formatMoney, paymentLabel } from "../lib/invoice";
 
 const STORAGE_PROFILE = "laxmi_checkout_profile";
 const STORAGE_ADDRESSES = "laxmi_saved_addresses";
+const STORAGE_CHECKOUT_DRAFT = "laxmi_checkout_draft";
 
 const emptyAddress = {
   label: "Home",
@@ -115,6 +117,7 @@ const mergeAddresses = (...groups) => {
 
 const getStoredProfile = () => ({ ...emptyAddress, ...readJson(STORAGE_PROFILE, {}) });
 const getStoredAddresses = () => mergeAddresses(readJson(STORAGE_ADDRESSES, []));
+const getCheckoutDraft = () => readJson(STORAGE_CHECKOUT_DRAFT, {});
 
 const rememberCheckout = (address, shouldSaveAddress) => {
   const nextProfile = {
@@ -170,30 +173,35 @@ const loadRazorpayCheckout = () =>
     document.body.appendChild(script);
   });
 
+const razorpayKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+
 export default function Checkout() {
   const cart = useCart();
   const auth = useAuth();
+  const nav = useNavigate();
   const user = auth?.user;
   const items = cart?.items || [];
   const subtotal = cart?.subtotal || 0;
   const clearCart = cart?.clear || (() => {});
+  const addItem = cart?.addItem || (() => {});
+  const checkoutDraft = useMemo(() => getCheckoutDraft(), []);
 
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState(() => getStoredProfile());
+  const [step, setStep] = useState(() => checkoutDraft.step || 1);
+  const [form, setForm] = useState(() => ({ ...getStoredProfile(), ...(checkoutDraft.form || {}) }));
   const [fieldErrors, setFieldErrors] = useState({});
   const [savedAddresses, setSavedAddresses] = useState(() => getStoredAddresses());
-  const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [saveAddress, setSaveAddress] = useState(true);
+  const [selectedAddressId, setSelectedAddressId] = useState(() => checkoutDraft.selectedAddressId || "");
+  const [saveAddress, setSaveAddress] = useState(() => checkoutDraft.saveAddress ?? true);
   const [locationBusy, setLocationBusy] = useState(false);
   const [locationMsg, setLocationMsg] = useState("");
-  const [delivery, setDelivery] = useState("standard");
-  const [paymentMethod, setPaymentMethod] = useState("razorpay");
+  const [delivery, setDelivery] = useState(() => checkoutDraft.delivery || "standard");
+  const [paymentMethod, setPaymentMethod] = useState(() => checkoutDraft.paymentMethod || "razorpay");
   const [success, setSuccess] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [coupon, setCoupon] = useState("");
-  const [couponApplied, setCouponApplied] = useState(null);
+  const [coupon, setCoupon] = useState(() => checkoutDraft.coupon || "");
+  const [couponApplied, setCouponApplied] = useState(() => checkoutDraft.couponApplied || null);
   const [couponMsg, setCouponMsg] = useState("");
-  const [useCredit, setUseCredit] = useState(false);
+  const [useCredit, setUseCredit] = useState(() => checkoutDraft.useCredit || false);
   const [payError, setPayError] = useState("");
 
   const creditBalance = Math.max(0, Math.floor(user?.rewards_earned || 0));
@@ -202,6 +210,16 @@ export default function Checkout() {
   const afterDiscount = Math.max(0, subtotal + shipping - discount);
   const creditUsed = useCredit ? Math.min(creditBalance, afterDiscount) : 0;
   const total = Math.max(0, afterDiscount - creditUsed);
+  const requiresOnlinePayment = paymentMethod === "razorpay" && total >= 1;
+  const finalCtaLabel = !user ? "Login to continue" : requiresOnlinePayment ? "Pay and place order" : "Place order";
+  const primaryLabel = step < 4 ? "Continue" : finalCtaLabel;
+  const addressReady = Boolean(clean(form.name) && clean(form.phone).replace(/\D/g, "").length >= 10 && clean(form.address) && clean(form.city) && /^\d{6}$/.test(clean(form.pincode)));
+  const assistedStatus = [
+    { label: "Address saved", ready: addressReady, copy: addressReady ? `${form.city} - ${form.pincode}` : "Add address once, reuse later", icon: MapPin },
+    { label: "Delivery selected", ready: Boolean(delivery), copy: delivery === "express" ? `Express ${deliveryDateRange("express")}` : `Standard ${deliveryDateRange("standard")}`, icon: Truck },
+    { label: "Payment secured", ready: Boolean(paymentMethod), copy: paymentMethod === "cod" ? "Pay safely at delivery" : "Razorpay protected checkout", icon: ShieldCheck },
+    { label: "Invoice instant", ready: true, copy: "Ready as soon as order is placed", icon: ReceiptText },
+  ];
 
   const deliveryOptions = useMemo(
     () => [
@@ -231,6 +249,24 @@ export default function Checkout() {
       phone: prev.phone || user?.phone || "",
     }));
   }, [user?.name, user?.email, user?.phone]);
+
+  useEffect(() => {
+    writeJson(STORAGE_CHECKOUT_DRAFT, {
+      step,
+      form,
+      selectedAddressId,
+      saveAddress,
+      delivery,
+      paymentMethod,
+      coupon,
+      couponApplied,
+      useCredit,
+    });
+  }, [step, form, selectedAddressId, saveAddress, delivery, paymentMethod, coupon, couponApplied, useCredit]);
+
+  useEffect(() => {
+    if (/^\d{6}$/.test(clean(form.pincode))) writeDeliveryPincode(form.pincode);
+  }, [form.pincode]);
 
   useEffect(() => {
     if (!user) return;
@@ -403,8 +439,9 @@ export default function Checkout() {
       receipt: `laxmi_${Date.now()}`,
     });
 
-    const key = order.key_id || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-    if (!key) throw new Error("Razorpay key is missing.");
+    if (!razorpayKeyId) {
+      throw new Error("Razorpay key is missing. Set NEXT_PUBLIC_RAZORPAY_KEY_ID in the frontend environment.");
+    }
 
     return new Promise((resolve, reject) => {
       let settled = false;
@@ -415,7 +452,7 @@ export default function Checkout() {
       };
 
       const razorpay = new window.Razorpay({
-        key,
+        key: razorpayKeyId,
         amount: order.amount,
         currency: order.currency || "INR",
         name: "Laxmi Edible Oils",
@@ -472,6 +509,12 @@ export default function Checkout() {
       return;
     }
 
+    if (!user) {
+      setPayError("Login or create an account to complete your order.");
+      nav("/login", { state: { from: "/checkout", checkoutIntent: true } });
+      return;
+    }
+
     setBusy(true);
     setPayError("");
 
@@ -509,9 +552,10 @@ export default function Checkout() {
       const { data } = await api.post("/orders", payload);
       setSavedAddresses(rememberCheckout(payload.address, saveAddress));
       setSuccess(data);
+      if (typeof window !== "undefined") localStorage.removeItem(STORAGE_CHECKOUT_DRAFT);
       clearCart();
     } catch (e) {
-      setPayError(`Order failed: ${e?.response?.data?.detail || e.message || "Please try again."}`);
+      setPayError(`Order failed: ${fmtErr(e)}`);
     } finally {
       setBusy(false);
     }
@@ -541,6 +585,11 @@ export default function Checkout() {
 
   if (success) {
     const paid = success.payment_status === "paid";
+    const activeTimeline = activeTimelineIndex(success.status);
+    const supportText = `Hi Laxmi Edible Oils, I need help with order ${success.order_id}`;
+    const reorder = () => {
+      (success.items || []).forEach((item) => addItem(item));
+    };
     return (
       <motion.div
         initial={{ opacity: 0, y: 18 }}
@@ -567,6 +616,20 @@ export default function Checkout() {
               Your order is locked in. The invoice is ready now, and tracking will appear in your account once the shipment is packed.
             </p>
 
+            <div className="mt-6 grid grid-cols-4 gap-2">
+              {orderTimelineSteps.map((label, index) => {
+                const done = index <= activeTimeline;
+                return (
+                  <div key={label} className="min-w-0">
+                    <div className={`mx-auto flex h-9 w-9 items-center justify-center border-2 border-[#1F3D2B] text-xs font-black ${done ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-[#F5F1E8] text-[#1F3D2B]"}`}>
+                      {done ? <Check size={15} strokeWidth={3}/> : index + 1}
+                    </div>
+                    <div className="mt-2 text-center text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{label}</div>
+                  </div>
+                );
+              })}
+            </div>
+
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
               <ReceiptStat label="Order ID" value={success.order_id} mono />
               <ReceiptStat label="Paid" value={formatMoney(success.total)} />
@@ -587,6 +650,14 @@ export default function Checkout() {
               >
                 <FileText size={16} strokeWidth={3} /> Open invoice
               </Link>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(supportText)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="touch-target inline-flex items-center justify-center gap-2 bg-[#25D366] text-white border-[3px] border-[#1F3D2B] px-5 py-3 font-black uppercase tracking-[0.14em] text-xs sm:text-sm"
+              >
+                <ShieldCheck size={16} strokeWidth={3} /> WhatsApp support
+              </a>
             </div>
           </section>
 
@@ -642,6 +713,13 @@ export default function Checkout() {
               >
                 <ShoppingBag size={14} strokeWidth={3} /> Continue shopping
               </Link>
+              <button
+                type="button"
+                onClick={reorder}
+                className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#D98F00] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]"
+              >
+                <ShoppingBag size={14} strokeWidth={3} /> Buy again
+              </button>
             </div>
           </aside>
         </div>
@@ -650,7 +728,7 @@ export default function Checkout() {
   }
 
   return (
-    <div data-testid="checkout-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
+    <div data-testid="checkout-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10 pb-36 md:pb-10">
       <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-6 md:mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Secure checkout</div>
@@ -663,6 +741,19 @@ export default function Checkout() {
           <span className="inline-flex items-center gap-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1">
             <Clock3 size={13} strokeWidth={3} /> 2 min checkout
           </span>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {assistedStatus.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.label} className={`border-2 border-[#1F3D2B] px-3 py-2 ${item.ready ? "bg-[#D98F00]/35" : "bg-[#F5F1E8]"}`}>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]">
+                  <Icon size={13} strokeWidth={3}/> {item.label}
+                </div>
+                <div className="mt-1 text-xs font-bold text-[#1F3D2B]/75">{item.copy}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -986,6 +1077,38 @@ export default function Checkout() {
                   </ReviewBlock>
                 </div>
 
+                {!user && (
+                  <div className="mt-5 border-[3px] border-[#1F3D2B] bg-white p-4 sm:p-5 shadow-[5px_5px_0_0_#D98F00]">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#B8431A]">
+                          <ShieldCheck size={15} strokeWidth={3} /> Account required
+                        </div>
+                        <h3 className="mt-2 font-display text-2xl font-black text-[#1F3D2B]">Login to complete your order</h3>
+                        <p className="mt-2 text-sm font-bold text-[#1F3D2B]/75">
+                          Your cart and checkout details are saved. Sign in for payment, invoices, delivery updates, and saved addresses.
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2 sm:min-w-40">
+                        <Link
+                          to="/login"
+                          state={{ from: "/checkout", checkoutIntent: true }}
+                          className="touch-target inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#F5F1E8] hover:bg-[#B8431A] hover:border-[#B8431A]"
+                        >
+                          Login
+                        </Link>
+                        <Link
+                          to="/register"
+                          state={{ from: "/checkout", checkoutIntent: true }}
+                          className="touch-target inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
+                        >
+                          Register
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {payError && (
                   <div className="mt-5 border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2 text-sm font-bold text-[#B8431A]">
                     {payError}
@@ -995,7 +1118,7 @@ export default function Checkout() {
             )}
           </AnimatePresence>
 
-          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+          <div className="mt-6 hidden flex-col-reverse gap-3 md:flex md:flex-row md:justify-between">
             <button
               type="button"
               onClick={goBack}
@@ -1011,7 +1134,7 @@ export default function Checkout() {
                 onClick={goNext}
                 className="touch-target inline-flex items-center justify-center gap-2 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-3 font-black uppercase tracking-[0.14em] hover:bg-[#B8431A] hover:border-[#B8431A] text-xs sm:text-sm"
               >
-                Continue <ArrowRight size={15} strokeWidth={3} />
+                {primaryLabel} <ArrowRight size={15} strokeWidth={3} />
               </button>
             ) : (
               <button
@@ -1021,7 +1144,7 @@ export default function Checkout() {
                 onClick={pay}
                 className="touch-target inline-flex items-center justify-center gap-2 bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-3 font-black uppercase tracking-[0.14em] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all disabled:opacity-60 text-xs sm:text-sm"
               >
-                {busy ? "Processing" : paymentMethod === "razorpay" && total >= 1 ? "Pay and place order" : "Place order"} <CheckCircle2 size={16} strokeWidth={3} />
+                {busy ? "Processing" : finalCtaLabel} <CheckCircle2 size={16} strokeWidth={3} />
               </button>
             )}
           </div>
@@ -1122,6 +1245,37 @@ export default function Checkout() {
             </div>
           </div>
         </aside>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 shadow-[0_-6px_0_0_rgba(31,61,43,0.12)] md:hidden">
+        {payError && <div className="mb-2 border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2 text-xs font-bold text-[#B8431A]">{payError}</div>}
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1F3D2B]/70">Total</div>
+            <div className="font-display text-2xl font-black text-[#1F3D2B]">{formatMoney(total)}</div>
+          </div>
+          <div className="max-w-[48%] text-right text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]/70">
+            {deliveryPromise(form.pincode, delivery)}
+          </div>
+        </div>
+        <div className="grid grid-cols-[0.8fr_1.2fr] gap-2">
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={step === 1}
+            className="touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] py-3 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] disabled:opacity-40"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={step < 4 ? goNext : pay}
+            disabled={busy}
+            className="touch-target border-[3px] border-[#1F3D2B] bg-[#D98F00] py-3 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] disabled:opacity-60"
+          >
+            {busy ? "Processing" : primaryLabel}
+          </button>
+        </div>
       </div>
     </div>
   );

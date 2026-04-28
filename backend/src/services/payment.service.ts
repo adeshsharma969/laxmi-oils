@@ -28,7 +28,11 @@ function toRazorpayAppError(error: unknown) {
   const description = err?.error?.description || err?.message || "Could not create Razorpay order";
 
   if (statusCode === 401) {
-    return new AppError(401, "Razorpay authentication failed");
+    return new AppError(
+      401,
+      "Razorpay authentication failed",
+      "Check that RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET belong to the same active Razorpay account.",
+    );
   }
 
   return new AppError(500, "Could not create Razorpay order", description);
@@ -68,11 +72,9 @@ export async function createRazorpayOrder(input: { amount: number; currency?: st
 
     return {
       order_id: order.id,
-      id: order.id,
       amount: order.amount,
       currency: order.currency,
       receipt: order.receipt,
-      key_id: env.razorpayKeyId,
     };
   } catch (error) {
     throw toRazorpayAppError(error);

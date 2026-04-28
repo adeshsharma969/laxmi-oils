@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Plus, Minus, ArrowLeft } from "lucide-react";
+import { Check, Plus, Minus, ArrowLeft, MapPin, Truck } from "lucide-react";
 import api from "../api/client";
 import { GALLERY } from "../data/mock";
 import { useCart } from "../context/CartContext";
+import { deliveryPromise, readDeliveryPincode, writeDeliveryPincode } from "../lib/delivery";
 
 export default function ProductDetail() {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function ProductDetail() {
   const [size, setSize] = useState(null);
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
+  const [pincode, setPincode] = useState(() => readDeliveryPincode());
   const { add } = useCart();
 
   useEffect(() => {
@@ -31,6 +33,11 @@ export default function ProductDetail() {
     ? product.images.filter(Boolean)
     : Array.from(new Set([product.image, ...(GALLERY[product.category]||[])])).filter(Boolean)).slice(0,4);
   const handleAdd = () => { for (let i=0;i<qty;i++) add({...product, id: product.product_id}, size); };
+  const setDeliveryPin = (value) => {
+    const next = value.replace(/\D/g, "").slice(0, 6);
+    setPincode(next);
+    writeDeliveryPincode(next);
+  };
 
   return (
     <div data-testid="product-detail" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
@@ -121,6 +128,28 @@ export default function ProductDetail() {
           <motion.button whileTap={{scale:0.96}} data-testid="add-to-cart-btn" onClick={handleAdd} className="touch-target mt-4 sm:mt-5 w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-4 sm:py-5 font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-base sm:text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all">
             Add to Cart →
           </motion.button>
+
+          <div className="mt-4 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#B8431A]">
+              <Truck size={14} strokeWidth={3}/> Delivery estimate
+            </div>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <label className="relative flex-1">
+                <MapPin size={15} strokeWidth={3} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]"/>
+                <input
+                  value={pincode}
+                  onChange={(event)=>setDeliveryPin(event.target.value)}
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="Enter pincode"
+                  className="touch-target-sm w-full border-2 border-[#1F3D2B] bg-white py-2 pl-9 pr-3 text-sm font-black text-[#1F3D2B] outline-none focus:bg-[#D98F00]/25"
+                />
+              </label>
+              <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]">
+                {deliveryPromise(pincode)}
+              </div>
+            </div>
+          </div>
 
           <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-2 sm:gap-3">
             {(product.benefits||[]).map(b=>(

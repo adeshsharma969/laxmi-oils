@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { fmtErr } from "../api/client";
@@ -9,7 +9,10 @@ function RegisterContent() {
   if (!auth) return <div className="p-10 text-center">Loading...</div>;
   const { register, user, loading: authLoading } = auth;
   const nav = useNavigate();
+  const loc = useLocation();
   const [params] = useSearchParams();
+  const from = loc.state?.from || "/account";
+  const authState = loc.state?.checkoutIntent ? { from, checkoutIntent: true } : { from };
   const [form, setForm] = useState({ name:"", email:"", phone:"", password:"", ref: params.get("ref") || "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,9 +23,9 @@ function RegisterContent() {
     if (user?.role === "admin") {
       nav("/admin", { replace: true });
     } else if (user) {
-      nav("/account", { replace: true });
+      nav(from, { replace: true });
     }
-  }, [user, authLoading, nav]);
+  }, [user, authLoading, nav, from]);
 
   useEffect(() => { const r = params.get("ref"); if (r) setForm(f=>({...f, ref: r})); }, [params]);
 
@@ -37,7 +40,7 @@ function RegisterContent() {
 
   const submit = async (e) => {
     e.preventDefault(); setErr(""); setBusy(true);
-    try { await register(form); nav("/account"); }
+    try { await register(form); nav(from, { replace: true }); }
     catch(e) { setErr(fmtErr(e)); } finally { setBusy(false); }
   };
 
@@ -57,7 +60,7 @@ function RegisterContent() {
           <button data-testid="register-submit" disabled={busy} type="submit" className="touch-target w-full bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] py-3 font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors disabled:opacity-60 text-sm sm:text-base">{busy?"...":"Create Account →"}</button>
         </form>
         <div className="mt-5 sm:mt-6 text-center text-xs sm:text-sm">
-          Already registered? <Link to="/login" className="font-black underline text-[#1F3D2B]">Login</Link>
+          Already registered? <Link to="/login" state={authState} className="font-black underline text-[#1F3D2B]">Login</Link>
         </div>
       </motion.div>
     </div>

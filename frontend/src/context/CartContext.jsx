@@ -60,6 +60,26 @@ export const CartProvider = ({ children }) => {
     setDrawerOpen(true);
   }, []);
 
+  const addItem = useCallback((item) => {
+    const key = `${item.id || item.product_id}-${item.size}`;
+    setItems(prev => {
+      const existing = prev.find(i => i.key === key);
+      if (existing) return prev.map(i => i.key === key ? {...i, qty: i.qty + (item.qty || 1)} : i);
+      return [...prev, {
+        key,
+        id: item.id || item.product_id,
+        name: item.name,
+        image: item.image,
+        bg: item.bg,
+        size: item.size,
+        price: item.price,
+        qty: item.qty || 1,
+      }];
+    });
+    setBump(b => b+1);
+    setDrawerOpen(true);
+  }, []);
+
   const updateQty = (key, delta) => setItems(prev => prev.flatMap(i => {
     if (i.key !== key) return [i];
     const q = i.qty + delta;
@@ -72,7 +92,7 @@ export const CartProvider = ({ children }) => {
   const subtotal = items.reduce((s,i) => s + i.qty*i.price, 0);
 
   return (
-    <CartCtx.Provider value={{ items, add, updateQty, remove, clear, count, subtotal, drawerOpen, setDrawerOpen, bump }}>
+    <CartCtx.Provider value={{ items, add, addItem, updateQty, remove, clear, count, subtotal, drawerOpen, setDrawerOpen, bump }}>
       {children}
     </CartCtx.Provider>
   );

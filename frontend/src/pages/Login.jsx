@@ -11,6 +11,7 @@ export default function Login() {
   const nav = useNavigate();
   const loc = useLocation();
   const from = loc.state?.from || "/account";
+  const authState = loc.state?.checkoutIntent ? { from, checkoutIntent: true } : { from };
   const [form, setForm] = useState({ email: "", password: "" });
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -39,7 +40,7 @@ export default function Login() {
     setErr(""); setBusy(true);
     try {
       await login(form.email, form.password);
-      nav(from);
+      nav(from, { replace: true });
     } catch (e) { setErr(fmtErr(e)); } finally { setBusy(false); }
   };
 
@@ -71,7 +72,7 @@ export default function Login() {
           Continue with Google
         </button>
         <div className="mt-5 sm:mt-6 text-center text-xs sm:text-sm">
-          No account? <Link to="/register" className="font-black underline text-[#1F3D2B]">Register</Link>
+          No account? <Link to="/register" state={authState} className="font-black underline text-[#1F3D2B]">Register</Link>
         </div>
       </motion.div>
     </div>
