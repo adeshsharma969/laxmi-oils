@@ -15,7 +15,7 @@ export default function ToastContainer() {
   const { toasts, dismiss } = ctx;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999] flex flex-col-reverse gap-2 max-w-[340px] w-full pointer-events-none">
+    <div className="fixed top-20 sm:top-auto sm:bottom-4 left-4 sm:left-auto right-4 sm:right-4 z-[9999] flex flex-col sm:flex-col-reverse gap-2 max-w-[340px] mx-auto w-auto pointer-events-none">
       <AnimatePresence mode="popLayout">
         {toasts.map((t) => {
           const s = STYLES[t.type] || STYLES.info;

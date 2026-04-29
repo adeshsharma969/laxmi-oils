@@ -41,7 +41,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div data-testid="product-detail" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
+    <div data-testid="product-detail" className="px-4 sm:px-5 md:px-10 py-6 md:py-10 pb-24 sm:pb-10">
       <Link to="/products" className="touch-target-sm inline-flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-4 md:mb-6 hover:text-[#B8431A]"><ArrowLeft size={14} strokeWidth={3}/> Back to shelf</Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">

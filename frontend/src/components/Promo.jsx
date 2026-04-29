@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy, Check } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function CouponBanner() {
   const [open, setOpen] = useState(true);
@@ -28,6 +29,10 @@ export function CouponBanner() {
 }
 
 export function WhatsAppButton() {
+  const pathname = usePathname();
+  const isProductPage = pathname?.startsWith('/product/');
+  const bottomClass = isProductPage ? "bottom-[84px] sm:bottom-5" : "bottom-5";
+
   return (
     <motion.a
       data-testid="whatsapp-btn"
@@ -35,7 +40,7 @@ export function WhatsAppButton() {
       target="_blank" rel="noopener noreferrer"
       initial={{scale:0, opacity:0}} animate={{scale:1, opacity:1}} transition={{delay:0.8, type:"spring"}}
       whileHover={{scale:1.08, rotate:-3}}
-      className="fixed bottom-5 left-5 z-30 w-14 h-14 rounded-full bg-[#25D366] text-white border-[3px] border-[#1F3D2B] flex items-center justify-center shadow-[6px_6px_0_0_#1F3D2B]"
+      className={`fixed ${bottomClass} left-5 z-30 w-14 h-14 rounded-full bg-[#25D366] text-white border-[3px] border-[#1F3D2B] flex items-center justify-center shadow-[6px_6px_0_0_#1F3D2B] transition-all`}
       aria-label="Chat on WhatsApp"
     >
       <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.4.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.3 3.3c.2.2 2.2 3.4 5.3 4.7.7.3 1.3.5 1.8.6.8.2 1.5.2 2 .1.6-.1 1.8-.7 2.1-1.5.3-.8.3-1.4.2-1.5 0-.2-.3-.3-.6-.5zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>

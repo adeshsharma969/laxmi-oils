@@ -32,10 +32,11 @@ function ScrollToTop() {
 
 function FloatingCart() {
   const cart = useCart();
+  const pathname = usePathname();
   if (!cart) return null;
   const { count, setDrawerOpen } = cart as { count: number; setDrawerOpen: (v: boolean) => void };
 
-  if (count === 0) return null;
+  if (count === 0 || pathname?.startsWith('/product/')) return null;
 
   return (
     <motion.button
