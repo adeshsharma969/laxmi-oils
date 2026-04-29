@@ -38,9 +38,9 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
         </div>
         <div className="p-2 sm:p-3 md:p-4 flex-1 flex flex-col justify-between">
           <div>
-            <h3 className="font-display font-black text-[13px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.1] sm:leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
+            <h3 className="font-bold sm:font-black text-[13px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.1] sm:leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
             {product.badge && (
-              <div className="mt-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
+              <div className="mt-1 text-[8px] sm:text-[10px] font-bold sm:font-black uppercase tracking-[0.1em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
             )}
           </div>
           <div className="flex items-end justify-between mt-2">
