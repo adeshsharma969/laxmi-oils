@@ -9,13 +9,15 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import { CartProvider, useCart } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { ToastProvider } from "@/context/ToastContext";
+import ToastContainer from "@/components/ToastContainer";
 import { CouponBanner, WhatsAppButton } from "@/components/Promo";
 
 const pageAnim = {
-  initial: { opacity: 0, y: 16 },
+  initial: { opacity: 0, y: 14 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -16 },
-  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as any },
+  exit: { opacity: 0, y: -14 },
+  transition: { type: "spring" as const, stiffness: 300, damping: 30 },
 };
 
 function ScrollToTop() {
@@ -75,6 +77,7 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   return (
     <AuthProvider>
       <CartProvider>
+        <ToastProvider>
         <ScrollToTop />
         <div className="relative z-[2] min-h-screen flex flex-col bg-[#F5F1E8]">
           <CouponBanner />
@@ -90,7 +93,9 @@ export default function ClientShell({ children }: { children: React.ReactNode })
           <CartDrawer />
           <FloatingCart />
           <WhatsAppButton />
+          <ToastContainer />
         </div>
+        </ToastProvider>
       </CartProvider>
     </AuthProvider>
   );

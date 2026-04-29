@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Leaf, ShieldCheck, Truck, Star } from "lucide-react";
+import Image from "next/image";
 import Marquee from "../components/Marquee";
 import ProductCard from "../components/ProductCard";
 import { CATEGORIES, TESTIMONIALS, BLOGS, TRUST } from "../data/mock";
@@ -50,7 +51,7 @@ lab-tested for purity before reaching your home.</p>
               <Link to="/products" data-testid="hero-cta-shop" className="touch-target bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-5 sm:px-7 py-3 md:py-4 font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1A1814] transition-all flex items-center justify-center sm:justify-start gap-2 text-sm sm:text-base">Shop Oils <ArrowRight size={18} strokeWidth={3}/></Link>
               <Link to="/b2b" className="touch-target bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-5 sm:px-7 py-3 md:py-4 font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all text-center sm:text-left text-sm sm:text-base">B2B Bulk →</Link>
             </div>
-            <img src="/logo.png" alt="Laxmi Oils" className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 h-32 sm:h-40 md:h-56 lg:h-72 xl:h-96 w-auto hidden md:block pointer-events-none drop-shadow-[0_4px_20px_rgba(31,61,43,0.3)]" />
+            <Image src="/logo.png" alt="Laxmi Oils" width={384} height={384} priority className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 h-32 sm:h-40 md:h-56 lg:h-72 xl:h-96 w-auto hidden md:block pointer-events-none drop-shadow-[0_4px_20px_rgba(31,61,43,0.3)]" />
             <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 text-[#1F3D2B]/10 font-display font-black text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[14rem] leading-none select-none pointer-events-none">L</div>
           </motion.div>
 
@@ -81,7 +82,7 @@ lab-tested for purity before reaching your home.</p>
               </motion.div>
             )}
             <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.2}} className="bg-[#F5F1E8] border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden min-h-[140px] sm:min-h-[160px] md:min-h-[180px]">
-              <img src="https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" alt="cooking" className="w-full h-full object-cover"/>
+              <Image src="https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" alt="cooking" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
               <div className="absolute top-3 left-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-1 text-xs font-black tracking-[0.12em] border-2 border-[#1F3D2B] rotate-[-3deg]">FRESH BATCH</div>
             </motion.div>
           </div>
@@ -114,7 +115,7 @@ lab-tested for purity before reaching your home.</p>
           {CATEGORIES.map((c,i)=>(
             <motion.div key={c.slug} initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5, delay:i*0.1, ease:[0.22,1,0.36,1]}}>
               <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] hover:scale-[1.02] transition-all relative overflow-hidden h-[160px] sm:h-[220px] md:h-[260px]" style={{background:c.bg}}>
-                <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover"/>
+                <Image src={c.image} alt={c.name} fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5 text-white" style={{textShadow: "0 2px 8px rgba(0,0,0,0.8)"}}>
                   <div className="text-[10px] font-bold uppercase tracking-[0.15em] mb-1 text-[#D98F00]">0{i+1} · {c.tagline}</div>
@@ -210,8 +211,8 @@ lab-tested for purity before reaching your home.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mt-6 md:mt-10">
           {BLOGS.map((b,i)=>(
             <motion.a key={b.id} href={`/blog/${b.id}`} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.08}} className="brutal-card block group">
-              <div className="h-40 sm:h-44 md:h-52 border-b-[3px] border-[#1F3D2B] overflow-hidden">
-                <img src={b.image} alt={b.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+              <div className="h-40 sm:h-44 md:h-52 border-b-[3px] border-[#1F3D2B] overflow-hidden relative">
+                <Image src={b.image} alt={b.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
               <div className="p-4 sm:p-5">
                 <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.3em] text-[#1F3D2B]/70"><span>{b.tag}</span><span>{b.read}</span></div>

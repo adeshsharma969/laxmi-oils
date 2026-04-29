@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Plus, Minus, ArrowLeft, MapPin, Truck } from "lucide-react";
+import Image from "next/image";
 import api from "../api/client";
 import { GALLERY } from "../data/mock";
 import { useCart } from "../context/CartContext";
@@ -47,14 +48,16 @@ export default function ProductDetail() {
         <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-7">
           <div className="border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden" style={{background: product.bg, minHeight:"240px"}}>
             <AnimatePresence mode="wait">
-              <motion.img key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} src={gallery[activeImg]} alt={product.name} className="w-full h-[240px] sm:h-[340px] md:h-[400px] lg:h-[480px] object-contain p-2"/>
+              <motion.div key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} className="relative w-full h-[240px] sm:h-[340px] md:h-[400px] lg:h-[480px]">
+                <Image src={gallery[activeImg]} alt={product.name} fill className="object-contain p-2" sizes="(max-width: 1024px) 100vw, 58vw" priority />
+              </motion.div>
             </AnimatePresence>
             <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-[#F5F1E8] text-[#1F3D2B] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B]">{product.category}</div>
             <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#B8431A] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
             <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-[#F5F1E8]/90 p-1.5 border-2 border-[#1F3D2B]">
               {gallery.map((src,i)=>(
-                <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`w-8 h-8 sm:w-10 sm:h-10 border-2 overflow-hidden aspect-square transition-all ${activeImg===i?"border-[#B8431A]":"border-[#1F3D2B]/20 hover:border-[#1F3D2B]/50"}`} style={{background:product.bg}}>
-                  <img src={src} alt="" className="w-full h-full object-contain"/>
+                <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`w-8 h-8 sm:w-10 sm:h-10 border-2 overflow-hidden aspect-square transition-all relative ${activeImg===i?"border-[#B8431A]":"border-[#1F3D2B]/20 hover:border-[#1F3D2B]/50"}`} style={{background:product.bg}}>
+                  <Image src={src} alt="" fill className="object-contain" sizes="40px" />
                 </button>
               ))}
             </div>

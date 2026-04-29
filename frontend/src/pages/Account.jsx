@@ -142,10 +142,13 @@ export default function Account() {
           {busy ? <div className="text-xs sm:text-sm">Loading orders…</div> : orderErr ? (
             <div className="text-sm font-bold text-[#B8431A] border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2">{orderErr}</div>
           ) : orders.length === 0 ? (
-            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-6 sm:p-10 text-center">
-              <ShoppingBag size={28} strokeWidth={2.5} className="mx-auto text-[#1F3D2B]"/>
-              <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B] mt-3">No orders yet.</div>
-              <Link to="/products" className="touch-target-sm inline-block mt-4 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 sm:px-6 py-2 sm:py-3 font-black uppercase tracking-widest text-xs sm:text-sm">Start shopping →</Link>
+            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-6 sm:p-10 text-center flex flex-col items-center">
+              <div className="w-14 h-14 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center mb-4">
+                <ShoppingBag size={26} strokeWidth={2.5} className="text-[#1F3D2B]"/>
+              </div>
+              <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">No orders yet</div>
+              <div className="text-xs mt-2 text-[#1F3D2B]/70 max-w-[220px]">Your order history will appear here once you place your first order.</div>
+              <Link to="/products" className="touch-target-sm inline-flex items-center gap-2 mt-5 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-5 py-2.5 font-black uppercase tracking-[0.14em] text-xs hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors">Shop Bestsellers →</Link>
             </motion.div>
           ) : filteredOrders.length === 0 ? (
             <div className="border-2 border-[#1F3D2B] bg-[#F5F1E8] px-4 py-6 text-center">

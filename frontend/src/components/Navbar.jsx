@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Menu, X, User as UserIcon, LogOut, Search } from "lucide-react";
+import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import SearchCommand from "./SearchCommand";
@@ -48,7 +49,7 @@ export default function Navbar() {
     <header data-testid="navbar" className={`sticky top-0 z-40 bg-[#F5F1E8] border-b-[3px] border-[#1F3D2B] transition-shadow ${scrolled?"shadow-[0_6px_0_0_#1F3D2B]":""}`}>
       <div className="flex items-center justify-between px-4 sm:px-5 md:px-10 py-3 md:py-4">
         <Link to="/" data-testid="brand-logo" className="flex items-center group">
-          <img src="/logo.png" alt="Laxmi Oils" className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto group-hover:scale-105 transition-transform" />
+          <Image src="/logo.png" alt="Laxmi Oils" width={80} height={80} priority className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto group-hover:scale-105 transition-transform" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
@@ -87,9 +88,9 @@ export default function Navbar() {
             data-testid="cart-button"
             onClick={() => setDrawerOpen(true)}
             key={bump}
-            initial={{ scale: 1 }}
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 0.35 }}
+            initial={{ scale: 1, rotate: 0 }}
+            animate={{ scale: [1, 1.18, 1], rotate: [0, -4, 4, -2, 0] }}
+            transition={{ duration: 0.45, ease: "easeInOut" }}
             className="touch-target relative bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-3 sm:px-4 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors flex items-center gap-1 sm:gap-2"
           >
             <ShoppingBag size={18} strokeWidth={3}/>

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import api from "../api/client";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./ToastContext";
 
 const CartCtx = createContext(null);
 
@@ -49,6 +50,8 @@ export const CartProvider = ({ children }) => {
     return () => clearTimeout(t);
   }, [items, user, ready]);
 
+  const toast = useToast();
+
   const add = useCallback((product, size) => {
     const key = `${product.id}-${size.label}`;
     setItems(prev => {
@@ -58,7 +61,8 @@ export const CartProvider = ({ children }) => {
     });
     setBump(b => b+1);
     setDrawerOpen(true);
-  }, []);
+    toast.success(`${product.name} added to cart`);
+  }, [toast]);
 
   const addItem = useCallback((item) => {
     const key = `${item.id || item.product_id}-${item.size}`;

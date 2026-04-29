@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin-login
 Disallow: /account
 Disallow: /auth/callback
 Disallow: /checkout
+Disallow: /invoice
 
-Sitemap: http://localhost:3000/sitemap.xml
+Sitemap: https://www.laxmiedibleoils.com/sitemap.xml

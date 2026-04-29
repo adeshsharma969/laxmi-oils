@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { SearchX } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import api from "../api/client";
 
@@ -95,9 +96,18 @@ function ProductsContent() {
               {error}
             </div>
           ) : (!loading && filtered.length===0) ? (
-            <div className="border-[3px] border-[#1F3D2B] p-8 sm:p-12 md:p-16 text-center bg-[#F5F1E8]">
-              <div className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">No matches.</div>
-              <div className="text-xs sm:text-sm mt-2 text-[#1F3D2B]/70">Try removing a filter.</div>
+            <div className="border-[3px] border-[#1F3D2B] p-8 sm:p-12 text-center bg-[#F5F1E8] flex flex-col items-center">
+              <div className="w-14 h-14 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center mb-4">
+                <SearchX size={24} strokeWidth={2.5} className="text-[#1F3D2B]" />
+              </div>
+              <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">No products match</div>
+              <div className="text-xs mt-2 text-[#1F3D2B]/70 max-w-[240px]">Try removing a filter or browsing all oils.</div>
+              <button
+                onClick={() => { setCat("all"); setSizes([]); setSort("popular"); }}
+                className="mt-4 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#F5F1E8] px-5 py-2 font-black uppercase tracking-[0.14em] text-xs hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors"
+              >
+                Clear All Filters
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">

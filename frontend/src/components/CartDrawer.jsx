@@ -1,20 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Plus, Minus, Trash2, MapPin, Truck, ShieldCheck } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import Image from "next/image";
 import { useCart } from "../context/CartContext";
-import { deliveryPromise, readDeliveryPincode, writeDeliveryPincode } from "../lib/delivery";
 
 export default function CartDrawer() {
   const { drawerOpen, setDrawerOpen, items, updateQty, remove, subtotal } = useCart();
-  const [pincode, setPincode] = useState(() => readDeliveryPincode());
-  const shipping = subtotal > 499 ? 0 : 49;
-  const deliveryText = deliveryPromise(pincode);
-  const setDeliveryPin = (value) => {
-    const next = value.replace(/\D/g, "").slice(0, 6);
-    setPincode(next);
-    writeDeliveryPincode(next);
-  };
 
   return (
     <AnimatePresence>
@@ -24,7 +16,7 @@ export default function CartDrawer() {
           <motion.aside
             data-testid="cart-drawer"
             initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}}
-            transition={{type:"spring", stiffness:300, damping:32}}
+            transition={{type:"spring", stiffness:340, damping:28}}
             className="fixed right-0 top-0 h-full w-full sm:w-[420px] md:w-[440px] bg-[#F5F1E8] border-l-[3px] border-[#1F3D2B] z-50 flex flex-col"
           >
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b-[3px] border-[#1F3D2B] bg-[#D98F00]">
@@ -37,15 +29,21 @@ export default function CartDrawer() {
 
             <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-3 sm:py-4 space-y-3 sm:space-y-4">
               {items.length===0 && (
-                <div className="text-center py-16 sm:py-20">
-                  <div className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">Empty.</div>
-                  <div className="text-xs sm:text-sm mt-2 text-[#1F3D2B]/80">Let's fill it with something pure.</div>
+                <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center px-4">
+                  <div className="w-16 h-16 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center mb-4">
+                    <ShoppingBag size={28} strokeWidth={2.5} className="text-[#1F3D2B]" />
+                  </div>
+                  <div className="font-display font-black text-xl sm:text-2xl text-[#1F3D2B]">Your cart is empty</div>
+                  <div className="text-xs mt-2 text-[#1F3D2B]/70 max-w-[200px]">Add some pure, lab-tested oils to get started.</div>
+                  <Link to="/products" onClick={()=>setDrawerOpen(false)} className="mt-5 inline-flex items-center gap-2 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#F5F1E8] px-5 py-2.5 font-black uppercase tracking-[0.14em] text-xs hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors">
+                    Browse Products <ArrowRight size={14} strokeWidth={3} />
+                  </Link>
                 </div>
               )}
               {items.map(it => (
                 <motion.div key={it.key} layout initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,x:60}} className="flex gap-2 sm:gap-3 border-[3px] border-[#1F3D2B] p-1.5 sm:p-2 bg-[#F5F1E8] shadow-[4px_4px_0_0_#1F3D2B]">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background: it.bg}}>
-                    <img src={it.image} alt={it.name} className="w-full h-full object-contain p-1"/>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0 relative overflow-hidden" style={{background: it.bg}}>
+                    <Image src={it.image} alt={it.name} fill className="object-contain p-1" sizes="64px" />
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
