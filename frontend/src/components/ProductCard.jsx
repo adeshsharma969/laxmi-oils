@@ -36,22 +36,24 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
             {product.category}
           </div>
         </div>
-        <div className="p-2 sm:p-3 md:p-4 flex-1 flex flex-col">
-          <h3 className="font-display font-black text-sm sm:text-base md:text-lg text-[#1F3D2B] leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
-          {product.badge && (
-            <div className="mt-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
-          )}
-          <div className="flex items-end justify-between mt-2 sm:mt-3">
-            <div>
-              <div className="text-xs sm:text-sm md:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</div>
-              <div className="text-[10px] font-medium uppercase tracking-[0.12em] text-[#1F3D2B]/70">{size.label}</div>
+        <div className="p-2 sm:p-3 md:p-4 flex-1 flex flex-col justify-between">
+          <div>
+            <h3 className="font-display font-black text-[13px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.1] sm:leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
+            {product.badge && (
+              <div className="mt-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
+            )}
+          </div>
+          <div className="flex items-end justify-between mt-2">
+            <div className="flex flex-col">
+              <span className="text-[11px] sm:text-sm md:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</span>
+              <span className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.05em] text-[#1F3D2B]/70">{size.label}</span>
             </div>
             <motion.div
               whileHover={{ scale: 1.12, rotate: -5 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="touch-target w-8 h-8 sm:w-9 sm:h-9 border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors"
+              className="touch-target w-7 h-7 sm:w-9 sm:h-9 border-[2px] sm:border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors"
             >
-              <ShoppingCart size={14} strokeWidth={3}/>
+              <ShoppingCart size={13} strokeWidth={3}/>
             </motion.div>
           </div>
         </div>
