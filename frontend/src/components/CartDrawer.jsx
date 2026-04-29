@@ -43,56 +43,37 @@ export default function CartDrawer() {
                 </div>
               )}
               {items.map(it => (
-                <motion.div key={it.key} layout initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,x:60}} className="flex gap-3 sm:gap-4 border-[3px] border-[#1F3D2B] p-2 sm:p-3 bg-[#F5F1E8] shadow-[4px_4px_0_0_#1F3D2B]">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-[#1F3D2B] flex-shrink-0" style={{background: it.bg}}>
-                    <img src={it.image} alt={it.name} className="w-full h-full object-contain"/>
+                <motion.div key={it.key} layout initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,x:60}} className="flex gap-2 sm:gap-3 border-[3px] border-[#1F3D2B] p-1.5 sm:p-2 bg-[#F5F1E8] shadow-[4px_4px_0_0_#1F3D2B]">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#1F3D2B] flex-shrink-0" style={{background: it.bg}}>
+                    <img src={it.image} alt={it.name} className="w-full h-full object-contain p-1"/>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate">{it.name}</div>
-                    <div className="text-xs sm:text-sm font-bold uppercase text-[#1F3D2B]/80 tracking-[0.12em]">{it.size}</div>
-                    <div className="flex items-center justify-between mt-2 gap-3">
-                      <div className="flex items-center border-2 border-[#1F3D2B] bg-white">
-                        <button data-testid={`qty-dec-${it.key}`} onClick={()=>updateQty(it.key,-1)} className="touch-target-sm w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]" aria-label={`Decrease ${it.name}`}><Minus size={14} strokeWidth={3}/></button>
-                        <span className="w-9 text-center font-black text-sm">{it.qty}</span>
-                        <button data-testid={`qty-inc-${it.key}`} onClick={()=>updateQty(it.key,1)} className="touch-target-sm w-10 h-10 flex items-center justify-center hover:bg-[#D98F00]" aria-label={`Increase ${it.name}`}><Plus size={14} strokeWidth={3}/></button>
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] truncate leading-none mt-0.5">{it.name}</div>
+                      <div className="text-[10px] sm:text-xs font-bold uppercase text-[#1F3D2B]/80 tracking-[0.12em] mt-0.5">{it.size}</div>
+                    </div>
+                    <div className="flex items-end justify-between gap-2 mt-1">
+                      <div className="flex items-center border-2 border-[#1F3D2B] bg-white h-7 sm:h-8">
+                        <button data-testid={`qty-dec-${it.key}`} onClick={()=>updateQty(it.key,-1)} className="touch-target-sm w-7 sm:w-8 h-full flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+                        <span className="w-6 sm:w-8 text-center font-black text-xs sm:text-sm">{it.qty}</span>
+                        <button data-testid={`qty-inc-${it.key}`} onClick={()=>updateQty(it.key,1)} className="touch-target-sm w-7 sm:w-8 h-full flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
                       </div>
-                      <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B]">₹{it.price*it.qty}</div>
+                      <div className="font-display font-black text-sm sm:text-base text-[#1F3D2B] leading-none">₹{it.price*it.qty}</div>
                     </div>
                   </div>
-                  <button data-testid={`remove-${it.key}`} onClick={()=>remove(it.key)} className="touch-target-sm text-[#B8431A] self-start p-1.5"><Trash2 size={16} strokeWidth={3}/></button>
+                  <button data-testid={`remove-${it.key}`} onClick={()=>remove(it.key)} className="touch-target-sm text-[#B8431A] self-start p-1 hover:bg-[#B8431A]/10 transition-colors"><Trash2 size={14} strokeWidth={3}/></button>
                 </motion.div>
               ))}
             </div>
 
             {items.length>0 && (
-              <div className="border-t-[3px] border-[#1F3D2B] p-4 sm:p-6 bg-[#F5F1E8]">
-                <div className="mb-4 border-2 border-[#1F3D2B] bg-white p-3">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#B8431A]">
-                    <Truck size={13} strokeWidth={3}/> Delivery promise
-                  </div>
-                  <div className="mt-2 flex gap-2">
-                    <div className="relative flex-1">
-                      <MapPin size={14} strokeWidth={3} className="absolute left-2 top-1/2 -translate-y-1/2 text-[#1F3D2B]"/>
-                      <input
-                        value={pincode}
-                        onChange={(event)=>setDeliveryPin(event.target.value)}
-                        inputMode="numeric"
-                        maxLength={6}
-                        placeholder="Enter pincode"
-                        className="w-full border-2 border-[#1F3D2B] bg-[#F5F1E8] py-2 pl-7 pr-2 text-sm font-black text-[#1F3D2B] outline-none focus:bg-[#D98F00]/25"
-                      />
-                    </div>
-                    <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-2 py-2 text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]">
-                      {shipping === 0 ? "Free ship" : `₹${shipping} ship`}
-                    </div>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2 text-xs font-bold text-[#1F3D2B]/78">
-                    <ShieldCheck size={13} strokeWidth={3}/> {deliveryText}
-                  </div>
-                </div>
+              <div className="border-t-[3px] border-[#1F3D2B] p-4 sm:p-5 bg-[#F5F1E8]">
                 <div className="flex justify-between items-end mb-3 sm:mb-4">
-                  <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#1F3D2B]">Subtotal</div>
-                  <div data-testid="cart-subtotal" className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">₹{subtotal}</div>
+                  <div>
+                    <div className="text-xs font-black uppercase tracking-[0.2em] text-[#1F3D2B]">Subtotal</div>
+                    <div className="text-[10px] font-bold text-[#1F3D2B]/70 mt-0.5">Shipping calculated at checkout</div>
+                  </div>
+                  <div data-testid="cart-subtotal" className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B] leading-none">₹{subtotal}</div>
                 </div>
                 <Link to="/checkout" onClick={()=>setDrawerOpen(false)} data-testid="checkout-link" className="touch-target block text-center w-full bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] py-3 sm:py-4 font-black uppercase tracking-[0.2em] hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors text-sm sm:text-base">
                   Checkout →

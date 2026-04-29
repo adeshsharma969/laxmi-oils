@@ -9,23 +9,19 @@ import {
   Clock3,
   CreditCard,
   Download,
-  FileText,
   LocateFixed,
   MapPin,
   PackageCheck,
   Plus,
-  ReceiptText,
   ShieldCheck,
   ShoppingBag,
-  Truck,
-  User,
   WalletCards,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import api, { fmtErr } from "../api/client";
-import { activeTimelineIndex, deliveryDateRange, deliveryPromise, orderTimelineSteps, writeDeliveryPincode } from "../lib/delivery";
-import { downloadInvoice, formatInvoiceDate, formatMoney, paymentLabel } from "../lib/invoice";
+import { deliveryDateRange, deliveryPromise, writeDeliveryPincode } from "../lib/delivery";
+import { downloadInvoice, formatMoney, paymentLabel } from "../lib/invoice";
 
 const STORAGE_PROFILE = "laxmi_checkout_profile";
 const STORAGE_ADDRESSES = "laxmi_saved_addresses";
@@ -44,10 +40,8 @@ const emptyAddress = {
 };
 
 const steps = [
-  { id: 1, label: "Address", icon: User },
-  { id: 2, label: "Delivery", icon: Truck },
-  { id: 3, label: "Payment", icon: CreditCard },
-  { id: 4, label: "Review", icon: ReceiptText },
+  { id: 1, label: "Address & Delivery", icon: MapPin },
+  { id: 2, label: "Payment & Review", icon: CreditCard },
 ];
 
 const paymentMethods = [
@@ -186,7 +180,7 @@ export default function Checkout() {
   const addItem = cart?.addItem || (() => {});
   const checkoutDraft = useMemo(() => getCheckoutDraft(), []);
 
-  const [step, setStep] = useState(() => checkoutDraft.step || 1);
+  const [step, setStep] = useState(() => Math.min(checkoutDraft.step || 1, 2));
   const [form, setForm] = useState(() => ({ ...getStoredProfile(), ...(checkoutDraft.form || {}) }));
   const [fieldErrors, setFieldErrors] = useState({});
   const [savedAddresses, setSavedAddresses] = useState(() => getStoredAddresses());
@@ -212,14 +206,7 @@ export default function Checkout() {
   const total = Math.max(0, afterDiscount - creditUsed);
   const requiresOnlinePayment = paymentMethod === "razorpay" && total >= 1;
   const finalCtaLabel = !user ? "Login to continue" : requiresOnlinePayment ? "Pay and place order" : "Place order";
-  const primaryLabel = step < 4 ? "Continue" : finalCtaLabel;
-  const addressReady = Boolean(clean(form.name) && clean(form.phone).replace(/\D/g, "").length >= 10 && clean(form.address) && clean(form.city) && /^\d{6}$/.test(clean(form.pincode)));
-  const assistedStatus = [
-    { label: "Address saved", ready: addressReady, copy: addressReady ? `${form.city} - ${form.pincode}` : "Add address once, reuse later", icon: MapPin },
-    { label: "Delivery selected", ready: Boolean(delivery), copy: delivery === "express" ? `Express ${deliveryDateRange("express")}` : `Standard ${deliveryDateRange("standard")}`, icon: Truck },
-    { label: "Payment secured", ready: Boolean(paymentMethod), copy: paymentMethod === "cod" ? "Pay safely at delivery" : "Razorpay protected checkout", icon: ShieldCheck },
-    { label: "Invoice instant", ready: true, copy: "Ready as soon as order is placed", icon: ReceiptText },
-  ];
+  const primaryLabel = step < 2 ? "Continue" : finalCtaLabel;
 
   const deliveryOptions = useMemo(
     () => [
@@ -349,7 +336,7 @@ export default function Checkout() {
   const goNext = () => {
     setPayError("");
     if (step === 1 && !validateAddress()) return;
-    setStep((current) => Math.min(4, current + 1));
+    setStep((current) => Math.min(2, current + 1));
   };
 
   const goBack = () => setStep((current) => Math.max(1, current - 1));
@@ -598,130 +585,54 @@ export default function Checkout() {
         data-testid="checkout-success"
         className="px-4 sm:px-5 md:px-10 py-8 md:py-14"
       >
-        <div className="mx-auto grid max-w-5xl grid-cols-12 gap-5 md:gap-7">
-          <section className="col-span-12 lg:col-span-7 border-[3px] border-[#1F3D2B] bg-[#D98F00] p-5 sm:p-8 brutal-shadow-lg">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.12, type: "spring", stiffness: 180 }}
-              className="mb-5 flex h-16 w-16 items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#D98F00]"
+        <div className="mx-auto max-w-xl border-[3px] border-[#1F3D2B] bg-[#D98F00] p-5 sm:p-8 brutal-shadow-lg">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.12, type: "spring", stiffness: 180 }}
+            className="mb-4 flex h-14 w-14 items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#D98F00]"
+          >
+            <CheckCircle2 size={30} strokeWidth={3} />
+          </motion.div>
+          <div className="text-xs font-black uppercase tracking-[0.26em] text-[#1F3D2B]">Order confirmed</div>
+          <h1 className="font-display font-black text-3xl sm:text-4xl text-[#1F3D2B] tracking-tighter mt-1">
+            Payment {paid ? "received" : "recorded"}.
+          </h1>
+          <p className="mt-2 max-w-md text-sm font-bold text-[#1F3D2B]/80">
+            Your order is locked in. Track progress and download invoices from your account.
+          </p>
+
+          {/* Compact Order Stats */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <ReceiptStat label="Order ID" value={success.order_id} mono />
+            <ReceiptStat label="Total" value={formatMoney(success.total)} />
+            <ReceiptStat label="Payment" value={paymentLabel(success.payment_method)} />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-5 flex flex-col sm:flex-row gap-2">
+            <button
+              data-testid="download-invoice"
+              onClick={() => downloadInvoice(success)}
+              className="touch-target-sm inline-flex items-center justify-center gap-2 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-2 font-black uppercase tracking-[0.14em] text-xs hover:bg-[#B8431A] hover:border-[#B8431A]"
             >
-              <CheckCircle2 size={36} strokeWidth={3} />
-            </motion.div>
-            <div className="text-xs font-black uppercase tracking-[0.26em] text-[#1F3D2B]">Order confirmed</div>
-            <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-[#1F3D2B] tracking-tighter mt-2">
-              Payment {paid ? "received" : "recorded"}.
-            </h1>
-            <p className="mt-4 max-w-xl text-sm sm:text-base font-bold text-[#1F3D2B]/82">
-              Your order is locked in. The invoice is ready now, and tracking will appear in your account once the shipment is packed.
-            </p>
-
-            <div className="mt-6 grid grid-cols-4 gap-2">
-              {orderTimelineSteps.map((label, index) => {
-                const done = index <= activeTimeline;
-                return (
-                  <div key={label} className="min-w-0">
-                    <div className={`mx-auto flex h-9 w-9 items-center justify-center border-2 border-[#1F3D2B] text-xs font-black ${done ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-[#F5F1E8] text-[#1F3D2B]"}`}>
-                      {done ? <Check size={15} strokeWidth={3}/> : index + 1}
-                    </div>
-                    <div className="mt-2 text-center text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{label}</div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <ReceiptStat label="Order ID" value={success.order_id} mono />
-              <ReceiptStat label="Paid" value={formatMoney(success.total)} />
-              <ReceiptStat label="Payment" value={paymentLabel(success.payment_method)} />
-            </div>
-
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <button
-                data-testid="download-invoice"
-                onClick={() => downloadInvoice(success)}
-                className="touch-target inline-flex items-center justify-center gap-2 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-5 py-3 font-black uppercase tracking-[0.14em] text-xs sm:text-sm hover:bg-[#B8431A] hover:border-[#B8431A]"
-              >
-                <Download size={16} strokeWidth={3} /> Download invoice
-              </button>
+              <Download size={14} strokeWidth={3} /> Invoice
+            </button>
+            {user && (
               <Link
-                to={`/invoice/${success.order_id}`}
-                className="touch-target inline-flex items-center justify-center gap-2 bg-[#F5F1E8] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-5 py-3 font-black uppercase tracking-[0.14em] text-xs sm:text-sm hover:bg-[#D98F00]"
-              >
-                <FileText size={16} strokeWidth={3} /> Open invoice
-              </Link>
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(supportText)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="touch-target inline-flex items-center justify-center gap-2 bg-[#25D366] text-white border-[3px] border-[#1F3D2B] px-5 py-3 font-black uppercase tracking-[0.14em] text-xs sm:text-sm"
-              >
-                <ShieldCheck size={16} strokeWidth={3} /> WhatsApp support
-              </a>
-            </div>
-          </section>
-
-          <aside className="col-span-12 lg:col-span-5 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-5 sm:p-6 brutal-shadow">
-            <div className="flex items-center justify-between gap-3 border-b-2 border-[#1F3D2B]/25 pb-4">
-              <div>
-                <div className="text-xs font-black uppercase tracking-[0.22em] text-[#B8431A]">Receipt</div>
-                <div className="font-display font-black text-2xl text-[#1F3D2B]">Invoice preview</div>
-              </div>
-              <div className="rounded-none border-2 border-[#1F3D2B] bg-[#D98F00] px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]">
-                {success.payment_status || success.status}
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-3 text-sm text-[#1F3D2B]">
-              <div className="flex justify-between gap-3">
-                <span className="text-[#1F3D2B]/70">Invoice date</span>
-                <span className="font-bold text-right">{formatInvoiceDate(success.created_at)}</span>
-              </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-[#1F3D2B]/70">Delivery to</span>
-                <span className="font-bold text-right">{success.address?.name}, {success.address?.city}</span>
-              </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-[#1F3D2B]/70">Items</span>
-                <span className="font-bold">{success.items?.reduce((sum, item) => sum + item.qty, 0) || 0}</span>
-              </div>
-            </div>
-
-            <div className="mt-5 border-t-2 border-[#1F3D2B]/25 pt-4 space-y-2 text-sm">
-              <TotalLine label="Subtotal" value={formatMoney(success.subtotal)} />
-              <TotalLine label="Shipping" value={success.shipping === 0 ? "FREE" : formatMoney(success.shipping)} />
-              {success.discount > 0 && <TotalLine label="Discount" value={`- ${formatMoney(success.discount)}`} tone="save" />}
-              {success.credit_used > 0 && <TotalLine label="Store credit" value={`- ${formatMoney(success.credit_used)}`} tone="save" />}
-              <div className="flex items-end justify-between border-t-[3px] border-[#1F3D2B] pt-3">
-                <span className="text-xs font-black uppercase tracking-[0.22em]">Total</span>
-                <span className="font-display font-black text-3xl">{formatMoney(success.total)}</span>
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-col sm:flex-row lg:flex-col gap-2">
-              {user && (
-                <Link
-                  to="/account"
-                  className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#F5F1E8]"
-                >
-                  <PackageCheck size={14} strokeWidth={3} /> View orders
-                </Link>
-              )}
-              <Link
-                to="/products"
+                to="/account"
                 className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
               >
-                <ShoppingBag size={14} strokeWidth={3} /> Continue shopping
+                <PackageCheck size={14} strokeWidth={3} /> My orders
               </Link>
-              <button
-                type="button"
-                onClick={reorder}
-                className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#D98F00] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]"
-              >
-                <ShoppingBag size={14} strokeWidth={3} /> Buy again
-              </button>
-            </div>
-          </aside>
+            )}
+            <Link
+              to="/products"
+              className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
+            >
+              <ShoppingBag size={14} strokeWidth={3} /> Continue shopping
+            </Link>
+          </div>
         </div>
       </motion.div>
     );
@@ -729,37 +640,19 @@ export default function Checkout() {
 
   return (
     <div data-testid="checkout-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10 pb-36 md:pb-10">
-      <div className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-6 md:mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+      <div className="border-b-[3px] border-[#1F3D2B] pb-3 md:pb-4 mb-4 md:mb-6 flex items-end justify-between gap-3">
         <div>
           <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">Secure checkout</div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-[#1F3D2B] tracking-tighter">Checkout.</h1>
+          <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-[#1F3D2B] tracking-tighter">Checkout.</h1>
         </div>
-        <div className="flex flex-wrap gap-2 text-[11px] sm:text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]">
-          <span className="inline-flex items-center gap-1 border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-2 py-1">
-            <ShieldCheck size={13} strokeWidth={3} /> Demo secure
-          </span>
-          <span className="inline-flex items-center gap-1 border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1">
-            <Clock3 size={13} strokeWidth={3} /> 2 min checkout
-          </span>
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
-          {assistedStatus.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.label} className={`border-2 border-[#1F3D2B] px-3 py-2 ${item.ready ? "bg-[#D98F00]/35" : "bg-[#F5F1E8]"}`}>
-                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]">
-                  <Icon size={13} strokeWidth={3}/> {item.label}
-                </div>
-                <div className="mt-1 text-xs font-bold text-[#1F3D2B]/75">{item.copy}</div>
-              </div>
-            );
-          })}
+        <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]/70">
+          Step {step}/2
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 md:gap-8">
+      <div className="grid grid-cols-12 gap-5 md:gap-6">
         <div className="col-span-12 lg:col-span-8">
-          <div className="grid grid-cols-4 mb-6 md:mb-8 border-[3px] border-[#1F3D2B]">
+          <div className="grid grid-cols-2 mb-4 md:mb-5 border-[3px] border-[#1F3D2B]">
             {steps.map((item, index) => {
               const Icon = item.icon;
               const active = step === item.id;
@@ -772,12 +665,12 @@ export default function Checkout() {
                     if (item.id < step) setStep(item.id);
                     else if (item.id === step + 1) goNext();
                   }}
-                  className={`p-2 sm:p-3 md:p-4 flex items-center justify-center sm:justify-start gap-2 md:gap-3 ${
+                  className={`p-2 sm:p-3 flex items-center justify-center sm:justify-start gap-2 ${
                     index < steps.length - 1 ? "border-r-[3px] border-[#1F3D2B]" : ""
                   } ${active ? "bg-[#D98F00]" : done ? "bg-[#1F3D2B] text-[#F5F1E8]" : "bg-[#F5F1E8]"}`}
                 >
                   <span
-                    className={`w-7 h-7 md:w-8 md:h-8 border-2 ${
+                    className={`w-6 h-6 sm:w-7 sm:h-7 border-2 ${
                       done
                         ? "bg-[#D98F00] border-[#D98F00] text-[#1F3D2B]"
                         : active
@@ -785,11 +678,11 @@ export default function Checkout() {
                           : "border-[#1F3D2B] text-[#1F3D2B]"
                     } flex items-center justify-center flex-shrink-0`}
                   >
-                    {done ? <Check size={14} strokeWidth={3} /> : <Icon size={14} strokeWidth={2.5} />}
+                    {done ? <Check size={13} strokeWidth={3} /> : <Icon size={13} strokeWidth={2.5} />}
                   </span>
                   <span className="hidden sm:block text-left">
-                    <span className="block text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] opacity-70">Step {item.id}</span>
-                    <span className="block font-display font-black text-sm sm:text-base">{item.label}</span>
+                    <span className="block text-[9px] font-black uppercase tracking-[0.16em] opacity-70">Step {item.id}</span>
+                    <span className="block font-display font-black text-xs sm:text-sm">{item.label}</span>
                   </span>
                 </button>
               );
@@ -936,7 +829,7 @@ export default function Checkout() {
                   </Field>
                 </div>
 
-                <label className="mt-4 flex cursor-pointer items-start gap-3 border-2 border-[#1F3D2B] bg-[#D98F00]/20 px-3 py-3 text-sm font-bold text-[#1F3D2B]">
+                <label className="mt-3 flex cursor-pointer items-start gap-3 border-2 border-[#1F3D2B] bg-[#D98F00]/20 px-3 py-2 text-sm font-bold text-[#1F3D2B]">
                   <input
                     type="checkbox"
                     checked={saveAddress}
@@ -945,162 +838,119 @@ export default function Checkout() {
                   />
                   <span>Save this address for future checkouts</span>
                 </label>
+
+                {/* Inline Delivery Picker */}
+                <div className="mt-4 border-t-2 border-[#1F3D2B]/20 pt-4">
+                  <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.24em] text-[#B8431A] mb-2">Delivery speed</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {deliveryOptions.map((option) => {
+                      const selected = delivery === option.id;
+                      return (
+                        <button
+                          key={option.id}
+                          data-testid={`ship-${option.id}`}
+                          type="button"
+                          onClick={() => setDelivery(option.id)}
+                          className={`text-left p-3 border-[3px] transition ${
+                            selected
+                              ? "bg-[#D98F00] border-[#1F3D2B] shadow-[4px_4px_0_0_#1F3D2B]"
+                              : "bg-[#F5F1E8] border-[#1F3D2B] hover:bg-[#D98F00]/25"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-display font-black text-sm sm:text-base text-[#1F3D2B]">{option.title}</span>
+                            <span className="font-display font-black text-sm sm:text-base text-[#1F3D2B]">
+                              {option.price === 0 ? "FREE" : formatMoney(option.price)}
+                            </span>
+                          </div>
+                          <div className="text-[10px] font-bold text-[#1F3D2B]/70">{option.desc}</div>
+                          <div className="mt-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.1em] text-[#1F3D2B]">
+                            <Clock3 size={11} strokeWidth={3} /> {option.eta}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </motion.section>
             )}
 
             {step === 2 && (
               <motion.section
-                key="delivery"
+                key="payment-review"
                 initial={{ opacity: 0, x: 18 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -18 }}
                 className="space-y-4"
               >
-                {deliveryOptions.map((option) => {
-                  const selected = delivery === option.id;
-                  return (
-                    <button
-                      key={option.id}
-                      data-testid={`ship-${option.id}`}
-                      type="button"
-                      onClick={() => setDelivery(option.id)}
-                      className={`w-full text-left p-5 border-[3px] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between transition ${
-                        selected
-                          ? "bg-[#D98F00] border-[#1F3D2B] shadow-[6px_6px_0_0_#1F3D2B]"
-                          : "bg-[#F5F1E8] border-[#1F3D2B] hover:bg-[#D98F00]/25"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className={`mt-1 flex h-9 w-9 items-center justify-center border-2 border-[#1F3D2B] ${selected ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-[#F5F1E8] text-[#1F3D2B]"}`}>
-                          {selected ? <Check size={17} strokeWidth={3} /> : <Truck size={17} strokeWidth={3} />}
-                        </span>
-                        <span>
-                          <span className="block font-display font-black text-2xl text-[#1F3D2B]">{option.title}</span>
-                          <span className="block text-sm font-bold text-[#1F3D2B]/78">{option.desc}</span>
-                          <span className="mt-1 inline-flex items-center gap-1 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B]">
-                            <Clock3 size={13} strokeWidth={3} /> {option.eta}
-                          </span>
-                        </span>
-                      </div>
-                      <span className="font-display font-black text-3xl text-[#1F3D2B]">
-                        {option.price === 0 ? "FREE" : formatMoney(option.price)}
-                      </span>
-                    </button>
-                  );
-                })}
-              </motion.section>
-            )}
+                {/* Compact Review Summary */}
+                <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4">
+                  <div className="text-[10px] font-black uppercase tracking-[0.22em] text-[#1F3D2B]/70 mb-2">Delivering to</div>
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm text-[#1F3D2B]">
+                    <span className="font-black">{form.name}</span>
+                    <span className="text-xs text-[#1F3D2B]/70">{form.city} - {form.pincode}</span>
+                    <span className="text-xs font-bold text-[#1F3D2B]/70 capitalize">{delivery} · {deliveryOptions.find((o) => o.id === delivery)?.eta}</span>
+                    <button type="button" onClick={() => setStep(1)} className="text-[10px] font-black uppercase tracking-[0.14em] text-[#B8431A] ml-auto">Edit</button>
+                  </div>
+                </div>
 
-            {step === 3 && (
-              <motion.section
-                key="payment"
-                initial={{ opacity: 0, x: 18 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -18 }}
-                className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-6 brutal-shadow"
-              >
-                <div className="text-xs font-black uppercase tracking-[0.26em] text-[#B8431A]">Payment</div>
-                <h2 className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">Choose how to pay</h2>
-
-                <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {paymentMethods.map((method) => {
-                    const Icon = method.icon;
-                    const selected = paymentMethod === method.id;
-                    return (
-                      <button
-                        key={method.id}
-                        type="button"
-                        onClick={() => setPaymentMethod(method.id)}
-                        className={`text-left border-[3px] p-4 transition ${
-                          selected
-                            ? "border-[#1F3D2B] bg-[#D98F00] shadow-[5px_5px_0_0_#1F3D2B]"
-                            : "border-[#1F3D2B] bg-[#F5F1E8] hover:bg-[#D98F00]/25"
-                        }`}
-                      >
-                        <span className="flex items-start justify-between gap-3">
-                          <span className="flex items-start gap-3">
-                            <span className={`flex h-10 w-10 items-center justify-center border-2 border-[#1F3D2B] ${selected ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-[#F5F1E8] text-[#1F3D2B]"}`}>
-                              <Icon size={18} strokeWidth={3} />
+                {/* Payment Methods */}
+                <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4">
+                  <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.22em] text-[#B8431A] mb-2">Payment method</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {paymentMethods.map((method) => {
+                      const Icon = method.icon;
+                      const selected = paymentMethod === method.id;
+                      return (
+                        <button
+                          key={method.id}
+                          type="button"
+                          onClick={() => setPaymentMethod(method.id)}
+                          className={`text-left border-[3px] p-3 transition ${
+                            selected
+                              ? "border-[#1F3D2B] bg-[#D98F00] shadow-[4px_4px_0_0_#1F3D2B]"
+                              : "border-[#1F3D2B] bg-[#F5F1E8] hover:bg-[#D98F00]/25"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span className={`flex h-8 w-8 items-center justify-center border-2 border-[#1F3D2B] ${selected ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-[#F5F1E8] text-[#1F3D2B]"}`}>
+                              <Icon size={15} strokeWidth={3} />
                             </span>
                             <span>
-                              <span className="block font-display font-black text-xl text-[#1F3D2B]">{method.title}</span>
-                              <span className="block text-xs font-bold text-[#1F3D2B]/72">{method.desc}</span>
+                              <span className="block font-display font-black text-sm text-[#1F3D2B]">{method.title}</span>
+                              <span className="block text-[10px] font-bold text-[#1F3D2B]/70">{method.desc}</span>
                             </span>
                           </span>
-                          {selected && <Check size={18} strokeWidth={3} className="text-[#1F3D2B]" />}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-5 border-2 border-[#1F3D2B] bg-[#D98F00]/30 p-3 text-xs font-bold text-[#1F3D2B]">
-                  Razorpay opens a secure test checkout window. COD orders stay pending until delivery.
-                </div>
-              </motion.section>
-            )}
-
-            {step === 4 && (
-              <motion.section
-                key="review"
-                initial={{ opacity: 0, x: 18 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -18 }}
-                className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 sm:p-6 brutal-shadow"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-[0.26em] text-[#B8431A]">Final check</div>
-                    <h2 className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B]">Review your order</h2>
-                  </div>
-                  <div className="hidden sm:flex h-12 w-12 items-center justify-center border-[3px] border-[#1F3D2B] bg-[#D98F00] text-[#1F3D2B]">
-                    <ReceiptText size={24} strokeWidth={3} />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <ReviewBlock icon={MapPin} label="Address" action={() => setStep(1)}>
-                    <b>{form.name}</b>
-                    <span>{form.address}</span>
-                    {form.landmark && <span>{form.landmark}</span>}
-                    <span>{form.city} - {form.pincode}</span>
-                  </ReviewBlock>
-                  <ReviewBlock icon={Truck} label="Delivery" action={() => setStep(2)}>
-                    <b className="capitalize">{delivery}</b>
-                    <span>{deliveryOptions.find((option) => option.id === delivery)?.eta}</span>
-                    <span>{shipping === 0 ? "Free shipping" : formatMoney(shipping)}</span>
-                  </ReviewBlock>
-                  <ReviewBlock icon={CreditCard} label="Payment" action={() => setStep(3)}>
-                    <b>{paymentLabel(paymentMethod)}</b>
-                    <span>{paymentMethod === "cod" ? "Payment due on delivery" : total < 1 ? "Covered by discounts or credit" : "Razorpay signature verified before order placement"}</span>
-                    <span>Total: {formatMoney(total)}</span>
-                  </ReviewBlock>
-                </div>
-
+                {/* Login Prompt (if not logged in) */}
                 {!user && (
-                  <div className="mt-5 border-[3px] border-[#1F3D2B] bg-white p-4 sm:p-5 shadow-[5px_5px_0_0_#D98F00]">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="border-[3px] border-[#1F3D2B] bg-white p-3 sm:p-4 shadow-[4px_4px_0_0_#D98F00]">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div>
-                        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-[#B8431A]">
-                          <ShieldCheck size={15} strokeWidth={3} /> Account required
+                        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-[#B8431A]">
+                          <ShieldCheck size={14} strokeWidth={3} /> Account required
                         </div>
-                        <h3 className="mt-2 font-display text-2xl font-black text-[#1F3D2B]">Login to complete your order</h3>
-                        <p className="mt-2 text-sm font-bold text-[#1F3D2B]/75">
-                          Your cart and checkout details are saved. Sign in for payment, invoices, delivery updates, and saved addresses.
+                        <p className="mt-1 text-xs font-bold text-[#1F3D2B]/75">
+                          Sign in for payment, invoices, and delivery updates.
                         </p>
                       </div>
-                      <div className="flex flex-col gap-2 sm:min-w-40">
+                      <div className="flex gap-2">
                         <Link
                           to="/login"
                           state={{ from: "/checkout", checkoutIntent: true }}
-                          className="touch-target inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#F5F1E8] hover:bg-[#B8431A] hover:border-[#B8431A]"
+                          className="touch-target-sm inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#F5F1E8] hover:bg-[#B8431A] hover:border-[#B8431A]"
                         >
                           Login
                         </Link>
                         <Link
                           to="/register"
                           state={{ from: "/checkout", checkoutIntent: true }}
-                          className="touch-target inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
+                          className="touch-target-sm inline-flex items-center justify-center border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
                         >
                           Register
                         </Link>
@@ -1110,7 +960,7 @@ export default function Checkout() {
                 )}
 
                 {payError && (
-                  <div className="mt-5 border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2 text-sm font-bold text-[#B8431A]">
+                  <div className="border-2 border-[#B8431A] bg-[#B8431A]/10 px-3 py-2 text-sm font-bold text-[#B8431A]">
                     {payError}
                   </div>
                 )}
@@ -1127,7 +977,7 @@ export default function Checkout() {
             >
               <ArrowLeft size={15} strokeWidth={3} /> Back
             </button>
-            {step < 4 ? (
+            {step < 2 ? (
               <button
                 data-testid="next-step"
                 type="button"
@@ -1158,7 +1008,7 @@ export default function Checkout() {
                 <div className="mt-1 text-xs font-bold text-[#1F3D2B]/70">{items.length} item type{items.length === 1 ? "" : "s"}</div>
               </div>
               <div className="border-2 border-[#1F3D2B] bg-[#D98F00] px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#1F3D2B]">
-                Step {step}/4
+                Step {step}/2
               </div>
             </div>
 
@@ -1269,7 +1119,7 @@ export default function Checkout() {
           </button>
           <button
             type="button"
-            onClick={step < 4 ? goNext : pay}
+            onClick={step < 2 ? goNext : pay}
             disabled={busy}
             className="touch-target border-[3px] border-[#1F3D2B] bg-[#D98F00] py-3 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] disabled:opacity-60"
           >
@@ -1291,23 +1141,6 @@ function Field({ label, error, span = 1, children }) {
   );
 }
 
-function ReviewBlock({ icon: Icon, label, action, children }) {
-  return (
-    <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#1F3D2B]/75">
-          <Icon size={14} strokeWidth={3} /> {label}
-        </div>
-        <button type="button" onClick={action} className="text-[10px] font-black uppercase tracking-[0.14em] text-[#B8431A]">
-          Edit
-        </button>
-      </div>
-      <div className="space-y-1 text-xs font-bold text-[#1F3D2B]/78 [&_b]:block [&_b]:text-sm [&_b]:text-[#1F3D2B] [&_span]:block">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 function ReceiptStat({ label, value, mono = false }) {
   return (

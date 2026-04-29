@@ -45,19 +45,19 @@ export default function ProductDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-7">
-          <div className="border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden" style={{background: product.bg, minHeight:"280px"}}>
+          <div className="border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden" style={{background: product.bg, minHeight:"240px"}}>
             <AnimatePresence mode="wait">
-              <motion.img key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} src={gallery[activeImg]} alt={product.name} className="w-full h-[280px] sm:h-[380px] md:h-[480px] lg:h-[520px] object-contain"/>
+              <motion.img key={activeImg} initial={{opacity:0, scale:1.04}} animate={{opacity:1, scale:1}} exit={{opacity:0}} transition={{duration:0.4}} src={gallery[activeImg]} alt={product.name} className="w-full h-[240px] sm:h-[340px] md:h-[400px] lg:h-[480px] object-contain p-2"/>
             </AnimatePresence>
-            <div className="absolute top-3 sm:top-5 left-3 sm:left-5 bg-[#F5F1E8] text-[#1F3D2B] px-2 sm:px-3 py-1 text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B]">{product.category}</div>
-            <div className="absolute top-3 sm:top-5 right-3 sm:right-5 bg-[#B8431A] text-[#F5F1E8] px-2 sm:px-3 py-1 text-xs sm:text-sm font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
-          </div>
-          <div className="mt-3 sm:mt-4 grid grid-cols-4 gap-2 sm:gap-3">
-            {gallery.map((src,i)=>(
-              <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`touch-target-sm border-[3px] overflow-hidden aspect-square transition-all ${activeImg===i?"border-[#B8431A] shadow-[4px_4px_0_0_#1F3D2B]":"border-[#1F3D2B] hover:-translate-y-0.5"}`} style={{background:product.bg}}>
-                <img src={src} alt="" className="w-full h-full object-contain"/>
-              </button>
-            ))}
+            <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-[#F5F1E8] text-[#1F3D2B] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B]">{product.category}</div>
+            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#B8431A] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
+            <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-[#F5F1E8]/90 p-1.5 border-2 border-[#1F3D2B]">
+              {gallery.map((src,i)=>(
+                <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`w-8 h-8 sm:w-10 sm:h-10 border-2 overflow-hidden aspect-square transition-all ${activeImg===i?"border-[#B8431A]":"border-[#1F3D2B]/20 hover:border-[#1F3D2B]/50"}`} style={{background:product.bg}}>
+                  <img src={src} alt="" className="w-full h-full object-contain"/>
+                </button>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -65,35 +65,22 @@ export default function ProductDetail() {
           <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter leading-[0.95]">{product.name}</h1>
           <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
 
-          {/* Mobile Layout: Pack size left, price middle, incrementer right */}
-          <div className="mt-6 sm:mt-8">
-            <div className="sm:hidden flex items-center justify-between gap-2">
-              {/* Pack Size Selector */}
+          {/* Mobile Layout: Pack size left, total right (NO CTA HERE, moved to sticky bottom) */}
+          <div className="mt-5 sm:mt-8">
+            <div className="sm:hidden flex items-end justify-between gap-2 pb-2 border-b-2 border-[#1F3D2B]/10">
               <div className="flex-1">
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Pack Size</div>
-                <div className="flex gap-1">
+                <div className="text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1.5">Pack Size</div>
+                <div className="flex flex-wrap gap-1">
                   {product.sizes.map(s=>(
-                    <button key={s.label} data-testid={`size-${s.label}`} onClick={()=>setSize(s)} className={`touch-target px-2 py-1 border-[2px] font-black uppercase tracking-wider transition-all text-xs ${size.label===s.label?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>
+                    <button key={s.label} data-testid={`size-${s.label}`} onClick={()=>setSize(s)} className={`touch-target px-2 py-1.5 border-[2px] font-black uppercase tracking-wider transition-all text-[10px] ${size.label===s.label?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>
                       {s.label}
                     </button>
                   ))}
                 </div>
               </div>
-              
-              {/* Total Price */}
-              <div className="flex-1 text-left pl-4">
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Total</div>
-                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B] leading-tight">₹{size.price*qty}</div>
-              </div>
-              
-              {/* Compact Incrementer */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="text-xs font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-1">Qty</div>
-                <div className="flex items-center border-[2px] border-[#1F3D2B]">
-                  <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target w-6 h-6 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={10} strokeWidth={3}/></button>
-                  <span data-testid="pdp-qty" className="w-5 text-center font-black text-xs">{qty}</span>
-                  <button onClick={()=>setQty(q=>q+1)} className="touch-target w-6 h-6 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={10} strokeWidth={3}/></button>
-                </div>
+              <div className="text-right">
+                <div className="text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-0.5">Total</div>
+                <div data-testid="pdp-price" className="font-display font-black text-2xl text-[#1F3D2B] leading-none">₹{size.price*qty}</div>
               </div>
             </div>
           </div>
@@ -125,43 +112,56 @@ export default function ProductDetail() {
             </div>
           </div>
 
-          <motion.button whileTap={{scale:0.96}} data-testid="add-to-cart-btn" onClick={handleAdd} className="touch-target mt-4 sm:mt-5 w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-4 sm:py-5 font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-base sm:text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all">
+          <motion.button whileTap={{scale:0.96}} data-testid="add-to-cart-btn" onClick={handleAdd} className="hidden sm:block touch-target mt-4 sm:mt-5 w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-6 sm:px-8 py-4 sm:py-5 font-black uppercase tracking-[0.2em] sm:tracking-[0.25em] text-base sm:text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] transition-all">
             Add to Cart →
           </motion.button>
 
-          <div className="mt-4 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 sm:p-4">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#B8431A]">
-              <Truck size={14} strokeWidth={3}/> Delivery estimate
+          <div className="mt-4 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#B8431A]">
+              <Truck size={14} strokeWidth={3}/> Delivery
             </div>
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <div className="mt-2 flex gap-1.5">
               <label className="relative flex-1">
-                <MapPin size={15} strokeWidth={3} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B]"/>
+                <MapPin size={14} strokeWidth={3} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F3D2B]"/>
                 <input
                   value={pincode}
                   onChange={(event)=>setDeliveryPin(event.target.value)}
                   inputMode="numeric"
                   maxLength={6}
-                  placeholder="Enter pincode"
-                  className="touch-target-sm w-full border-2 border-[#1F3D2B] bg-white py-2 pl-9 pr-3 text-sm font-black text-[#1F3D2B] outline-none focus:bg-[#D98F00]/25"
+                  placeholder="Pincode"
+                  className="touch-target-sm w-full border-2 border-[#1F3D2B] bg-white py-1.5 pl-8 pr-2 text-xs font-black text-[#1F3D2B] outline-none focus:bg-[#D98F00]/25"
                 />
               </label>
-              <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]">
-                {deliveryPromise(pincode)}
+              <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-2 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#1F3D2B] flex items-center justify-center min-w-[90px] text-center">
+                {deliveryPromise(pincode).replace(/Delivery by /i, "")}
               </div>
             </div>
           </div>
 
-          <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="mt-5 sm:mt-8 flex flex-wrap gap-2">
             {(product.benefits||[]).map(b=>(
-              <div key={b} className="flex items-center gap-1.5 sm:gap-2 border-2 border-[#1F3D2B] px-2 sm:px-3 py-1.5 sm:py-2 bg-[#F5F1E8]">
-                <Check size={12} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
-                <span className="text-xs sm:text-sm font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{b}</span>
+              <div key={b} className="flex items-center gap-1 border-2 border-[#1F3D2B] px-2 py-1 bg-[#F5F1E8]">
+                <Check size={10} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
+                <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{b}</span>
               </div>
             ))}
           </div>
 
-                  </motion.div>
+        </motion.div>
       </div>
+
+      {/* Sticky Mobile CTA */}
+      <div className="fixed sm:hidden bottom-0 left-0 right-0 z-40 bg-[#F5F1E8] border-t-[3px] border-[#1F3D2B] p-3 shadow-[0_-4px_10px_rgba(0,0,0,0.1)] flex gap-2">
+        <div className="flex items-center border-[2px] border-[#1F3D2B] bg-white w-24 flex-shrink-0 justify-between px-1">
+          <button onClick={()=>setQty(q=>Math.max(1,q-1))} className="touch-target-sm w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Minus size={12} strokeWidth={3}/></button>
+          <span className="font-black text-xs">{qty}</span>
+          <button onClick={()=>setQty(q=>q+1)} className="touch-target-sm w-8 h-8 flex items-center justify-center hover:bg-[#D98F00]"><Plus size={12} strokeWidth={3}/></button>
+        </div>
+        <motion.button whileTap={{scale:0.96}} onClick={handleAdd} className="flex-1 bg-[#D98F00] text-[#1F3D2B] border-[2px] border-[#1F3D2B] font-black uppercase tracking-[0.15em] text-xs flex items-center justify-center gap-2 touch-target">
+          Add <span className="hidden min-[360px]:inline">to Cart</span> • ₹{size.price*qty}
+        </motion.button>
+      </div>
+
     </div>
   );
 }

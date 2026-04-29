@@ -47,37 +47,37 @@ function ProductsContent() {
 
   return (
     <div data-testid="products-page" className="px-4 sm:px-5 md:px-10 py-6 md:py-10">
-      <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}} className="border-b-[3px] border-[#1F3D2B] pb-6 md:pb-8 mb-6 md:mb-8">
-        <div className="eyebrow text-[#B8431A]">OUR COLLECTION</div>
-        <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-[#1F3D2B] tracking-tighter">All oils, one standard.</h1>
+      <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5}} className="border-b-[3px] border-[#1F3D2B] pb-4 md:pb-6 mb-4 md:mb-6">
+        <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-[#B8431A]">OUR COLLECTION</div>
+        <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-[#1F3D2B] tracking-tighter mt-1">All oils, one standard.</h1>
       </motion.div>
 
       <div className="grid grid-cols-12 gap-4 md:gap-6 lg:gap-8">
         <aside className="col-span-12 md:col-span-3 lg:col-span-3 md:sticky md:top-24 md:self-start">
-          <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4 md:p-5 brutal-shadow-sm">
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] mb-3 md:mb-3">Category</div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-1 gap-2">
+          <div className="border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3 md:p-4 brutal-shadow-sm">
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B] mb-2">Category</div>
+            <div className="flex overflow-x-auto pb-2 -mb-2 md:pb-0 md:mb-0 md:flex-col gap-2 snap-x">
               {[{slug:"all", name:"All"},...CATEGORIES].map(c=>(
                 <button
                   key={c.slug}
                   data-testid={`filter-cat-${c.slug}`}
                   onClick={()=>setCat(c.slug)}
-                  className={`touch-target-sm w-full text-center px-2 py-2.5 border-2 font-bold uppercase text-xs tracking-wider transition-colors overflow-hidden text-ellipsis whitespace-nowrap ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}
+                  className={`snap-start flex-shrink-0 touch-target-sm px-4 md:w-full md:text-center md:px-2 py-1.5 md:py-2 border-2 font-bold uppercase text-[10px] sm:text-xs tracking-wider transition-colors ${cat===c.slug?"bg-[#1F3D2B] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}
                 >
                   {c.name}
                 </button>
               ))}
             </div>
 
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] mt-4 md:mt-6 mb-2 md:mb-3">Size</div>
-            <div className="flex flex-wrap gap-2">
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B] mt-4 mb-2">Size</div>
+            <div className="flex flex-wrap gap-1.5">
               {SIZES.map(s=>(
-                <button key={s} data-testid={`filter-size-${s}`} onClick={()=>toggleSize(s)} className={`touch-target-sm px-2 sm:px-3 py-1.5 border-2 font-bold text-xs uppercase tracking-wider transition-colors whitespace-nowrap ${sizes.includes(s)?"bg-[#B8431A] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>{s}</button>
+                <button key={s} data-testid={`filter-size-${s}`} onClick={()=>toggleSize(s)} className={`touch-target-sm px-2 py-1 border-2 font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-colors ${sizes.includes(s)?"bg-[#B8431A] text-[#F5F1E8] border-[#1F3D2B]":"bg-[#F5F1E8] text-[#1F3D2B] border-[#1F3D2B] hover:bg-[#D98F00]"}`}>{s}</button>
               ))}
             </div>
 
-            <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B] mt-4 md:mt-6 mb-2 md:mb-3">Sort</div>
-            <select data-testid="sort-select" value={sort} onChange={e=>setSort(e.target.value)} className="w-full border-2 border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.18em] text-[#1F3D2B] mt-4 mb-2">Sort</div>
+            <select data-testid="sort-select" value={sort} onChange={e=>setSort(e.target.value)} className="w-full border-2 border-[#1F3D2B] bg-[#F5F1E8] px-2 py-1.5 font-bold text-[10px] sm:text-xs uppercase tracking-wider focus:outline-none">
               <option value="popular">Popular</option>
               <option value="price-low">Price: Low → High</option>
               <option value="price-high">Price: High → Low</option>

@@ -37,8 +37,8 @@ export default function Home() {
     <div data-testid="home-page">
       {/* HERO BENTO */}
       <section className="px-4 sm:px-5 md:px-10 pt-6 md:pt-8 pb-12 md:pb-16">
-        <div className="grid grid-cols-12 gap-4 md:gap-5 lg:gap-6">
-          <motion.div {...fadeUp} className="col-span-12 lg:col-span-8 bg-[#D98F00] border-[3px] border-[#1F3D2B] p-5 sm:p-6 md:p-8 lg:p-14 relative overflow-hidden min-h-[360px] sm:min-h-[400px] md:min-h-[440px] flex flex-col justify-between brutal-shadow">
+        <div className="grid grid-cols-12 gap-3 md:gap-4 lg:gap-5">
+          <motion.div {...fadeUp} className="col-span-12 lg:col-span-8 bg-[#D98F00] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 lg:p-10 relative overflow-hidden min-h-[300px] sm:min-h-[340px] md:min-h-[380px] flex flex-col justify-between brutal-shadow">
             <div className="eyebrow text-[#1F3D2B]">Better Oil. Better Life.</div>
             <div className="relative z-10">
               <h1 data-testid="hero-heading" className="font-display font-black text-[#1F3D2B] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.85] tracking-tighter uppercase">Pure<br/>Natural.<br/><span className="text-[#B8431A]">Trusted.</span></h1>
@@ -54,9 +54,9 @@ lab-tested for purity before reaching your home.</p>
             <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 text-[#1F3D2B]/10 font-display font-black text-[6rem] sm:text-[8rem] md:text-[10rem] lg:text-[14rem] leading-none select-none pointer-events-none">L</div>
           </motion.div>
 
-          <div className="col-span-12 lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-4 md:gap-5 lg:gap-6">
+          <div className="col-span-12 lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-3 md:gap-4 lg:gap-5">
             {bestsellers[0] ? (
-              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
+              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-3 sm:p-4 md:p-5 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[140px] sm:min-h-[160px] md:min-h-[180px] flex flex-col justify-between">
                 <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
                 <div>
                   <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">{bestsellers[0].name.replace(/Laxmi\s/i, "").replace(/\s*\(.*\)/, "")}</div>
@@ -68,7 +68,7 @@ lab-tested for purity before reaching your home.</p>
                 </div>
               </motion.div>
             ) : (
-              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-4 sm:p-5 md:p-6 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px] flex flex-col justify-between">
+              <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.1}} className="bg-[#2B2A28] border-[3px] border-[#1F3D2B] p-3 sm:p-4 md:p-5 text-[#F5F1E8] brutal-shadow relative overflow-hidden min-h-[140px] sm:min-h-[160px] md:min-h-[180px] flex flex-col justify-between">
                 <div className="text-xs sm:text-sm font-black uppercase tracking-[0.2em] text-[#D98F00]">Bestseller</div>
                 <div>
                   <div className="font-display font-black text-xl sm:text-2xl md:text-3xl leading-tight">Kachi Ghani Mustard</div>
@@ -80,7 +80,7 @@ lab-tested for purity before reaching your home.</p>
                 </div>
               </motion.div>
             )}
-            <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.2}} className="bg-[#F5F1E8] border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden min-h-[180px] sm:min-h-[200px] md:min-h-[210px]">
+            <motion.div {...fadeUp} transition={{...fadeUp.transition, delay:0.2}} className="bg-[#F5F1E8] border-[3px] border-[#1F3D2B] brutal-shadow relative overflow-hidden min-h-[140px] sm:min-h-[160px] md:min-h-[180px]">
               <img src="https://images.unsplash.com/photo-1515931215890-366d3990cf8d?crop=entropy&cs=srgb&fm=jpg&q=85&w=800" alt="cooking" className="w-full h-full object-cover"/>
               <div className="absolute top-3 left-3 bg-[#B8431A] text-[#F5F1E8] px-2 py-1 text-xs font-black tracking-[0.12em] border-2 border-[#1F3D2B] rotate-[-3deg]">FRESH BATCH</div>
             </motion.div>
@@ -88,11 +88,11 @@ lab-tested for purity before reaching your home.</p>
         </div>
 
         {/* Trust numbers */}
-        <motion.div {...fadeUp} className="mt-4 md:mt-6 grid grid-cols-2 md:grid-cols-4 gap-0 border-[3px] border-[#1F3D2B]">
+        <motion.div {...fadeUp} className="mt-3 md:mt-4 flex flex-wrap lg:grid lg:grid-cols-4 border-[3px] border-[#1F3D2B]">
           {TRUST.map((t,i)=>(
-            <div key={i} className={`p-5 md:p-7 ${i<TRUST.length-1?"md:border-r-[3px] border-[#1F3D2B]":""} ${i<2?"border-b-[3px] md:border-b-0 border-[#1F3D2B]":""} ${i===0||i===2?"border-r-[3px] md:border-r-[3px] border-[#1F3D2B]":""}`}>
-              <div className="font-display font-black text-2xl md:text-4xl text-[#1F3D2B]">{t.num}</div>
-              <div className="text-xs sm:text-sm font-black uppercase tracking-[0.18em] text-[#1F3D2B]/70 mt-1">{t.label}</div>
+            <div key={i} className={`flex-1 min-w-[45%] lg:min-w-0 p-3 sm:p-4 md:p-5 border-[#1F3D2B] ${i%2===0?"border-r-[3px]":""} ${i<2?"border-b-[3px] lg:border-b-0":""} lg:border-r-[3px] last:border-r-0`}>
+              <div className="font-display font-black text-xl md:text-3xl text-[#1F3D2B] leading-none">{t.num}</div>
+              <div className="text-[10px] sm:text-xs font-black uppercase tracking-[0.15em] text-[#1F3D2B]/70 mt-0.5">{t.label}</div>
             </div>
           ))}
         </motion.div>
@@ -110,15 +110,15 @@ lab-tested for purity before reaching your home.</p>
           <Link to="/products" className="font-black uppercase text-xs sm:text-sm tracking-widest text-[#1F3D2B] border-b-[3px] border-[#1F3D2B] pb-1">Explore All →</Link>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {CATEGORIES.map((c,i)=>(
             <motion.div key={c.slug} initial={{opacity:0,y:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5, delay:i*0.1, ease:[0.22,1,0.36,1]}}>
-              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-[6px_6px_0_0_#1F3D2B] md:hover:shadow-[12px_12px_0_0_#1F3D2B] hover:scale-[1.02] transition-all relative overflow-hidden h-[200px] sm:h-[260px] md:h-[300px] lg:h-[340px]" style={{background:c.bg}}>
+              <Link data-testid={`category-${c.slug}`} to={`/products?cat=${c.slug}`} className="block border-[3px] border-[#1F3D2B] brutal-shadow hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1F3D2B] hover:scale-[1.02] transition-all relative overflow-hidden h-[160px] sm:h-[220px] md:h-[260px]" style={{background:c.bg}}>
                 <img src={c.image} alt={c.name} className="absolute inset-0 w-full h-full object-cover"/>
-                <div className="absolute inset-0 w-full h-full" style={{background: "linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.65) 30%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0) 100%)"}}></div>
-                <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-6 md:p-6 text-white" style={{textShadow: "0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.5)"}}>
-                  <div className="text-[11px] sm:text-xs font-bold uppercase tracking-[2px] mb-2 text-[#D98F00]">0{i+1} · {c.tagline}</div>
-                  <h3 className="font-black text-xl sm:text-2xl md:text-2xl lg:text-3xl leading-tight tracking-[-0.5px] uppercase mb-3 line-clamp-2 drop-shadow-lg">{c.name}</h3>
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5 text-white" style={{textShadow: "0 2px 8px rgba(0,0,0,0.8)"}}>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.15em] mb-1 text-[#D98F00]">0{i+1} · {c.tagline}</div>
+                  <h3 className="font-black text-lg sm:text-xl md:text-2xl leading-tight uppercase mb-2 drop-shadow-md">{c.name}</h3>
                   <button className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-[1px] hover:text-[#D98F00] transition-all duration-300">
                     Shop Now 
                     <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform"/>
@@ -136,16 +136,18 @@ lab-tested for purity before reaching your home.</p>
             <div className="eyebrow text-[#D98F00]">Why Laxmi</div>
           <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl tracking-tighter mt-2 max-w-3xl">Small batch. High standards. No shortcuts.</h2>
         </motion.div>
-        <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        <div className="mt-6 md:mt-10 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
           {[
-            { icon: Leaf, title: "Partner-Pressed", desc: "Sourced from trusted wood-press (kolhu) mills across Rajasthan.No heat. No chemicals. No compromise. " },
-            { icon: ShieldCheck, title: "Lab-Tested In Jaipur", desc: "Every batch is tested for purity, FFA, and adulteration. If it doesn’t pass, it doesn’t ship." },
-            { icon: Truck, title: "Curated & Packed in Jaipur", desc: "Carefully inspected, packed, and QR-traceable. From our facility to your kitchen—fresh and verified." },
+            { icon: Leaf, title: "Partner-Pressed", desc: "No heat. No chemicals." },
+            { icon: ShieldCheck, title: "Lab-Tested", desc: "Tested for purity & FFA." },
+            { icon: Truck, title: "QR-Traceable", desc: "Fresh & verified dispatch." },
           ].map((f,i)=>{const Ic = f.icon; return (
-            <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1, duration:0.5}} className="border-[3px] border-[#D98F00] p-5 sm:p-6 md:p-7 bg-[#1F3D2B] hover:bg-[#D98F00] hover:text-[#1F3D2B] transition-colors group">
-              <Ic size={32} strokeWidth={2} className="text-[#D98F00] group-hover:text-[#1F3D2B]"/>
-              <div className="font-display font-black text-xl sm:text-2xl md:text-3xl mt-3 md:mt-5">{f.title}</div>
-              <div className="mt-2 text-xs sm:text-sm md:text-base opacity-90">{f.desc}</div>
+            <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1, duration:0.5}} className="border-[3px] border-[#D98F00] p-4 sm:p-5 bg-[#1F3D2B] hover:bg-[#D98F00] hover:text-[#1F3D2B] transition-colors group flex items-start gap-4">
+              <Ic size={28} strokeWidth={2.5} className="text-[#D98F00] group-hover:text-[#1F3D2B] flex-shrink-0 mt-1"/>
+              <div>
+                <div className="font-display font-black text-lg sm:text-xl">{f.title}</div>
+                <div className="mt-1 text-[10px] sm:text-xs opacity-90 uppercase tracking-widest">{f.desc}</div>
+              </div>
             </motion.div>
           );})}
         </div>
