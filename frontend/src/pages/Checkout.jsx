@@ -25,7 +25,7 @@ import {
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import api, { fmtErr } from "../api/client";
-import { deliveryDateRange, deliveryPromise, writeDeliveryPincode } from "../lib/delivery";
+import { deliveryDateRange, deliveryPromise, writeDeliveryPincode, activeTimelineIndex, orderTimelineSteps } from "../lib/delivery";
 import { downloadInvoice, formatMoney, paymentLabel } from "../lib/invoice";
 
 const STORAGE_PROFILE = "laxmi_checkout_profile";
