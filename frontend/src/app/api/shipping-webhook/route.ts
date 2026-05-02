@@ -17,7 +17,7 @@ const BACKEND_API_URL = (
 // ─── Helpers ────────────────────────────────────────────────────────────────────
 
 function log(msg: string, data?: unknown) {
-  console.log(`[Shiprocket Webhook] ${msg}`, data ?? "");
+  console.log(`[Shipping Webhook] ${msg}`, data ?? "");
 }
 
 /**
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
 
     if (!updated) {
       log("Failed to update order, will retry on next webhook");
-      // Still return 200 to Shiprocket to avoid infinite retries for transient issues
+      // Still return 200 to avoid infinite retries for transient issues
       return NextResponse.json({
         success: false,
         message: "Order update failed but acknowledged",
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
       status: mappedStatus,
     });
   } catch (error) {
-    console.error("[Shiprocket Webhook] Error:", error);
+    console.error("[Shipping Webhook] Error:", error);
 
-    // Always return 200 to Shiprocket to prevent infinite webhook retries
+    // Always return 200 to prevent infinite webhook retries
     return NextResponse.json({
       success: false,
       error: "Webhook processing failed",
