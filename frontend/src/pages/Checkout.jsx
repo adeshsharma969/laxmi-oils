@@ -4,17 +4,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
+  Bookmark,
   Check,
   CheckCircle2,
   Clock3,
   CreditCard,
   Download,
+  Loader2,
   LocateFixed,
   MapPin,
   PackageCheck,
   Plus,
+  RotateCcw,
   ShieldCheck,
+  Share2,
   ShoppingBag,
+  Trash2,
   WalletCards,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -186,11 +191,16 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState(() => checkoutDraft.paymentMethod || "razorpay");
   const [success, setSuccess] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentProgress, setPaymentProgress] = useState(0);
+  const [paymentTip, setPaymentTip] = useState("");
   const [coupon, setCoupon] = useState(() => checkoutDraft.coupon || "");
   const [couponApplied, setCouponApplied] = useState(() => checkoutDraft.couponApplied || null);
   const [couponMsg, setCouponMsg] = useState("");
   const [useCredit, setUseCredit] = useState(() => checkoutDraft.useCredit || false);
   const [payError, setPayError] = useState("");
+  const [paymentFailure, setPaymentFailure] = useState(null);
+  const [saveCartForLater, setSaveCartForLater] = useState(false);
 
   const creditBalance = Math.max(0, Math.floor(user?.rewards_earned || 0));
   const shipping = 49;
@@ -200,6 +210,12 @@ export default function Checkout() {
   const total = Math.max(0, afterDiscount - creditUsed);
   const requiresOnlinePayment = paymentMethod === "razorpay" && total >= 1;
   const finalCtaLabel = !user ? "Login to continue" : requiresOnlinePayment ? "Pay and place order" : "Place order";
+  const paymentTips = [
+    "Securing your payment details...",
+    "Connecting to payment gateway...",
+    "Preparing your order...",
+    "Almost there...",
+  ];
   const primaryLabel = step < 2 ? "Continue" : finalCtaLabel;
 
   const deliveryOptions = useMemo(
@@ -402,73 +418,194 @@ export default function Checkout() {
   };
 
   const collectRazorpayPayment = async () => {
-    await loadRazorpayCheckout();
+    setPaymentLoading(true);
+    setPaymentProgress(0);
+    setPaymentTip(paymentTips[0]);
+    
+    // Simulate loading progress
+    const progressInterval = setInterval(() => {
+      setPaymentProgress(prev => {
+        const next = prev + 25;
+        if (next <= 75) {
+          setPaymentTip(paymentTips[Math.floor(next / 25)]);
+        }
+        return next;
+      });
+    }, 800);
 
-    const amountPaise = Math.round(total * 100);
-    if (amountPaise < 100) return null;
+    try {
+      setPaymentTip("Initializing payment gateway...");
+      await loadRazorpayCheckout();
+      
+      setPaymentProgress(50);
+      setPaymentTip("Creating your order...");
+      
+      const amountPaise = Math.round(total * 100);
+      if (amountPaise < 100) return null;
 
-    const { data: order } = await api.post("/create-order", {
-      amount: amountPaise,
-      currency: "INR",
-      receipt: `laxmi_${Date.now()}`,
-    });
+      const { data: order } = await api.post("/create-order", {
+        amount: amountPaise,
+        currency: "INR",
+        receipt: `laxmi_${Date.now()}`,
+      });
 
-    if (!razorpayKeyId) {
-      throw new Error("Razorpay key is missing. Set NEXT_PUBLIC_RAZORPAY_KEY_ID in the frontend environment.");
+      if (!razorpayKeyId) {
+        throw new Error("Razorpay key is missing. Set NEXT_PUBLIC_RAZORPAY_KEY_ID in the frontend environment.");
+      }
+
+      setPaymentProgress(75);
+      setPaymentTip("Opening secure payment window...");
+      
+      clearInterval(progressInterval);
+      setPaymentProgress(100);
+      setPaymentLoading(false);
+
+      return new Promise((resolve, reject) => {
+        let settled = false;
+        const finish = (fn, value) => {
+          if (settled) return;
+          settled = true;
+          setPaymentLoading(false);
+          setPaymentProgress(0);
+          fn(value);
+        };
+
+        const razorpay = new window.Razorpay({
+          key: razorpayKeyId,
+          amount: order.amount,
+          currency: order.currency || "INR",
+          name: "Laxmi Edible Oils",
+          description: `Order payment for ${items.length} item${items.length > 1 ? 's' : ''}`,
+          order_id: order.order_id,
+          image: "/logo.png", // Will use your logo
+          prefill: {
+            name: clean(form.name),
+            email: clean(form.email),
+            contact: clean(form.phone),
+          },
+          notes: {
+            customer_address: clean(form.address),
+            city: clean(form.city),
+            pincode: clean(form.pincode),
+            order_items: items.map(item => `${item.name} (${item.size}) x ${item.qty}`).join(', '),
+            total_amount: `₹${total}`,
+          },
+          theme: {
+            color: "#D98F00", // Laxmi Oils brand color
+            backdrop_color: "#F5F1E8", // Background color
+            hide_topbar: false,
+          },
+          config: {
+            display: {
+              blocks: {
+                banks: {
+                  name: 'Pay via NetBanking',
+                  instruments: [
+                    {
+                      method: 'netbanking',
+                      banks: [
+                        'HDFC',
+                        'ICICI',
+                        'SBI',
+                        'AXIS',
+                        'KOTAK'
+                      ]
+                    },
+                  ],
+                },
+                upi: {
+                  name: 'Pay via UPI',
+                  instruments: [
+                    {
+                      method: 'upi',
+                      apps: [
+                        'gpay',
+                        'phonepe',
+                        'paytm',
+                        'amazonpay'
+                      ]
+                    },
+                  ],
+                },
+                wallet: {
+                  name: 'Pay via Wallet',
+                  instruments: [
+                    {
+                      method: 'wallet',
+                      wallets: [
+                        'paytm',
+                        'phonepe',
+                        'amazonpay',
+                        'airtelmoney'
+                      ]
+                    },
+                  ],
+                },
+                card: {
+                  name: 'Pay via Debit/Credit Card',
+                  instruments: [
+                    {
+                      method: 'card',
+                      card_networks: [
+                        'Visa',
+                        'Mastercard',
+                        'Maestro',
+                        'RuPay'
+                      ]
+                    },
+                  ],
+                },
+              },
+              sequence: ['block.upi', 'block.card', 'block.netbanking', 'block.wallet'],
+              preferences: {
+                show_default_blocks: true,
+              },
+            },
+          },
+          modal: {
+            ondismiss: () => {
+              const error = new Error("Payment was cancelled.");
+              error.code = "CANCELLED";
+              finish(reject, error);
+            },
+            escape: true,
+            backdropclose: true,
+            animation: 'slide',
+            height: '70%',
+            width: '100%',
+          },
+          handler: async (response) => {
+            try {
+              setPaymentTip("Verifying your payment...");
+              const { data } = await api.post("/verify-payment", {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+
+              if (!data?.ok) throw new Error("Payment verification failed.");
+              finish(resolve, response);
+            } catch (error) {
+              finish(reject, error);
+            }
+          },
+        });
+
+        razorpay.on('payment.failed', (response) => {
+          const error = new Error(response?.error?.description || "Payment failed. Please try another method.");
+          error.code = response?.error?.code || "PAYMENT_FAILED";
+          error.source = "razorpay";
+          finish(reject, error);
+        });
+
+        razorpay.open();
+      });
+    } catch (error) {
+      clearInterval(progressInterval);
+      setPaymentLoading(false);
+      setPaymentProgress(0);
+      throw error;
     }
-
-    return new Promise((resolve, reject) => {
-      let settled = false;
-      const finish = (fn, value) => {
-        if (settled) return;
-        settled = true;
-        fn(value);
-      };
-
-      const razorpay = new window.Razorpay({
-        key: razorpayKeyId,
-        amount: order.amount,
-        currency: order.currency || "INR",
-        name: "Laxmi Edible Oils",
-        description: "Order payment",
-        order_id: order.order_id,
-        prefill: {
-          name: clean(form.name),
-          email: clean(form.email),
-          contact: clean(form.phone),
-        },
-        notes: {
-          city: clean(form.city),
-          pincode: clean(form.pincode),
-        },
-        theme: {
-          color: "#1F3D2B",
-        },
-        modal: {
-          ondismiss: () => finish(reject, new Error("Payment was cancelled.")),
-        },
-        handler: async (response) => {
-          try {
-            const { data } = await api.post("/verify-payment", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-
-            if (!data?.ok) throw new Error("Payment verification failed.");
-            finish(resolve, response);
-          } catch (error) {
-            finish(reject, error);
-          }
-        },
-      });
-
-      razorpay.on("payment.failed", (response) => {
-        finish(reject, new Error(response?.error?.description || "Payment failed. Please try another method."));
-      });
-
-      razorpay.open();
-    });
   };
 
   const clearCoupon = () => {
@@ -491,6 +628,7 @@ export default function Checkout() {
 
     setBusy(true);
     setPayError("");
+    setPaymentFailure(null);
 
     try {
       const razorpayPayment = paymentMethod === "razorpay" ? await collectRazorpayPayment() : null;
@@ -498,13 +636,17 @@ export default function Checkout() {
       const payload = {
         items: items.map((item) => ({
           product_id: item.id,
-          name: item.name,
           size: item.size,
-          price: item.price,
           qty: item.qty,
-          image: item.image,
-          bg: item.bg,
+          price: item.price,
         })),
+        shipping,
+        subtotal,
+        discount: discount || 0,
+        total,
+        coupon: couponApplied?.code || null,
+        use_credit: useCredit,
+        payment: resolvedPaymentMethod,
         address: {
           label: form.label,
           name: clean(form.name),
@@ -514,35 +656,81 @@ export default function Checkout() {
           landmark: clean(form.landmark),
           city: clean(form.city),
           pincode: clean(form.pincode),
-          locationUrl: form.locationUrl,
+          location_url: form.locationUrl,
         },
-        delivery,
-        payment_method: resolvedPaymentMethod,
-        payment_id: razorpayPayment?.razorpay_payment_id || undefined,
-        coupon_code: couponApplied?.code || null,
-        use_credit: useCredit,
-        credit_amount: creditUsed,
+        razorpay_payment_id: razorpayPayment?.razorpay_payment_id,
+        razorpay_order_id: razorpayPayment?.razorpay_order_id,
+        save_address: saveAddress,
       };
+
       const { data } = await api.post("/orders", payload);
-      setSavedAddresses(rememberCheckout(payload.address, saveAddress));
       setSuccess(data);
-      if (typeof window !== "undefined") localStorage.removeItem(STORAGE_CHECKOUT_DRAFT);
       clearCart();
-
-      // Fire and forget Shiprocket integration
-      if (data?.order_id) {
-        fetch('/api/shiprocket/process-order', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        }).catch(err => console.error("Shiprocket background processing failed:", err));
+      localStorage.removeItem(STORAGE_CHECKOUT_DRAFT);
+    } catch (err) {
+      console.error("Checkout error:", err);
+      
+      // Handle different types of payment failures
+      if (err.code === "CANCELLED") {
+        setPaymentFailure({
+          type: "cancelled",
+          message: "Payment was cancelled. You can try again whenever you're ready.",
+          canRetry: true,
+          saveCartOption: true,
+        });
+      } else if (err.source === "razorpay" || err.code === "PAYMENT_FAILED") {
+        setPaymentFailure({
+          type: "payment_failed",
+          message: err.message || "Payment failed. Please check your payment details and try again.",
+          canRetry: true,
+          saveCartOption: true,
+          alternatives: [
+            "Try a different payment method",
+            "Check your card details and balance",
+            "Use UPI for faster payment",
+          ],
+        });
+      } else {
+        setPaymentFailure({
+          type: "network_error",
+          message: "Network error occurred. Please check your connection and try again.",
+          canRetry: true,
+          saveCartOption: true,
+        });
       }
-
-    } catch (e) {
-      setPayError(`Order failed: ${fmtErr(e)}`);
     } finally {
       setBusy(false);
     }
+  };
+
+  const handleRetry = () => {
+    setPaymentFailure(null);
+    setPayError("");
+    pay();
+  };
+
+  const handleSaveCartForLater = () => {
+    // Save current cart and form data to localStorage
+    const checkoutData = {
+      items,
+      form,
+      coupon,
+      couponApplied,
+      useCredit,
+      paymentMethod,
+      saveAddress,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem("laxmi_saved_cart", JSON.stringify(checkoutData));
+    setSaveCartForLater(true);
+    setPaymentFailure(null);
+  };
+
+  const handleClearCart = () => {
+    clearCart();
+    localStorage.removeItem("laxmi_saved_cart");
+    setPaymentFailure(null);
+    nav("/products");
   };
 
   if (!cart || !auth) {
@@ -567,6 +755,145 @@ export default function Checkout() {
     );
   }
 
+  // Payment Failure UI
+  if (paymentFailure) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="px-4 sm:px-5 md:px-10 py-8 md:py-14"
+      >
+        <div className="mx-auto max-w-lg">
+          <div className="border-[3px] border-[#B8431A] bg-white p-6 sm:p-8 brutal-shadow-lg">
+            {/* Error Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="mb-6 inline-flex items-center justify-center h-16 w-16 border-[3px] border-[#B8431A] bg-[#B8431A]/10 rounded-full"
+            >
+              <X size={32} strokeWidth={3} className="text-[#B8431A]" />
+            </motion.div>
+
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-[#1F3D2B] mb-3">
+              {paymentFailure.type === 'cancelled' ? 'Payment Cancelled' : 
+               paymentFailure.type === 'payment_failed' ? 'Payment Failed' : 
+               'Something Went Wrong'}
+            </h2>
+            
+            <p className="text-sm font-bold text-[#1F3D2B]/70 mb-6">
+              {paymentFailure.message}
+            </p>
+
+            {/* Alternative Suggestions */}
+            {paymentFailure.alternatives && (
+              <div className="mb-6 p-4 border-2 border-[#1F3D2B]/20 bg-[#F5F1E8]/50">
+                <div className="text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]/70 mb-2">
+                  Try these alternatives:
+                </div>
+                <ul className="space-y-1">
+                  {paymentFailure.alternatives.map((alt, index) => (
+                    <li key={index} className="text-xs font-bold text-[#1F3D2B]/60 flex items-start gap-2">
+                      <span className="text-[#D98F00] mt-0.5">•</span>
+                      {alt}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              {paymentFailure.canRetry && (
+                <button
+                  onClick={handleRetry}
+                  className="w-full touch-target inline-flex items-center justify-center gap-2 bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] px-4 py-3 font-black uppercase tracking-[0.14em] hover:bg-[#1F3D2B] hover:text-[#F5F1E8] transition-colors"
+                >
+                  <RotateCcw size={16} strokeWidth={3} /> Try Again
+                </button>
+              )}
+
+              {paymentFailure.saveCartOption && (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={handleSaveCartForLater}
+                    className="touch-target inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00] transition-colors"
+                  >
+                    <Bookmark size={14} strokeWidth={3} /> Save Cart
+                  </button>
+                  <button
+                    onClick={handleClearCart}
+                    className="touch-target inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#B8431A]/20 transition-colors"
+                  >
+                    <Trash2 size={14} strokeWidth={3} /> Clear Cart
+                  </button>
+                </div>
+              )}
+
+              <Link
+                to="/products"
+                className="block text-center text-xs font-black uppercase tracking-[0.14em] text-[#B8431A] hover:text-[#1F3D2B] transition-colors"
+              >
+                Continue Shopping
+              </Link>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Save Cart Confirmation
+  if (saveCartForLater) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="px-4 sm:px-5 md:px-10 py-8 md:py-14"
+      >
+        <div className="mx-auto max-w-md text-center">
+          <div className="border-[3px] border-[#1F3D2B] bg-[#D98F00] p-6 sm:p-8 brutal-shadow-lg">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="mb-4 inline-flex items-center justify-center h-14 w-14 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#D98F00] rounded-full"
+            >
+              <Bookmark size={28} strokeWidth={3} />
+            </motion.div>
+            
+            <h2 className="font-display font-black text-2xl text-[#1F3D2B] mb-3">
+              Cart Saved!
+            </h2>
+            
+            <p className="text-sm font-bold text-[#1F3D2B]/80 mb-6">
+              Your cart and checkout details have been saved. You can complete your order later.
+            </p>
+
+            <div className="space-y-3">
+              <Link
+                to="/products"
+                className="block touch-target bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-3 font-black uppercase tracking-[0.14em] hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors"
+              >
+                Continue Shopping
+              </Link>
+              
+              <button
+                onClick={() => {
+                  setSaveCartForLater(false);
+                  setPaymentFailure(null);
+                }}
+                className="block w-full touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-3 text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00] transition-colors"
+              >
+                Try Payment Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
   if (success) {
     const paid = success.payment_status === "paid";
     const activeTimeline = activeTimelineIndex(success.status);
@@ -574,6 +901,28 @@ export default function Checkout() {
     const reorder = () => {
       (success.items || []).forEach((item) => addItem(item));
     };
+
+    // Share functionality
+    const shareOrder = async () => {
+      const shareText = `I just ordered from Laxmi Edible Oils! Order #${success.order_id} for ${formatMoney(success.total)}`;
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Laxmi Edible Oils Order',
+            text: shareText,
+            url: window.location.origin,
+          });
+        } catch (err) {
+          console.log('Share cancelled');
+        }
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(shareText);
+        alert('Order details copied to clipboard!');
+      }
+    };
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 18 }}
@@ -582,54 +931,247 @@ export default function Checkout() {
         data-testid="checkout-success"
         className="px-4 sm:px-5 md:px-10 py-8 md:py-14"
       >
-        <div className="mx-auto max-w-xl border-[3px] border-[#1F3D2B] bg-[#D98F00] p-5 sm:p-8 brutal-shadow-lg">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.12, type: "spring", stiffness: 180 }}
-            className="mb-4 flex h-14 w-14 items-center justify-center border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#D98F00]"
-          >
-            <CheckCircle2 size={30} strokeWidth={3} />
-          </motion.div>
-          <div className="text-xs font-black uppercase tracking-[0.26em] text-[#1F3D2B]">Order confirmed</div>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-[#1F3D2B] tracking-tighter mt-1">
-            Payment {paid ? "received" : "recorded"}.
-          </h1>
-          <p className="mt-2 max-w-md text-sm font-bold text-[#1F3D2B]/80">
-            Your order is locked in. Track progress and download invoices from your account.
-          </p>
+        {/* Elegant Celebration Animation */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          {/* Golden Particles */}
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={`particle-${i}`}
+              initial={{ 
+                x: Math.random() * window.innerWidth,
+                y: -20,
+                opacity: 0,
+                scale: 0
+              }}
+              animate={{ 
+                y: window.innerHeight + 20,
+                opacity: [0, 1, 1, 0],
+                scale: [0, 1, 1, 0.5],
+                rotate: Math.random() * 360
+              }}
+              transition={{ 
+                duration: 4 + Math.random() * 2,
+                delay: Math.random() * 2,
+                repeat: Infinity,
+                repeatDelay: Math.random() * 4,
+                ease: "easeOut"
+              }}
+              className="absolute"
+            >
+              <div 
+                className="w-2 h-2 rounded-full"
+                style={{
+                  background: i % 3 === 0 ? '#D98F00' : i % 3 === 1 ? '#1F3D2B' : '#F5F1E8',
+                  boxShadow: '0 0 6px rgba(217, 143, 0, 0.5)'
+                }}
+              />
+            </motion.div>
+          ))}
+          
+          {/* Floating Oil Drops */}
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={`drop-${i}`}
+              initial={{ 
+                x: Math.random() * window.innerWidth,
+                y: -30,
+                opacity: 0
+              }}
+              animate={{ 
+                y: window.innerHeight + 30,
+                opacity: [0, 0.8, 0.8, 0],
+                x: Math.random() * 100 - 50
+              }}
+              transition={{ 
+                duration: 5 + Math.random() * 3,
+                delay: Math.random() * 1.5,
+                repeat: Infinity,
+                repeatDelay: Math.random() * 5,
+                ease: "linear"
+              }}
+              className="absolute"
+            >
+              <div className="relative">
+                <div 
+                  className="w-4 h-6 rounded-full"
+                  style={{
+                    background: 'linear-gradient(135deg, #D98F00, #B8431A)',
+                    boxShadow: '0 2px 8px rgba(217, 143, 0, 0.3)'
+                  }}
+                />
+                <div 
+                  className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full"
+                  style={{
+                    background: '#D98F00',
+                    opacity: 0.6
+                  }}
+                />
+              </div>
+            </motion.div>
+          ))}
+          
+          {/* Golden Light Rays */}
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={`ray-${i}`}
+              initial={{ 
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2,
+                opacity: 0,
+                scale: 0,
+                rotate: i * 60
+              }}
+              animate={{ 
+                opacity: [0, 0.3, 0],
+                scale: [0, 3, 6],
+                rotate: i * 60 + 180
+              }}
+              transition={{ 
+                duration: 3,
+                delay: i * 0.2,
+                repeat: Infinity,
+                repeatDelay: 4,
+                ease: "easeOut"
+              }}
+              className="absolute"
+            >
+              <div 
+                className="w-1 h-32 origin-top"
+                style={{
+                  background: 'linear-gradient(to bottom, transparent, #D98F00, transparent)',
+                  transform: 'translateX(-50%)'
+                }}
+              />
+            </motion.div>
+          ))}
+        </div>
 
-          {/* Compact Order Stats */}
-          <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mx-auto max-w-2xl">
+          {/* Main Success Card */}
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5, type: "spring" }}
+            className="border-[3px] border-[#1F3D2B] bg-[#D98F00] p-6 sm:p-8 brutal-shadow-lg text-center"
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+              className="mb-6 inline-flex items-center justify-center h-20 w-20 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] text-[#D98F00] rounded-full"
+            >
+              <CheckCircle2 size={40} strokeWidth={3} />
+            </motion.div>
+            
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="text-sm font-black uppercase tracking-[0.26em] text-[#1F3D2B] mb-2">Order Confirmed!</div>
+              <h1 className="font-display font-black text-4xl sm:text-5xl text-[#1F3D2B] tracking-tighter mb-3">
+                Thank You!
+              </h1>
+              <p className="max-w-lg mx-auto text-base font-bold text-[#1F3D2B]/80">
+                Your order #{success.order_id} has been {paid ? "paid and" : ""} confirmed. We're preparing your pure, lab-tested oils for delivery.
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* Order Stats */}
+          <motion.div 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3"
+          >
             <ReceiptStat label="Order ID" value={success.order_id} mono />
             <ReceiptStat label="Total" value={formatMoney(success.total)} />
+            <ReceiptStat label="Items" value={`${success.items?.length || 0} types`} />
             <ReceiptStat label="Payment" value={paymentLabel(success.payment_method)} />
-          </div>
+          </motion.div>
+
+          {/* Delivery Timeline */}
+          <motion.div 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.9 }}
+            className="mt-6 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-6 brutal-shadow"
+          >
+            <div className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-[#B8431A] mb-4">
+              <Truck size={16} strokeWidth={3} />
+              Estimated Delivery Timeline
+            </div>
+            <div className="space-y-3">
+              {[
+                { label: "Order Confirmed", time: "Just now", done: true },
+                { label: "Processing", time: "Today", done: false },
+                { label: "Shipped", time: "Tomorrow", done: false },
+                { label: "Delivered", time: "4-6 days", done: false },
+              ].map((step, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <div className={`w-8 h-8 border-2 border-[#1F3D2B] flex items-center justify-center flex-shrink-0 ${
+                    step.done ? 'bg-[#D98F00]' : 'bg-[#F5F1E8]'
+                  }`}>
+                    {step.done ? <Check size={12} strokeWidth={3} /> : <span className="text-xs font-black">{index + 1}</span>}
+                  </div>
+                  <div className="flex-1">
+                    <div className={`font-black text-sm ${step.done ? 'text-[#1F3D2B]' : 'text-[#1F3D2B]/60'}`}>
+                      {step.label}
+                    </div>
+                    <div className="text-xs font-bold text-[#1F3D2B]/50">{step.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
           {/* Action Buttons */}
-          <div className="mt-5 flex flex-col sm:flex-row gap-2">
+          <motion.div 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.1 }}
+            className="mt-6 flex flex-col sm:flex-row gap-3"
+          >
             <button
               data-testid="download-invoice"
               onClick={() => downloadInvoice(success)}
-              className="touch-target-sm inline-flex items-center justify-center gap-2 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-2 font-black uppercase tracking-[0.14em] text-xs hover:bg-[#B8431A] hover:border-[#B8431A]"
+              className="touch-target flex-1 inline-flex items-center justify-center gap-2 bg-[#1F3D2B] text-[#F5F1E8] border-[3px] border-[#1F3D2B] px-4 py-3 font-black uppercase tracking-[0.14em] text-sm hover:bg-[#B8431A] hover:border-[#B8431A] transition-colors"
             >
-              <Download size={14} strokeWidth={3} /> Invoice
+              <Download size={16} strokeWidth={3} /> Download Invoice
             </button>
+            
+            <button
+              onClick={shareOrder}
+              className="touch-target flex-1 inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-3 text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00] transition-colors"
+            >
+              <Share2 size={16} strokeWidth={3} /> Share Order
+            </button>
+            
             {user && (
               <Link
                 to="/account"
-                className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
+                className="touch-target flex-1 inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-3 text-sm font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00] transition-colors"
               >
-                <PackageCheck size={14} strokeWidth={3} /> My orders
+                <PackageCheck size={16} strokeWidth={3} /> Track Order
               </Link>
             )}
+          </motion.div>
+
+          {/* Continue Shopping */}
+          <motion.div 
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.3 }}
+            className="mt-4 text-center"
+          >
             <Link
               to="/products"
-              className="touch-target-sm inline-flex items-center justify-center gap-2 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#1F3D2B] hover:bg-[#D98F00]"
+              className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-[0.14em] text-[#B8431A] hover:text-[#1F3D2B] transition-colors"
             >
-              <ShoppingBag size={14} strokeWidth={3} /> Continue shopping
+              <ShoppingBag size={16} strokeWidth={3} /> Continue Shopping
             </Link>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     );
@@ -1100,6 +1642,45 @@ export default function Checkout() {
           </button>
         </div>
       </div>
+
+      {/* Payment Loading Overlay */}
+      {paymentLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1F3D2B]/90 backdrop-blur-sm">
+          <div className="w-full max-w-md mx-4 bg-[#F5F1E8] border-[3px] border-[#1F3D2B] p-6 brutal-shadow">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 border-[3px] border-[#D98F00] bg-[#D98F00]/20 mb-4">
+                <div className="animate-spin">
+                  <Loader2 size={32} strokeWidth={3} className="text-[#D98F00]" />
+                </div>
+              </div>
+              <h3 className="font-display font-black text-xl text-[#1F3D2B] mb-2">Processing Payment</h3>
+              <p className="text-sm font-bold text-[#1F3D2B]/70">{paymentTip}</p>
+            </div>
+            
+            {/* Progress Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]/70 mb-2">
+                <span>Progress</span>
+                <span>{paymentProgress}%</span>
+              </div>
+              <div className="h-3 border-2 border-[#1F3D2B] bg-[#F5F1E8] overflow-hidden">
+                <motion.div 
+                  className="h-full bg-[#D98F00] border-r-2 border-[#1F3D2B]"
+                  initial={{ width: "0%" }}
+                  animate={{ width: `${paymentProgress}%` }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+
+            {/* Security Badge */}
+            <div className="flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]/60">
+              <ShieldCheck size={12} strokeWidth={3} />
+              <span>Secure Payment Gateway</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
