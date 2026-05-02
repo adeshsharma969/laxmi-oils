@@ -7,12 +7,14 @@
     "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsc -p tsconfig.json",
     "start": "node dist/server.js",
+    "test": "tsx --test src/tests/**/*.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "seed": "node prisma/seed.js",
     "clear-products": "tsx src/clear-products.ts",
     "remove-seeded": "tsx src/remove-seeded-products.ts",
-    "seed-test-users": "tsx src/seed-test-user.ts"
+    "seed-test-users": "tsx src/seed-test-user.ts",
+    "backfill:order-status": "tsx src/scripts/backfill-order-shipment-state.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",

@@ -11,6 +11,8 @@ orderRoutes.get("/:orderId", optionalAuth, orders.getOrder);
 export const orderAdminRoutes = Router();
 orderAdminRoutes.get("/", requireAuth, requireAdmin, orders.adminOrders);
 orderAdminRoutes.put("/:orderId/status", requireAuth, requireAdmin, orders.updateOrderStatus);
+orderAdminRoutes.post("/:orderId/verify", requireAuth, requireAdmin, orders.verifyOrder);
+orderAdminRoutes.post("/:orderId/create-shipment", requireAuth, requireAdmin, orders.createShipment);
 
 export const orderInternalRoutes = Router();
 orderInternalRoutes.put("/:orderId/status", internalAuth, orders.updateOrderStatus);

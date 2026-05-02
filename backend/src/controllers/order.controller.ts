@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/async.js";
 import * as orderService from "../services/order.service.js";
+import * as shipmentService from "../services/shipping/shipping.service.js";
 import { AppError } from "../utils/http.js";
 
 export const createOrder = asyncHandler(async (req: Request, res: Response) => {
@@ -26,6 +27,14 @@ export const updateOrderStatus = asyncHandler(async (req: Request, res: Response
 
 export const updateOrderTracking = asyncHandler(async (req: Request, res: Response) => {
   res.json(await orderService.updateOrderTracking(req.params.orderId, req.body));
+});
+
+export const verifyOrder = asyncHandler(async (req: Request, res: Response) => {
+  res.json(await orderService.verifyOrder(req.params.orderId));
+});
+
+export const createShipment = asyncHandler(async (req: Request, res: Response) => {
+  res.json(await shipmentService.createShipmentForOrder(req.params.orderId, req.body || {}));
 });
 
 export const stats = asyncHandler(async (_req: Request, res: Response) => {

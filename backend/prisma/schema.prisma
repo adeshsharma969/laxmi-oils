@@ -92,6 +92,12 @@ model Order {
   couponReferrerId   String?       @map("coupon_referrer_id")
   paymentId          String?       @map("payment_id")
   shipmentId         String?       @map("shipment_id")
+  orderStatus        String        @default("pending_verification") @map("order_status")
+  shipmentStatus     String        @default("not_created") @map("shipment_status")
+  isVerified         Boolean       @default(false) @map("is_verified")
+  awbCode            String?       @map("awb_code")
+  courierName        String?       @map("courier_name")
+  trackingUrl        String?       @map("tracking_url")
   tracking           Json?
   createdAt          String?       @map("created_at")
   updatedAt          String?       @map("updated_at")

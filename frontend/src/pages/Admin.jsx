@@ -12,6 +12,21 @@ const TABS = [
   { id: "leads", label: "B2B Leads" },
 ];
 
+const ORDER_STATUS_OPTIONS = [
+  { id: "all", label: "All" },
+  { id: "pending_verification", label: "Pending Verification" },
+  { id: "verified", label: "Verified" },
+  { id: "shipment_created", label: "Shipment Created" },
+  { id: "shipped", label: "Shipped" },
+  { id: "delivered", label: "Delivered" },
+  { id: "cancelled", label: "Cancelled" },
+];
+
+const ORDER_STATUS_LABELS = ORDER_STATUS_OPTIONS.reduce((acc, item) => {
+  if (item.id !== "all") acc[item.id] = item.label;
+  return acc;
+}, {});
+
 const EMPTY_PRODUCT = { name:"", category:"mustard", description:"", badge:"NEW", images:["","","",""], bg:"#D98F00",
   sizes:[{label:"1L", price:0}], benefits:[], rating:4.8, reviews:0 };
 
@@ -28,6 +43,7 @@ export default function Admin() {
   const [editing, setEditing] = useState(null); // product obj or null
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [orderFilter, setOrderFilter] = useState("all");
 
   useEffect(() => {
     if (!loading && (!user || user.role !== "admin")) nav("/admin-login");
@@ -61,7 +77,27 @@ export default function Admin() {
   };
   const deleteProduct = async (id) => { if (!window.confirm("Delete this product?")) return; await api.delete(`/products/${id}`); await reload(); };
   const updateOrderStatus = async (id, status) => { await api.put(`/admin/orders/${id}/status`, { status }); await reload(); };
+  const verifyOrder = async (id) => { await api.post(`/admin/orders/${id}/verify`, {}); await reload(); };
+  const createShipment = async (id, currentAddress) => {
+    const shouldEditAddress = window.confirm("Do you want to edit the shipping address before shipment creation?");
+    let addressPayload = {};
+    if (shouldEditAddress) {
+      const address = window.prompt("Address", currentAddress?.address || "");
+      const city = window.prompt("City", currentAddress?.city || "");
+      const pincode = window.prompt("Pincode", currentAddress?.pincode || "");
+      addressPayload = {
+        address: {
+          address: address || currentAddress?.address || "",
+          city: city || currentAddress?.city || "",
+          pincode: pincode || currentAddress?.pincode || "",
+        },
+      };
+    }
+    await api.post(`/admin/orders/${id}/create-shipment`, addressPayload);
+    await reload();
+  };
   const updateLeadStatus = async (id, status) => { await api.put(`/admin/leads/${id}/status`, { status }); await reload(); };
+  const filteredOrders = orders.filter((order) => (orderFilter === "all" ? true : order.order_status === orderFilter));
 
   return (
     <div data-testid="admin-page" className="min-h-screen bg-[#F8F7F4] px-4 sm:px-5 md:px-10 py-6 md:py-10">
@@ -190,19 +226,30 @@ export default function Admin() {
 
       {tab==="orders" && (
         <div className="bg-white rounded-xl shadow-sm border border-[#E5E5E0] p-4 md:p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div className="font-display font-bold text-xl text-[#1F3D2B]">{orders.length} Orders</div>
-            <button data-testid="export-orders-csv" onClick={async ()=>{
+          <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
+            <div className="font-display font-bold text-xl text-[#1F3D2B]">{filteredOrders.length} Orders</div>
+            <div className="flex items-center gap-2">
+              <select
+                value={orderFilter}
+                onChange={(event) => setOrderFilter(event.target.value)}
+                className="bg-white border border-[#E5E5E0] rounded px-3 py-2 text-xs font-medium text-[#1F3D2B]"
+              >
+                {ORDER_STATUS_OPTIONS.map((status) => (
+                  <option key={status.id} value={status.id}>{status.label}</option>
+                ))}
+              </select>
+              <button data-testid="export-orders-csv" onClick={async ()=>{
               const r = await api.get("/admin/orders.csv", { responseType: "blob" });
               const url = URL.createObjectURL(r.data);
               const a = document.createElement("a"); a.href = url; a.download = "laxmi-orders.csv"; a.click(); URL.revokeObjectURL(url);
             }} className="px-4 py-2 bg-[#F8F7F4] text-[#1F3D2B] border border-[#E5E5E0] rounded-lg text-sm font-medium flex items-center gap-2 hover:border-[#1F3D2B] transition-colors">
               <Download size={16}/> Export CSV
             </button>
+            </div>
           </div>
           <div className="space-y-3">
-            {orders.length===0 && <div className="text-sm text-[#1F3D2B]/50 py-8 text-center">No orders yet.</div>}
-            {orders.map(o=>(
+            {filteredOrders.length===0 && <div className="text-sm text-[#1F3D2B]/50 py-8 text-center">No orders yet.</div>}
+            {filteredOrders.map(o=>(
               <div key={o.order_id} className="bg-[#F8F7F4] rounded-lg border border-[#E5E5E0] p-4">
                 <div className="flex flex-wrap justify-between gap-3">
                   <div>
@@ -212,22 +259,41 @@ export default function Admin() {
                   </div>
                   <div className="text-right">
                     <div className="font-display font-bold text-lg text-[#1F3D2B]">₹{o.total}</div>
-                    <select value={o.status} onChange={e=>updateOrderStatus(o.order_id, e.target.value)} className="mt-1 bg-white border border-[#E5E5E0] rounded px-2 py-1 text-xs font-medium text-[#1F3D2B] capitalize">
-                      {["paid","packed","shipped","delivered","cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
-                    </select>
+                    <div className="mt-1 bg-white border border-[#E5E5E0] rounded px-2 py-1 text-xs font-semibold text-[#1F3D2B]">
+                      {ORDER_STATUS_LABELS[o.order_status] || o.order_status || o.status}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-[#1F3D2B]/80">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {o.order_status === "pending_verification" && (
+                    <button onClick={()=>verifyOrder(o.order_id)} className="px-3 py-1.5 bg-[#1F3D2B] text-white rounded text-xs font-medium">
+                      Verify Order
+                    </button>
+                  )}
+                  {o.order_status === "verified" && (
+                    <button onClick={()=>createShipment(o.order_id, o.address)} className="px-3 py-1.5 bg-[#D98F00] text-[#1F3D2B] rounded text-xs font-semibold">
+                      Create Shipment
+                    </button>
+                  )}
+                  {o.order_status === "shipment_created" && (
+                    <button onClick={()=>updateOrderStatus(o.order_id, "shipped")} className="px-3 py-1.5 bg-white border border-[#E5E5E0] rounded text-xs font-medium text-[#1F3D2B]">
+                      Mark Shipped
+                    </button>
+                  )}
+                </div>
                 
-                {o.tracking && (
+                {(o.tracking || o.awb_code || o.shipment_id) && (
                   <div className="mt-3 flex items-center justify-between border-t border-[#E5E5E0] pt-3">
                     <div className="text-xs text-[#1F3D2B]">
-                      <span className="font-medium text-[#1F3D2B]/70">Courier:</span> {o.tracking.courier || "Assigned"}
+                      <span className="font-medium text-[#1F3D2B]/70">Courier:</span> {o.courier_name || o.tracking?.courier || "Assigned"}
                       <span className="mx-2 text-[#E5E5E0]">|</span>
-                      <span className="font-medium text-[#1F3D2B]/70">AWB:</span> <span className="font-mono bg-[#E5E5E0]/50 px-1 py-0.5 rounded">{o.tracking.trackingId}</span>
+                      <span className="font-medium text-[#1F3D2B]/70">AWB:</span> <span className="font-mono bg-[#E5E5E0]/50 px-1 py-0.5 rounded">{o.awb_code || o.tracking?.trackingId || "-"}</span>
+                      <span className="mx-2 text-[#E5E5E0]">|</span>
+                      <span className="font-medium text-[#1F3D2B]/70">Shipment ID:</span> {o.shipment_id || "-"}
                     </div>
-                    {o.tracking.trackingUrl && (
-                      <a href={o.tracking.trackingUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[#D98F00] hover:text-[#1F3D2B] transition-colors">
+                    {(o.tracking_url || o.tracking?.trackingUrl) && (
+                      <a href={o.tracking_url || o.tracking?.trackingUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[#D98F00] hover:text-[#1F3D2B] transition-colors">
                         Track Shipment →
                       </a>
                     )}

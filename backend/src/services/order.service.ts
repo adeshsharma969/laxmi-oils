@@ -6,6 +6,40 @@ import { clearCart } from "./cart.service.js";
 
 import { nowIso } from "../utils/time.js";
 
+const ORDER_STATUS_VALUES = [
+  "pending_verification",
+  "verified",
+  "shipment_created",
+  "shipped",
+  "delivered",
+  "cancelled",
+] as const;
+
+function asOrderStatus(value: string | undefined) {
+  if (!value) return null;
+  return ORDER_STATUS_VALUES.includes(value as (typeof ORDER_STATUS_VALUES)[number])
+    ? (value as (typeof ORDER_STATUS_VALUES)[number])
+    : null;
+}
+
+export function mapLegacyToOrderStatus(status: string) {
+  if (status === "paid" || status === "placed") return "pending_verification";
+  if (status === "packed") return "shipment_created";
+  if (status === "shipped") return "shipped";
+  if (status === "delivered") return "delivered";
+  if (status === "cancelled") return "cancelled";
+  return null;
+}
+
+export function mapOrderToLegacyStatus(orderStatus: string) {
+  if (orderStatus === "pending_verification" || orderStatus === "verified") return "paid";
+  if (orderStatus === "shipment_created") return "packed";
+  if (orderStatus === "shipped") return "shipped";
+  if (orderStatus === "delivered") return "delivered";
+  if (orderStatus === "cancelled") return "cancelled";
+  return "paid";
+}
+
 type OrderInput = {
   items: Array<{
     product_id?: string;
@@ -57,6 +91,13 @@ function toPublicOrder(order: any) {
     payment_method: order.paymentMethod,
     payment_status: order.paymentStatus,
     status: order.status,
+    order_status: order.orderStatus || mapLegacyToOrderStatus(order.status) || "pending_verification",
+    shipment_status: order.shipmentStatus || (order.shipmentId ? "created" : "not_created"),
+    is_verified: Boolean(order.isVerified),
+    shipment_id: order.shipmentId || null,
+    awb_code: order.awbCode || order.tracking?.trackingId || null,
+    courier_name: order.courierName || order.tracking?.courier || null,
+    tracking_url: order.trackingUrl || order.tracking?.trackingUrl || null,
     coupon_code: order.couponCode,
     coupon_kind: order.couponKind,
     tracking: order.tracking,
@@ -135,6 +176,9 @@ export async function createOrder(input: OrderInput, user?: { user_id: string; r
       paymentStatus: input.payment_method === "cod" ? "pending" : "paid",
       paymentId: input.payment_id,
       status: input.payment_method === "cod" ? "placed" : "paid",
+      orderStatus: "pending_verification",
+      shipmentStatus: "not_created",
+      isVerified: false,
       createdAt: nowIso(),
       updatedAt: nowIso(),
       ...couponInfo,
@@ -182,18 +226,51 @@ export async function listOrders() {
 }
 
 export async function updateOrderStatus(orderId: string, status: string) {
-  if (!["placed", "paid", "packed", "shipped", "delivered", "cancelled"].includes(status)) {
+  const legacyStatuses = ["placed", "paid", "packed", "shipped", "delivered", "cancelled"];
+  const isLegacy = legacyStatuses.includes(status);
+  const nextOrderStatus = asOrderStatus(status) || (isLegacy ? mapLegacyToOrderStatus(status) : null);
+  if (!isLegacy && !nextOrderStatus) {
     throw new AppError(400, "Invalid status");
+  }
+  const order = await prisma.order.findUnique({ where: { orderId } });
+  if (!order) throw new AppError(404, "Not found");
+  const targetOrderStatus = nextOrderStatus || mapLegacyToOrderStatus(status);
+  if ((targetOrderStatus === "shipment_created" || targetOrderStatus === "shipped") && !order.shipmentId) {
+    throw new AppError(400, "Shipment record does not exist for this order");
   }
 
   await prisma.order.update({
     where: { orderId },
     data: {
-      status,
+      status: isLegacy ? status : mapOrderToLegacyStatus(nextOrderStatus!),
+      ...(nextOrderStatus ? { orderStatus: nextOrderStatus } : {}),
+      ...(nextOrderStatus === "verified" ? { isVerified: true } : {}),
+      ...(nextOrderStatus === "shipment_created" ? { shipmentStatus: "created" } : {}),
+      ...(nextOrderStatus === "shipped" ? { shipmentStatus: "in_transit" } : {}),
+      ...(nextOrderStatus === "delivered" ? { shipmentStatus: "delivered" } : {}),
       updatedAt: nowIso(),
     },
   }).catch(() => {
     throw new AppError(404, "Not found");
+  });
+
+  return { ok: true };
+}
+
+export async function verifyOrder(orderId: string) {
+  const order = await prisma.order.findUnique({ where: { orderId } });
+  if (!order) throw new AppError(404, "Not found");
+  if (order.paymentStatus !== "paid") throw new AppError(400, "Only paid orders can be verified");
+  if (order.isVerified) return { ok: true, already_verified: true };
+
+  await prisma.order.update({
+    where: { orderId },
+    data: {
+      isVerified: true,
+      orderStatus: "verified",
+      status: "paid",
+      updatedAt: nowIso(),
+    },
   });
 
   return { ok: true };
@@ -204,8 +281,13 @@ export async function updateOrderTracking(orderId: string, trackingData: any) {
     where: { orderId },
     data: {
       tracking: trackingData,
-      shipmentId: trackingData.trackingId,
-      status: "packed", // Automatically mark as packed once tracking is generated
+      shipmentId: trackingData.shipmentId || trackingData.trackingId,
+      awbCode: trackingData.trackingId || trackingData.awbCode || null,
+      courierName: trackingData.courier || null,
+      trackingUrl: trackingData.trackingUrl || null,
+      shipmentStatus: "created",
+      orderStatus: "shipment_created",
+      status: "packed",
       updatedAt: nowIso(),
     },
   }).catch(() => {
