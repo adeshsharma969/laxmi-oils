@@ -36,7 +36,7 @@ export function WhatsAppButton() {
   return (
     <motion.a
       data-testid="whatsapp-btn"
-      href="https://wa.me/919876543210?text=Hi%20Laxmi%20Oils%2C%20I%27d%20like%20to%20order"
+      href="https://wa.me/917878183180?text=Hi%20Laxmi%20Oils%2C%20I%27d%20like%20to%20order"
       target="_blank" rel="noopener noreferrer"
       initial={{scale:0, opacity:0}} animate={{scale:1, opacity:1}} transition={{delay:0.8, type:"spring"}}
       whileHover={{scale:1.08, rotate:-3}}
