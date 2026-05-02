@@ -74,7 +74,7 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleAddToCart}
-          className="w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] py-2.5 font-black uppercase tracking-[0.1em] text-xs sm:text-sm hover:bg-[#1F3D2B] hover:text-[#F5F1E8] transition-all duration-300 flex items-center justify-center gap-2 brutal-shadow-sm"
+          className="w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] py-1.5 sm:py-2.5 px-2 sm:px-3 font-black uppercase tracking-[0.08em] text-[10px] sm:text-xs hover:bg-[#1F3D2B] hover:text-[#F5F1E8] transition-all duration-300 flex items-center justify-center gap-1 sm:gap-2 brutal-shadow-sm"
         >
           <ShoppingCart size={16} strokeWidth={3}/>
           Add to Cart
