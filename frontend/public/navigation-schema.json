@@ -1,0 +1,65 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Laxmi Edible Oils Navigation",
+  "description": "Main navigation menu for Laxmi Edible Oils website",
+  "numberOfItems": 8,
+  "itemListElement": [
+    {
+      "@type": "SiteNavigationElement",
+      "position": 1,
+      "name": "Shop Products",
+      "description": "Browse our collection of wood-pressed oils",
+      "url": "https://www.laxmiedibleoils.com/products"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 2,
+      "name": "Mustard Oil",
+      "description": "Wood-pressed Kachi Ghani mustard oil",
+      "url": "https://www.laxmiedibleoils.com/products?cat=mustard"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 3,
+      "name": "Groundnut Oil",
+      "description": "Filtered groundnut oil from Rajasthan",
+      "url": "https://www.laxmiedibleoils.com/products?cat=groundnut"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 4,
+      "name": "Soyabean Oil",
+      "description": "Refined soyabean oil",
+      "url": "https://www.laxmiedibleoils.com/products?cat=soyabean"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 5,
+      "name": "B2B Orders",
+      "description": "Bulk orders for businesses and restaurants",
+      "url": "https://www.laxmiedibleoils.com/b2b"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 6,
+      "name": "My Account",
+      "description": "Track orders and manage your account",
+      "url": "https://www.laxmiedibleoils.com/account"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 7,
+      "name": "Blog",
+      "description": "Learn about oils, recipes, and health benefits",
+      "url": "https://www.laxmiedibleoils.com/blog"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 8,
+      "name": "Contact",
+      "description": "Get in touch with our team",
+      "url": "https://wa.me/917878183180"
+    }
+  ]
+}

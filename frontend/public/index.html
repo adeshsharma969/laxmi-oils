@@ -47,6 +47,105 @@
         Learn how to configure a non-root public URL by running `npm run build`.
         -->
         <title>Laxmi Edible Oils — Wood-Pressed. Lab-Tested. Jaipur.</title>
+        
+        <!-- Structured Data for Google Sitelinks -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://www.laxmiedibleoils.com/#organization",
+              "name": "Laxmi Edible Oils",
+              "url": "https://www.laxmiedibleoils.com",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.laxmiedibleoils.com/logo.png",
+                "width": 384,
+                "height": 384
+              },
+              "description": "Jaipur-based brand curating wood-pressed mustard, groundnut and soyabean oils. Every batch tested in our in-house lab before it ships.",
+              "foundingDate": "2020",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Jaipur",
+                "addressRegion": "Rajasthan",
+                "addressCountry": "IN",
+                "postalCode": "302001"
+              },
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+91-78781-83180",
+                "contactType": "customer service",
+                "availableLanguage": ["Hindi", "English"],
+                "areaServed": "IN"
+              },
+              "sameAs": [
+                "https://www.instagram.com/laxmiedibleoils",
+                "https://www.facebook.com/laxmiedibleoils"
+              ]
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://www.laxmiedibleoils.com/#website",
+              "url": "https://www.laxmiedibleoils.com",
+              "name": "Laxmi Edible Oils",
+              "description": "Wood-pressed edible oils from Rajasthan's best small-batch mills. Every bottle lab-tested in Jaipur.",
+              "publisher": {
+                "@id": "https://www.laxmiedibleoils.com/#organization"
+              },
+              "potentialAction": [
+                {
+                  "@type": "SearchAction",
+                  "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.laxmiedibleoils.com/products?q={search_term_string}"
+                  },
+                  "query-input": "required name=search_term_string"
+                },
+                {
+                  "@type": "BuyAction",
+                  "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.laxmiedibleoils.com/products"
+                  },
+                  "object": {
+                    "@type": "Product",
+                    "name": "Wood-Pressed Oils"
+                  }
+                }
+              ]
+            },
+            {
+              "@type": "Store",
+              "@id": "https://www.laxmiedibleoils.com/#store",
+              "name": "Laxmi Edible Oils",
+              "url": "https://www.laxmiedibleoils.com",
+              "image": "https://www.laxmiedibleoils.com/logo.png",
+              "telephone": "+91-78781-83180",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Jaipur",
+                "addressRegion": "Rajasthan",
+                "addressCountry": "IN",
+                "postalCode": "302001"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 26.9124,
+                "longitude": 75.7873
+              },
+              "openingHours": [
+                "Mo-Su 00:00-23:59"
+              ],
+              "acceptsReservations": false,
+              "priceRange": "$$",
+              "paymentAccepted": ["Cash", "Credit Card", "Debit Card", "UPI"],
+              "currenciesAccepted": "INR"
+            }
+          ]
+        }
+        </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
     </head>
     <body>

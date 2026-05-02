@@ -1,0 +1,46 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What makes Laxmi Edible Oils different from other brands?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Laxmi Edible Oils partners with small-batch wood-press mills across Rajasthan and tests every batch in our in-house lab for purity, FFA, moisture, and adulteration before shipping to customers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you ship across India?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we ship our wood-pressed oils across India. Standard delivery takes 4-6 days, and we provide QR code tracking for every bottle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What types of oils do you offer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We offer wood-pressed mustard oil (Kachi Ghani), filtered groundnut oil, refined soyabean oil, and light sunflower oil - all sourced from Rajasthan's best mills."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are your oils lab-tested?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, every batch of oil is tested in our Jaipur lab for purity, FFA content, moisture levels, and potential adulteration before it reaches customers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer B2B bulk orders?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we provide bulk orders for businesses, restaurants, and hotels. Contact us through our B2B page or WhatsApp for custom pricing and requirements."
+      }
+    }
+  ]
+}

@@ -1,1 +1,75 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "Laxmi Edible Oils - Wood-Pressed Mustard, Groundnut & Soyabean Oils",
+  "short_name": "Laxmi Oils",
+  "description": "Jaipur-based brand curating wood-pressed edible oils. Every batch lab-tested for purity before shipping.",
+  "url": "https://www.laxmiedibleoils.com",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1F3D2B",
+  "background_color": "#F5F1E8",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["food", "grocery", "health", "organic"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Laxmi Edible Oils - Desktop view"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Laxmi Edible Oils - Mobile view"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shop Products",
+      "short_name": "Shop",
+      "description": "Browse our collection of wood-pressed oils",
+      "url": "/products",
+      "icons": [{ "src": "/icon-shop.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Track Order",
+      "short_name": "Track",
+      "description": "Track your order status",
+      "url": "/account",
+      "icons": [{ "src": "/icon-track.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "B2B Orders",
+      "short_name": "B2B",
+      "description": "Bulk orders for businesses",
+      "url": "/b2b",
+      "icons": [{ "src": "/icon-b2b.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/",
+    "update_via_cache": "imports"
+  }
+}

@@ -1,10 +1,29 @@
+# Laxmi Edible Oils - Robots.txt for Google Sitelinks Optimization
 User-agent: *
 Allow: /
+Crawl-delay: 1
+
+# Disallow sensitive/private pages
 Disallow: /admin
 Disallow: /admin-login
 Disallow: /account
 Disallow: /auth/callback
 Disallow: /checkout
 Disallow: /invoice
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
 
+# Allow important pages for sitelinks
+Allow: /products
+Allow: /b2b
+Allow: /blog/
+Allow: /policies
+Allow: /login
+Allow: /register
+
+# Sitemap location
 Sitemap: https://www.laxmiedibleoils.com/sitemap.xml
+
+# Additional sitemaps if any
+# Sitemap: https://www.laxmiedibleoils.com/sitemap-products.xml
