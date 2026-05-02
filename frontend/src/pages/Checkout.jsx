@@ -541,6 +541,16 @@ export default function Checkout() {
       setSuccess(data);
       if (typeof window !== "undefined") localStorage.removeItem(STORAGE_CHECKOUT_DRAFT);
       clearCart();
+
+      // Fire and forget Shiprocket integration
+      if (data?.order_id) {
+        fetch('/api/shiprocket/process-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        }).catch(err => console.error("Shiprocket background processing failed:", err));
+      }
+
     } catch (e) {
       setPayError(`Order failed: ${fmtErr(e)}`);
     } finally {

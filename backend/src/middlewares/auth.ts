@@ -38,3 +38,12 @@ export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
   if (req.user.role !== "admin") return next(new AppError(403, "Admin only"));
   return next();
 }
+
+export function internalAuth(req: Request, _res: Response, next: NextFunction) {
+  const internalKey = req.header("x-internal-key");
+  const expectedKey = process.env.INTERNAL_API_KEY || "laxmi-internal-secret-2026";
+  if (internalKey !== expectedKey) {
+    return next(new AppError(403, "Forbidden internal access"));
+  }
+  return next();
+}

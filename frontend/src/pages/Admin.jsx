@@ -218,6 +218,22 @@ export default function Admin() {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-[#1F3D2B]/80">{o.items.map(i=>`${i.name} (${i.size}) × ${i.qty}`).join(" · ")}</div>
+                
+                {o.tracking && (
+                  <div className="mt-3 flex items-center justify-between border-t border-[#E5E5E0] pt-3">
+                    <div className="text-xs text-[#1F3D2B]">
+                      <span className="font-medium text-[#1F3D2B]/70">Courier:</span> {o.tracking.courier || "Assigned"}
+                      <span className="mx-2 text-[#E5E5E0]">|</span>
+                      <span className="font-medium text-[#1F3D2B]/70">AWB:</span> <span className="font-mono bg-[#E5E5E0]/50 px-1 py-0.5 rounded">{o.tracking.trackingId}</span>
+                    </div>
+                    {o.tracking.trackingUrl && (
+                      <a href={o.tracking.trackingUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[#D98F00] hover:text-[#1F3D2B] transition-colors">
+                        Track Shipment →
+                      </a>
+                    )}
+                  </div>
+                )}
+                
                 <div className="mt-3"><Link to={`/invoice/${o.order_id}`} className="text-sm font-medium text-[#1F3D2B] hover:text-[#D98F00] transition-colors">View Invoice →</Link></div>
               </div>
             ))}

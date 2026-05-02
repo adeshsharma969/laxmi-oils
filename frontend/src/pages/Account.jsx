@@ -243,8 +243,22 @@ export default function Account() {
 
                             {/* Tracking */}
                             {o.tracking?.trackingUrl && (
-                              <div className="mb-3 text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]">
-                                <Truck size={12} strokeWidth={3} className="mr-1 inline"/> Tracking: <a href={o.tracking.trackingUrl} target="_blank" rel="noreferrer" className="underline hover:text-[#B8431A]">{o.tracking.trackingId || "Open link"}</a>
+                              <div className="mb-3 flex items-center justify-between border-2 border-[#1F3D2B] bg-[#D98F00]/20 p-2 sm:p-3">
+                                <div>
+                                  <div className="text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]/70">Tracking & Courier</div>
+                                  <div className="font-bold text-xs text-[#1F3D2B] flex items-center gap-1.5 mt-0.5">
+                                    <Truck size={12} strokeWidth={3} />
+                                    {o.tracking.courier || "Assigned Courier"} · <span className="font-mono">{o.tracking.trackingId}</span>
+                                  </div>
+                                </div>
+                                <a
+                                  href={o.tracking.trackingUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="touch-target-sm inline-flex items-center gap-1 border-[3px] border-[#1F3D2B] bg-[#1F3D2B] px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-[#F5F1E8] hover:bg-[#B8431A] hover:border-[#B8431A]"
+                                >
+                                  Track Order
+                                </a>
                               </div>
                             )}
 

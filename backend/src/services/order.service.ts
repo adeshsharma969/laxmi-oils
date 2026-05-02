@@ -3,7 +3,7 @@ import { AppError, toNumber } from "../utils/http.js";
 import { publicOrderId } from "../utils/ids.js";
 import { resolveCoupon } from "./coupon.service.js";
 import { clearCart } from "./cart.service.js";
-import { ensureTracking } from "./shipping.service.js";
+
 import { nowIso } from "../utils/time.js";
 
 type OrderInput = {
@@ -186,13 +186,27 @@ export async function updateOrderStatus(orderId: string, status: string) {
     throw new AppError(400, "Invalid status");
   }
 
-  const tracking = status === "shipped" ? await ensureTracking(orderId) : undefined;
   await prisma.order.update({
     where: { orderId },
     data: {
       status,
       updatedAt: nowIso(),
-      ...(tracking ? { tracking } : {}),
+    },
+  }).catch(() => {
+    throw new AppError(404, "Not found");
+  });
+
+  return { ok: true };
+}
+
+export async function updateOrderTracking(orderId: string, trackingData: any) {
+  await prisma.order.update({
+    where: { orderId },
+    data: {
+      tracking: trackingData,
+      shipmentId: trackingData.trackingId,
+      status: "packed", // Automatically mark as packed once tracking is generated
+      updatedAt: nowIso(),
     },
   }).catch(() => {
     throw new AppError(404, "Not found");

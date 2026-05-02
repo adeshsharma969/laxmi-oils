@@ -24,6 +24,10 @@ export const updateOrderStatus = asyncHandler(async (req: Request, res: Response
   res.json(await orderService.updateOrderStatus(req.params.orderId, req.body?.status));
 });
 
+export const updateOrderTracking = asyncHandler(async (req: Request, res: Response) => {
+  res.json(await orderService.updateOrderTracking(req.params.orderId, req.body));
+});
+
 export const stats = asyncHandler(async (_req: Request, res: Response) => {
   res.json(await orderService.adminStats());
 });

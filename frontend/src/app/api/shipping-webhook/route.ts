@@ -25,13 +25,18 @@ function log(msg: string, data?: unknown) {
  * Uses Option A: internal HTTP call to the Express backend.
  */
 async function updateOrderStatusInBackend(orderId: string, status: string) {
-  const url = `${BACKEND_API_URL}/admin/orders/${encodeURIComponent(orderId)}/status`;
+  const url = `${BACKEND_API_URL}/internal/orders/${encodeURIComponent(orderId)}/status`;
 
   log("Updating order status via backend", { orderId, status, url });
 
+  const internalKey = process.env.INTERNAL_API_KEY || "laxmi-internal-secret-2026";
+
   const response = await fetch(url, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "x-internal-key": internalKey
+    },
     body: JSON.stringify({ status }),
     cache: "no-store",
   });
