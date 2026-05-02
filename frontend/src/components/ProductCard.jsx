@@ -3,20 +3,39 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import { useCart } from "../context/CartContext";
 
 export default function ProductCard({ product, index=0, sizeIndex=0 }) {
+  const { add } = useCart();
   const size = product.sizes[sizeIndex] || product.sizes[0];
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    add(product, size);
+  };
+
   return (
     <motion.div
       initial={{opacity:0, y:30}}
       whileInView={{opacity:1, y:0}}
       viewport={{once:true, margin:"-50px"}}
-      whileTap={{ scale: 0.97 }}
       transition={{duration:0.5, delay:index*0.06, ease:[0.22,1,0.36,1]}}
       data-testid={`product-card-${product.id}`}
-      className="brutal-card group flex flex-col h-full cursor-pointer"
+      className="brutal-card group flex flex-col h-full overflow-hidden"
     >
-      <Link to={`/product/${product.id}`} className="block h-full">
+      {/* Product Tags Header */}
+      <div className="flex justify-between items-stretch border-b-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
+        <div className="bg-[#D98F00] text-[#1F3D2B] px-3 py-1.5 text-xs sm:text-sm font-black uppercase tracking-wider border-r-[3px] border-[#1F3D2B]">
+          {size.label}
+        </div>
+        <div className="flex-1 bg-[#1F3D2B]/5"></div>
+        <div className="bg-[#1F3D2B] text-[#F5F1E8] px-3 py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-[0.16em]">
+          {product.category}
+        </div>
+      </div>
+
+      <Link to={`/product/${product.id}`} className="block flex-1 flex flex-col">
         <div className="relative h-44 sm:h-48 md:h-52 lg:h-56 overflow-hidden border-b-[3px] border-[#1F3D2B]" style={{background: product.bg}}>
           {(product.images?.[0] || product.image) && (
             <div className="relative w-full h-full">
@@ -24,40 +43,44 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
                 src={product.images?.[0] || product.image}
                 alt={product.name}
                 fill
-                className="object-contain p-4"
+                className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
             </div>
           )}
-          <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-[#D98F00] text-[#1F3D2B] px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-[#1F3D2B]">
-            {size.label}
-          </div>
-          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-[#1F3D2B] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-xs font-black uppercase tracking-[0.16em] border-2 border-[#F5F1E8]">
-            {product.category}
-          </div>
         </div>
-        <div className="p-2 sm:p-3 md:p-4 flex-1 flex flex-col justify-between">
+        <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold sm:font-black text-[13px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.1] sm:leading-tight line-clamp-2">{product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}</h3>
+            <h3 className="font-bold sm:font-black text-[14px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.2] sm:leading-tight line-clamp-2 mb-1">
+              {product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}
+            </h3>
             {product.badge && (
-              <div className="mt-1 text-[8px] sm:text-[10px] font-bold sm:font-black uppercase tracking-[0.1em] text-[#B8431A]">{product.badge === "BULK" ? "Bulk Deal" : product.badge}</div>
+              <div className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[#B8431A]">
+                {product.badge === "BULK" ? "Bulk Deal" : product.badge}
+              </div>
             )}
           </div>
-          <div className="flex items-end justify-between mt-2">
+          <div className="mt-3">
             <div className="flex flex-col">
-              <span className="text-[11px] sm:text-sm md:text-base font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</span>
-              <span className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.05em] text-[#1F3D2B]/70">{size.label}</span>
+              <span className="text-sm sm:text-base md:text-lg font-black uppercase tracking-wider text-[#1F3D2B]">₹{size.price}</span>
+              <span className="text-[10px] font-medium uppercase tracking-[0.05em] text-[#1F3D2B]/60">{size.label} pack</span>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.12, rotate: -5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="touch-target w-7 h-7 sm:w-9 sm:h-9 border-[2px] sm:border-[3px] border-[#1F3D2B] bg-[#D98F00] flex items-center justify-center group-hover:bg-[#B8431A] group-hover:text-[#F5F1E8] transition-colors"
-            >
-              <ShoppingCart size={13} strokeWidth={3}/>
-            </motion.div>
           </div>
         </div>
       </Link>
+      
+      <div className="p-3 sm:p-4 pt-0">
+        <motion.button
+          whileHover={{ scale: 1.02, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleAddToCart}
+          className="w-full bg-[#D98F00] text-[#1F3D2B] border-[3px] border-[#1F3D2B] py-2.5 font-black uppercase tracking-[0.1em] text-xs sm:text-sm hover:bg-[#1F3D2B] hover:text-[#F5F1E8] transition-all duration-300 flex items-center justify-center gap-2 brutal-shadow-sm"
+        >
+          <ShoppingCart size={16} strokeWidth={3}/>
+          Add to Cart
+        </motion.button>
+      </div>
     </motion.div>
   );
 }
+

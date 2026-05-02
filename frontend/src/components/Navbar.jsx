@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X, User as UserIcon, LogOut, Search } from "lucide-react";
+import { ShoppingBag, Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import SearchCommand from "./SearchCommand";
+
 
 const links = [
   { to: "/", label: "Home" },
@@ -28,16 +28,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
-  useEffect(() => {
-    const onKey = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setSearchOpen(true); }
-      else if (e.key === "/" && e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") { e.preventDefault(); setSearchOpen(true); }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+
+
 
   useEffect(() => {
     const f = () => setScrolled(window.scrollY > 8);
@@ -61,10 +54,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <button data-testid="search-trigger" onClick={()=>setSearchOpen(true)} className="touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-2 sm:px-3 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2 hover:bg-[#D98F00]" aria-label="Search">
-            <Search size={16} strokeWidth={3}/>
-            <span className="hidden lg:inline text-xs tracking-widest">search</span>
-          </button>
+
           {user ? (
             <div className="relative hidden md:block">
               <button data-testid="account-btn" onClick={()=>setMenuOpen(o=>!o)} className="touch-target border-[3px] border-[#1F3D2B] bg-[#F5F1E8] px-3 py-2 font-bold uppercase text-xs sm:text-sm tracking-wider flex items-center gap-2">
@@ -138,7 +128,7 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-      <SearchCommand open={searchOpen} onClose={()=>setSearchOpen(false)}/>
+
     </header>
   );
 }
