@@ -118,8 +118,6 @@ lab-tested for purity before reaching your home.</p>
                 <Image src={c.image} alt={c.name} fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
                 <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-5 text-white" style={{textShadow: "0 2px 8px rgba(0,0,0,0.4)"}}>
-                  <div className="text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.15em] mb-0.5 text-[#D98F00]">{i+1} · {c.tagline}</div>
-                  <h3 className="font-bold sm:font-black text-[14px] sm:text-lg md:text-2xl leading-[1.1] uppercase mb-1 drop-shadow-md line-clamp-2">{c.name}</h3>
                   <button className="group inline-flex items-center gap-1 text-[10px] sm:text-sm font-black uppercase tracking-[1px] hover:text-[#D98F00] transition-all duration-300">
                     Shop Now 
                     <ArrowRight size={11} strokeWidth={3} className="group-hover:translate-x-1 transition-transform"/>

@@ -24,19 +24,8 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
       data-testid={`product-card-${product.id}`}
       className="brutal-card group flex flex-col h-full overflow-hidden"
     >
-      {/* Product Tags Header */}
-      <div className="flex justify-between items-stretch border-b-[3px] border-[#1F3D2B] bg-[#F5F1E8]">
-        <div className="bg-[#D98F00] text-[#1F3D2B] px-3 py-1.5 text-xs sm:text-sm font-black uppercase tracking-wider border-r-[3px] border-[#1F3D2B]">
-          {size.label}
-        </div>
-        <div className="flex-1 bg-[#1F3D2B]/5"></div>
-        <div className="bg-[#1F3D2B] text-[#F5F1E8] px-3 py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-[0.16em]">
-          {product.category}
-        </div>
-      </div>
-
       <Link to={`/product/${product.id}`} className="block flex-1 flex flex-col">
-        <div className="relative h-44 sm:h-48 md:h-52 lg:h-56 overflow-hidden border-b-[3px] border-[#1F3D2B]" style={{background: product.bg}}>
+        <div className="relative h-32 xs:h-36 sm:h-48 md:h-52 lg:h-56 overflow-hidden border-b-[3px] border-[#1F3D2B]" style={{background: product.bg}}>
           {(product.images?.[0] || product.image) && (
             <div className="relative w-full h-full">
               <Image
@@ -48,10 +37,21 @@ export default function ProductCard({ product, index=0, sizeIndex=0 }) {
               />
             </div>
           )}
+          {/* Product Tags */} 
+          <div className="absolute top-0 left-0 p-1">
+            <div className="bg-[#F5F1E8] text-[#1F3D2B] px-1 py-0.5 text-[8px] font-black uppercase tracking-wider border-[2px] border-[#1F3D2B]">
+              {product.category}
+            </div>
+          </div>
+          <div className="absolute top-0 right-0 p-1">
+            <div className="bg-[#B8431A] text-[#F5F1E8] px-1 py-0.5 text-[8px] font-black uppercase tracking-wider border-[2px] border-[#1F3D2B] -rotate-3">
+              {size.label}
+            </div>
+          </div>
         </div>
         <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold sm:font-black text-[14px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.2] sm:leading-tight line-clamp-2 mb-1">
+            <h3 className="font-bold sm:font-black text-[11px] xs:text-[12px] sm:text-base md:text-lg text-[#1F3D2B] leading-[1.1] sm:leading-tight line-clamp-2 mb-1">
               {product.name.replace(/([a-z])-([0-9])/i, "$1 – $2")}
             </h3>
             {product.badge && (

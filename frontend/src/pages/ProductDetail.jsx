@@ -41,7 +41,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div data-testid="product-detail" className="px-4 sm:px-5 md:px-10 py-6 md:py-10 pb-24 sm:pb-10">
+    <div data-testid="product-detail" className="px-4 sm:px-5 md:px-10 py-6 md:py-10 pb-32 sm:pb-10">
       <Link to="/products" className="touch-target-sm inline-flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-[0.16em] text-[#1F3D2B] mb-4 md:mb-6 hover:text-[#B8431A]"><ArrowLeft size={14} strokeWidth={3}/> Back to shelf</Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
@@ -53,20 +53,20 @@ export default function ProductDetail() {
               </motion.div>
             </AnimatePresence>
             <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-[#F5F1E8] text-[#1F3D2B] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B]">{product.category}</div>
-            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#B8431A] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] rotate-3">{product.badge}</div>
-            <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 bg-[#F5F1E8]/90 p-1.5 border-2 border-[#1F3D2B]">
-              {gallery.map((src,i)=>(
-                <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`w-8 h-8 sm:w-10 sm:h-10 border-2 overflow-hidden aspect-square transition-all relative ${activeImg===i?"border-[#B8431A]":"border-[#1F3D2B]/20 hover:border-[#1F3D2B]/50"}`} style={{background:product.bg}}>
-                  <Image src={src} alt="" fill className="object-contain" sizes="40px" />
-                </button>
-              ))}
-            </div>
+            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-[#B8431A] text-[#F5F1E8] px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.12em] border-2 border-[#1F3D2B] -rotate-3">{product.badge}</div>
+          </div>
+          <div className="flex justify-center gap-1.5 bg-[#F5F1E8]/95 p-2 border-x-[3px] border-b-[3px] border-[#1F3D2B]">
+            {gallery.map((src,i)=>(
+              <button key={i} data-testid={`thumb-${i}`} onClick={()=>setActiveImg(i)} className={`w-12 h-12 sm:w-16 sm:h-16 border-2 overflow-hidden aspect-square transition-all relative flex-shrink-0 ${activeImg===i?"border-[#B8431A] shadow-sm":"border-[#1F3D2B]/60 hover:border-[#1F3D2B]"}`} style={{background:product.bg}}>
+                <Image src={src} alt="" fill className="object-contain" sizes="64px" />
+              </button>
+            ))}
           </div>
         </motion.div>
 
         <motion.div initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} transition={{duration:0.6}} className="lg:col-span-5">
-          <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-[#1F3D2B] tracking-tighter leading-[0.95]">{product.name}</h1>
-          <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg">{product.description}</p>
+          <h1 className="font-display font-black text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-[#1F3D2B] tracking-tighter leading-[0.95] line-clamp-2">{product.name}</h1>
+          <p className="mt-3 sm:mt-4 text-[#1F3D2B]/80 text-sm sm:text-base md:text-lg line-clamp-3">{product.description}</p>
 
           {/* Mobile Layout: Pack size left, total right (NO CTA HERE, moved to sticky bottom) */}
           <div className="mt-5 sm:mt-8">
@@ -119,35 +119,38 @@ export default function ProductDetail() {
             Add to Cart →
           </motion.button>
 
-          <div className="mt-4 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-3">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#B8431A]">
-              <Truck size={14} strokeWidth={3}/> Delivery
+          <div className="mt-4 border-[3px] border-[#1F3D2B] bg-[#F5F1E8] p-4">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#B8431A] mb-4">
+              <Truck size={16} strokeWidth={3}/> Delivery Information
             </div>
-            <div className="mt-2 flex gap-1.5">
-              <label className="relative flex-1">
-                <MapPin size={14} strokeWidth={3} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#1F3D2B]"/>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="relative">
+                <MapPin size={14} strokeWidth={3} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#1F3D2B] z-10"/>
                 <input
                   value={pincode}
                   onChange={(event)=>setDeliveryPin(event.target.value)}
                   inputMode="numeric"
                   maxLength={6}
-                  placeholder="Pincode"
-                  className="touch-target-sm w-full border-2 border-[#1F3D2B] bg-white py-1.5 pl-8 pr-2 text-xs font-black text-[#1F3D2B] outline-none focus:bg-[#D98F00]/25"
+                  placeholder="Enter pincode"
+                  className="touch-target-sm w-full border-2 border-[#1F3D2B] bg-white py-3 pl-10 pr-3 text-sm font-black text-[#1F3D2B] outline-none focus:border-[#B8431A] focus:bg-[#D98F00]/10"
                 />
-              </label>
-              <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/35 px-2 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#1F3D2B] flex items-center justify-center min-w-[90px] text-center">
-                {deliveryPromise(pincode).replace(/Delivery by /i, "")}
+              </div>
+              <div className="border-2 border-[#1F3D2B] bg-[#D98F00]/20 px-4 py-3 text-sm font-black uppercase tracking-[0.1em] text-[#1F3D2B] flex items-center justify-center min-h-[44px]">
+                {deliveryPromise(pincode).replace(/Delivery by /i, "") || "Enter pincode"}
               </div>
             </div>
           </div>
 
-          <div className="mt-5 sm:mt-8 flex flex-wrap gap-2">
-            {(product.benefits||[]).map(b=>(
-              <div key={b} className="flex items-center gap-1 border-2 border-[#1F3D2B] px-2 py-1 bg-[#F5F1E8]">
-                <Check size={10} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
-                <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{b}</span>
-              </div>
-            ))}
+          <div className="mt-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.16em] text-[#1F3D2B]/60 mb-3">Product Benefits</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {(product.benefits||[]).map(b=>(
+                <div key={b} className="flex items-center gap-2 border-2 border-[#1F3D2B] px-3 py-2 bg-[#F5F1E8] hover:bg-[#D98F00]/10 transition-colors">
+                  <Check size={14} strokeWidth={3} className="text-[#B8431A] flex-shrink-0"/>
+                  <span className="text-xs font-black uppercase tracking-[0.12em] text-[#1F3D2B]">{b}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
         </motion.div>
