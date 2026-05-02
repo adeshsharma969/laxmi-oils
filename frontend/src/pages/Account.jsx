@@ -223,19 +223,19 @@ export default function Account() {
                             </div>
 
                             {/* Compact Status Progress */}
-                            <div className="flex items-center gap-1 mb-3">
+                            <div className="flex items-center gap-0.5 sm:gap-1 mb-3 overflow-x-auto pb-1 -mx-1 px-1">
                               {orderTimelineSteps.map((label, index) => {
                                 const done = index <= activeTimelineIndex(o.status);
                                 const isLast = index === orderTimelineSteps.length - 1;
                                 return (
                                   <React.Fragment key={label}>
-                                    <div className="flex items-center gap-1">
-                                      <div className={`flex h-5 w-5 items-center justify-center border-[1.5px] border-[#1F3D2B] text-[8px] font-black ${done ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-white text-[#1F3D2B]"}`}>
-                                        {done ? <Check size={10} strokeWidth={3}/> : index + 1}
+                                    <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+                                      <div className={`flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center border border-[#1F3D2B] text-[7px] sm:text-[8px] font-black ${done ? "bg-[#1F3D2B] text-[#D98F00]" : "bg-white text-[#1F3D2B]"}`}>
+                                        {done ? <Check size={8} strokeWidth={3} className="sm:w-[10px] sm:h-[10px]"/> : index + 1}
                                       </div>
-                                      <span className="text-[9px] font-black uppercase tracking-[0.06em] text-[#1F3D2B]/70">{label}</span>
+                                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.06em] text-[#1F3D2B]/70 whitespace-nowrap">{label}</span>
                                     </div>
-                                    {!isLast && <div className={`flex-1 h-[2px] ${done ? "bg-[#1F3D2B]" : "bg-[#1F3D2B]/20"}`}/>}
+                                    {!isLast && <div className={`w-3 sm:w-4 h-[2px] flex-shrink-0 ${done ? "bg-[#1F3D2B]" : "bg-[#1F3D2B]/20"}`}/>}
                                   </React.Fragment>
                                 );
                               })}
